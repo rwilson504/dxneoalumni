@@ -1,0 +1,1024 @@
+{
+  "archivedAt": "2026-07-28T23:53:11.153Z",
+  "source": "https://dxneoalumni.wixsite.com",
+  "pages": [
+    {
+      "slug": "home",
+      "url": "https://dxneoalumni.wixsite.com/main",
+      "status": "ok",
+      "bytes": 438598,
+      "markdownChars": 5069
+    },
+    {
+      "slug": "about-us",
+      "url": "https://dxneoalumni.wixsite.com/main/about-us",
+      "status": "ok",
+      "bytes": 353410,
+      "markdownChars": 4856
+    },
+    {
+      "slug": "membership",
+      "url": "https://dxneoalumni.wixsite.com/main/membership",
+      "status": "ok",
+      "bytes": 346153,
+      "markdownChars": 2893
+    },
+    {
+      "slug": "events",
+      "url": "https://dxneoalumni.wixsite.com/main/events",
+      "status": "ok",
+      "bytes": 527058,
+      "markdownChars": 23073
+    },
+    {
+      "slug": "photo-gallery",
+      "url": "https://dxneoalumni.wixsite.com/main/photo-gallery",
+      "status": "ok",
+      "bytes": 360254,
+      "markdownChars": 5095
+    },
+    {
+      "slug": "awards",
+      "url": "https://dxneoalumni.wixsite.com/main/awards",
+      "status": "ok",
+      "bytes": 337650,
+      "markdownChars": 2096
+    },
+    {
+      "slug": "newsletters",
+      "url": "https://dxneoalumni.wixsite.com/main/newsletters",
+      "status": "ok",
+      "bytes": 382192,
+      "markdownChars": 6952
+    },
+    {
+      "slug": "by-laws",
+      "url": "https://dxneoalumni.wixsite.com/main/by-laws",
+      "status": "ok",
+      "bytes": 343733,
+      "markdownChars": 6413
+    }
+  ],
+  "mailchimpNewsletters": [
+    {
+      "label": "August 2023",
+      "url": "https://mailchi.mp/8bce3731be57/april-newsletter-alumni-ceremonies-16879724",
+      "file": "newsletters-mailchimp/August_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "August 2024",
+      "url": "https://mailchi.mp/efddb2cf2220/april-newsletter-alumni-ceremonies-17394924",
+      "file": "newsletters-mailchimp/August_2024.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "December 2022",
+      "url": "https://mailchi.mp/8a0d4646d8c6/december-newsletter-and-holiday-get-together",
+      "file": "newsletters-mailchimp/December_2022.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "December 2023",
+      "url": "https://mailchi.mp/ab80bb0c9ffa/april-newsletter-alumni-ceremonies-16894404",
+      "file": "newsletters-mailchimp/December_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "January 2023",
+      "url": "https://mailchi.mp/3cbdc7db2fde/january-newsletter",
+      "file": "newsletters-mailchimp/January_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "July 2023",
+      "url": "https://mailchi.mp/e108f3c8a8ce/april-newsletter-alumni-ceremonies-16876068",
+      "file": "newsletters-mailchimp/July_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "July 2024",
+      "url": "https://mailchi.mp/07415177cfc3/april-newsletter-alumni-ceremonies-17389752",
+      "file": "newsletters-mailchimp/July_2024.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "June 2022",
+      "url": "https://mailchi.mp/d1ff050ba178/last-summer-happy-hourconvention-recap",
+      "file": "newsletters-mailchimp/June_2022.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "May 2022",
+      "url": "https://mailchi.mp/78a36fab4b86/summer-happy-hours",
+      "file": "newsletters-mailchimp/May_2022.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "May 2024",
+      "url": "https://mailchi.mp/11d691e06f57/april-newsletter-alumni-ceremonies-17383339",
+      "file": "newsletters-mailchimp/May_2024.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "November 2025",
+      "url": "https://mailchi.mp/65f2d21f9b4e/april-newsletter-alumni-ceremonies-17461593",
+      "file": "newsletters-mailchimp/November_2025.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "October 2023",
+      "url": "https://mailchi.mp/680f526803f7/april-newsletter-alumni-ceremonies-16888272",
+      "file": "newsletters-mailchimp/October_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "October 2024",
+      "url": "https://mailchi.mp/a94b170c9a6b/april-newsletter-alumni-ceremonies-17450701",
+      "file": "newsletters-mailchimp/October_2024.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "October 2025",
+      "url": "https://mailchi.mp/7535dcf2fe79/april-newsletter-alumni-ceremonies-17460838",
+      "file": "newsletters-mailchimp/October_2025.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "September 2020",
+      "url": "https://mailchi.mp/a6bcb301b51c/september-2020-newsletter-winners-again",
+      "file": "newsletters-mailchimp/September_2020.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "September 2022",
+      "url": "https://mailchi.mp/f33007946146/sept-newsletter-founders-day-dinner",
+      "file": "newsletters-mailchimp/September_2022.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "September 2023",
+      "url": "https://mailchi.mp/dc56ff323175/april-newsletter-alumni-ceremonies-16884328",
+      "file": "newsletters-mailchimp/September_2023.html",
+      "status": "downloaded"
+    },
+    {
+      "label": "September 2025",
+      "url": "https://mailchi.mp/e7a84e7eda56/april-newsletter-alumni-ceremonies-17459884",
+      "file": "newsletters-mailchimp/September_2025.html",
+      "status": "downloaded"
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://static.wixstatic.com/media/8d6893330740455c96d218258a458aa4.png",
+      "file": "media/8d6893330740455c96d218258a458aa4.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/9c4b521dd2404cd5a05ed6115f3a0dc8.png",
+      "file": "media/9c4b521dd2404cd5a05ed6115f3a0dc8.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/e316f544f9094143b9eac01f1f19e697.png",
+      "file": "media/e316f544f9094143b9eac01f1f19e697.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_0103be2693674e46838186c9829e0fa1.pdf",
+      "file": "media/f002fe_0103be2693674e46838186c9829e0fa1.pdf",
+      "title": "October 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_082116b1fa46452aa64d0a22946f5f77.pdf",
+      "file": "media/f002fe_082116b1fa46452aa64d0a22946f5f77.pdf",
+      "title": "April 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_0972b025d2654304962d23f004f708d5~mv2.jpg",
+      "file": "media/f002fe_0972b025d2654304962d23f004f708d5~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_0b148015c80647efa28c612ff89ad811~mv2.jpg",
+      "file": "media/f002fe_0b148015c80647efa28c612ff89ad811~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_0b3c76e0e87a40fda01c09032ab31ede~mv2.jpg",
+      "file": "media/f002fe_0b3c76e0e87a40fda01c09032ab31ede~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_0c634f0595424520b5b294d64067f183~mv2.jpg",
+      "file": "media/f002fe_0c634f0595424520b5b294d64067f183~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_0fe1ebf511814d9887d4d49744ca8b6b~mv2.jpg",
+      "file": "media/f002fe_0fe1ebf511814d9887d4d49744ca8b6b~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_171263345076414aaf3cab341122b13d~mv2.jpg",
+      "file": "media/f002fe_171263345076414aaf3cab341122b13d~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_1737e5e329674de2ac552e36ceaec87a~mv2.jpg",
+      "file": "media/f002fe_1737e5e329674de2ac552e36ceaec87a~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_17c8d73f2c97434fb80b08c51d1e2f7b~mv2.jpg",
+      "file": "media/f002fe_17c8d73f2c97434fb80b08c51d1e2f7b~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_17dc1bb5ae274ee89826f49087caa6c9~mv2.jpg",
+      "file": "media/f002fe_17dc1bb5ae274ee89826f49087caa6c9~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_18ee97c55e0344639cfea26ad6acecd8~mv2.jpg",
+      "file": "media/f002fe_18ee97c55e0344639cfea26ad6acecd8~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_1a22283c79964a859c600ff4a17fc27d.pdf",
+      "file": "media/f002fe_1a22283c79964a859c600ff4a17fc27d.pdf",
+      "title": "August 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_1b87191390e8410c9e585db4d5a0ac6c~mv2.jpeg",
+      "file": "media/f002fe_1b87191390e8410c9e585db4d5a0ac6c~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_1ef4e2cd3f0749efa6422f8c712ec8d5~mv2.jpeg",
+      "file": "media/f002fe_1ef4e2cd3f0749efa6422f8c712ec8d5~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_27b447571f1e46ee8b7963bb3242cb8d~mv2.jpg",
+      "file": "media/f002fe_27b447571f1e46ee8b7963bb3242cb8d~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_29ec927bf62f46a2960234ff0b874c5d~mv2.jpg",
+      "file": "media/f002fe_29ec927bf62f46a2960234ff0b874c5d~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_2ca2a89af5fb4aaca9b1bd62646efccb~mv2.jpg",
+      "file": "media/f002fe_2ca2a89af5fb4aaca9b1bd62646efccb~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events",
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_30de6d21b6624eb9a87e63b0b6a44f57~mv2_d_2016_1512_s_2.jpg",
+      "file": "media/f002fe_30de6d21b6624eb9a87e63b0b6a44f57~mv2_d_2016_1512_s_2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_31425e00c7bb43fcad4f8351fbb6d9ee~mv2.jpeg",
+      "file": "media/f002fe_31425e00c7bb43fcad4f8351fbb6d9ee~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_343fca37ad624c9cbd1ac03bd6c5be17.pdf",
+      "file": "media/f002fe_343fca37ad624c9cbd1ac03bd6c5be17.pdf",
+      "title": "April 2020",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_34e4a914028840078a98df256125ee5b~mv2.jpeg",
+      "file": "media/f002fe_34e4a914028840078a98df256125ee5b~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_38d0cdf0bcdf4489b4b26bb4850e235f~mv2.jpg",
+      "file": "media/f002fe_38d0cdf0bcdf4489b4b26bb4850e235f~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_3a41b394405e489d98127e3a75b35bc1~mv2.jpeg",
+      "file": "media/f002fe_3a41b394405e489d98127e3a75b35bc1~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_3e3ec282532a40129db58d0b28154672.pdf",
+      "file": "media/f002fe_3e3ec282532a40129db58d0b28154672.pdf",
+      "title": "March 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_3ec9bb04b2de4e14b358b9234ce650f5~mv2.jpg",
+      "file": "media/f002fe_3ec9bb04b2de4e14b358b9234ce650f5~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_3f5035b4a7f34805ab18dad88cfa3dbb~mv2.png",
+      "file": "media/f002fe_3f5035b4a7f34805ab18dad88cfa3dbb~mv2.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_3fe57ba045a242cfa3422721244b7c14~mv2.jpeg",
+      "file": "media/f002fe_3fe57ba045a242cfa3422721244b7c14~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_43c76dcde5f04c2184eb9140da5c5142~mv2.png",
+      "file": "media/f002fe_43c76dcde5f04c2184eb9140da5c5142~mv2.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_46c0154a7fa34a7387ce52ac14138bfa~mv2.jpg",
+      "file": "media/f002fe_46c0154a7fa34a7387ce52ac14138bfa~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_4b0e4b9d95b141afa873c8b208a97fd9.pdf",
+      "file": "media/f002fe_4b0e4b9d95b141afa873c8b208a97fd9.pdf",
+      "title": "March 2018 (2)",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_526a93b6a5bc4df4bb89182d65fe8db3.pdf",
+      "file": "media/f002fe_526a93b6a5bc4df4bb89182d65fe8db3.pdf",
+      "title": "March 2020",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_5506899d1931478db196c81088bc0cc2~mv2.jpg",
+      "file": "media/f002fe_5506899d1931478db196c81088bc0cc2~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_57ef4b748aad4aedb0318cc67d2c1901.pdf",
+      "file": "media/f002fe_57ef4b748aad4aedb0318cc67d2c1901.pdf",
+      "title": "March 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_5a8a06c9d8c04837805f51ccfc3d03a8~mv2.gif",
+      "file": "media/f002fe_5a8a06c9d8c04837805f51ccfc3d03a8~mv2.gif",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "about-us"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_5a8dec596a4c4c38846734f13fb01134~mv2.jpg",
+      "file": "media/f002fe_5a8dec596a4c4c38846734f13fb01134~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_60e3f89243c44532a84c473cf8de72ff~mv2.jpg",
+      "file": "media/f002fe_60e3f89243c44532a84c473cf8de72ff~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_67ed6e623e8c4d7797f2551f7abbad03~mv2.jpeg",
+      "file": "media/f002fe_67ed6e623e8c4d7797f2551f7abbad03~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_6cc2358307c3457b8de502da8caeeaf9~mv2.jpg",
+      "file": "media/f002fe_6cc2358307c3457b8de502da8caeeaf9~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_6d1468e78259436b8d3186703a405d21~mv2.jpg",
+      "file": "media/f002fe_6d1468e78259436b8d3186703a405d21~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_73711e1dc643490fa06bffc90371fcb0~mv2.png",
+      "file": "media/f002fe_73711e1dc643490fa06bffc90371fcb0~mv2.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_7a71f21a5e0944cd8d1ca86d4ecc27cc.pdf",
+      "file": "media/f002fe_7a71f21a5e0944cd8d1ca86d4ecc27cc.pdf",
+      "title": "April 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_7b2683e2acbf4623979db82ab20fa303.pdf",
+      "file": "media/f002fe_7b2683e2acbf4623979db82ab20fa303.pdf",
+      "title": "July 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_7e84149bb2cc40deb4e60494bf17f840~mv2.jpg",
+      "file": "media/f002fe_7e84149bb2cc40deb4e60494bf17f840~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_807e283b316e44e9b25abca0ad754107.pdf",
+      "file": "media/f002fe_807e283b316e44e9b25abca0ad754107.pdf",
+      "title": "May 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_848b9922022c4f158d3db66136eb6ce5.pdf",
+      "file": "media/f002fe_848b9922022c4f158d3db66136eb6ce5.pdf",
+      "title": "December 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_85194bb054aa4056ac373006be6c6bc8~mv2.png",
+      "file": "media/f002fe_85194bb054aa4056ac373006be6c6bc8~mv2.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_898c1408024b438490774f4e45a67f07~mv2.jpg",
+      "file": "media/f002fe_898c1408024b438490774f4e45a67f07~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_8ae9858ed87c4c7d8697507d45b2b36f.pdf",
+      "file": "media/f002fe_8ae9858ed87c4c7d8697507d45b2b36f.pdf",
+      "title": "December 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_91a55be43c244be585c44e87d2859ab9~mv2.jpg",
+      "file": "media/f002fe_91a55be43c244be585c44e87d2859ab9~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_91deeac25f5148cd88b03f96ebd67aea~mv2.jpeg",
+      "file": "media/f002fe_91deeac25f5148cd88b03f96ebd67aea~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_9227f912411f4db29584891d5051a5b0.pdf",
+      "file": "media/f002fe_9227f912411f4db29584891d5051a5b0.pdf",
+      "title": "October 2020",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_95c433bb9ce24479b13084df6dedb484.pdf",
+      "file": "media/f002fe_95c433bb9ce24479b13084df6dedb484.pdf",
+      "title": "April 2023",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_99babaca7dc848fc93124c98b1cf1e34.pdf",
+      "file": "media/f002fe_99babaca7dc848fc93124c98b1cf1e34.pdf",
+      "title": "November 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_9be01bf2ad6d48ea89cedd937e02016a~mv2.jpg",
+      "file": "media/f002fe_9be01bf2ad6d48ea89cedd937e02016a~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_9ece325276d446db87d096b358165b8a.pdf",
+      "file": "media/f002fe_9ece325276d446db87d096b358165b8a.pdf",
+      "title": "September 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_9f8d725c078f432890780a636125d8a8~mv2.png",
+      "file": "media/f002fe_9f8d725c078f432890780a636125d8a8~mv2.png",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_a1fec78aa0a84835a4d489568912ec2a~mv2.jpg",
+      "file": "media/f002fe_a1fec78aa0a84835a4d489568912ec2a~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_a29dd4bc438c4bf0a46fc67ace00f083.pdf",
+      "file": "media/f002fe_a29dd4bc438c4bf0a46fc67ace00f083.pdf",
+      "title": "May 2023",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_a667ad8d09b944a59bb6c8ea6982cbc0~mv2.jpg",
+      "file": "media/f002fe_a667ad8d09b944a59bb6c8ea6982cbc0~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_a8f39bd27b3c4589a8ff994cc6042120~mv2.jpg",
+      "file": "media/f002fe_a8f39bd27b3c4589a8ff994cc6042120~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_a9fbf3ca0418468da234b1143cc2030d.pdf",
+      "file": "media/f002fe_a9fbf3ca0418468da234b1143cc2030d.pdf",
+      "title": "June 2023",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_b0d728c2183c4de28437b69f2982a71e~mv2.jpeg",
+      "file": "media/f002fe_b0d728c2183c4de28437b69f2982a71e~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_b535a7f52be34066aaa9afbdbaf94826~mv2.jpg",
+      "file": "media/f002fe_b535a7f52be34066aaa9afbdbaf94826~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_ba281057c01b4d979f4b24da11ed18a2.pdf",
+      "file": "media/f002fe_ba281057c01b4d979f4b24da11ed18a2.pdf",
+      "title": "May 2020",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_bad42cd0bce4437bbf66953226a251d4~mv2.jpg",
+      "file": "media/f002fe_bad42cd0bce4437bbf66953226a251d4~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_bad551914efb4228bb623039a09f8d56~mv2.jpg",
+      "file": "media/f002fe_bad551914efb4228bb623039a09f8d56~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_bcf04d51db1041a6a40c00a721c9c025~mv2.jpg",
+      "file": "media/f002fe_bcf04d51db1041a6a40c00a721c9c025~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_be656c70722b417f965c472c90f24ac4~mv2.jpg",
+      "file": "media/f002fe_be656c70722b417f965c472c90f24ac4~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_bf7c2280d542418a9736d704919654be.pdf",
+      "file": "media/f002fe_bf7c2280d542418a9736d704919654be.pdf",
+      "title": "February 2019",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_bf8e6491aca94d478287d62647913437.pdf",
+      "file": "media/f002fe_bf8e6491aca94d478287d62647913437.pdf",
+      "title": "October 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_c62d8ce66f834b35873c59bb54c4eec0~mv2.jpeg",
+      "file": "media/f002fe_c62d8ce66f834b35873c59bb54c4eec0~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_d2ccdbc3471049938eeedc5dcfa4f52b~mv2_d_4032_3024_s_4_2.jpg",
+      "file": "media/f002fe_d2ccdbc3471049938eeedc5dcfa4f52b~mv2_d_4032_3024_s_4_2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "awards"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_d37bc43c36404fc8a75b957c422449d9~mv2.jpg",
+      "file": "media/f002fe_d37bc43c36404fc8a75b957c422449d9~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "about-us",
+        "awards",
+        "by-laws",
+        "events",
+        "home",
+        "membership",
+        "newsletters",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_d8f58507e681470183e1f3dfaee65662.pdf",
+      "file": "media/f002fe_d8f58507e681470183e1f3dfaee65662.pdf",
+      "title": "September 2021",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_de232716ac234be6b657488c602eb336~mv2_d_2016_1512_s_2.jpg",
+      "file": "media/f002fe_de232716ac234be6b657488c602eb336~mv2_d_2016_1512_s_2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_de648f774a2b48ec9318da1a00776109~mv2.jpg",
+      "file": "media/f002fe_de648f774a2b48ec9318da1a00776109~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_df21f82f84364fbb95dc8b965b6ac208~mv2.jpg",
+      "file": "media/f002fe_df21f82f84364fbb95dc8b965b6ac208~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_e3653fe0c47041ba8f9ee76821ae55e8.pdf",
+      "file": "media/f002fe_e3653fe0c47041ba8f9ee76821ae55e8.pdf",
+      "title": "April 2021",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_e647c773ba8b488aae1145d72eac5fce~mv2.jpg",
+      "file": "media/f002fe_e647c773ba8b488aae1145d72eac5fce~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_e7a1125d696b4a8d888c265f69bf4260~mv2.jpeg",
+      "file": "media/f002fe_e7a1125d696b4a8d888c265f69bf4260~mv2.jpeg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "home",
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_eceb6b1c138f44b2be5ec2295d220fb9~mv2.jpg",
+      "file": "media/f002fe_eceb6b1c138f44b2be5ec2295d220fb9~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_ef44f11e253e43ad8db60afc23b87187.pdf",
+      "file": "media/f002fe_ef44f11e253e43ad8db60afc23b87187.pdf",
+      "title": "October 2021",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_f253a1f0faa649db9b7e0f2bedf98641~mv2.jpg",
+      "file": "media/f002fe_f253a1f0faa649db9b7e0f2bedf98641~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_f29e26fda0984ba68cd2ef437100b5fa~mv2.jpg",
+      "file": "media/f002fe_f29e26fda0984ba68cd2ef437100b5fa~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_f3c0e30d1451404a89520b0b547b3f40~mv2.jpg",
+      "file": "media/f002fe_f3c0e30d1451404a89520b0b547b3f40~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_f85de6b228564722898d41022cb73c2c~mv2.jpg",
+      "file": "media/f002fe_f85de6b228564722898d41022cb73c2c~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "photo-gallery"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_f8f41c8333f942a7a5ee0b774c3195a8~mv2.jpg",
+      "file": "media/f002fe_f8f41c8333f942a7a5ee0b774c3195a8~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    },
+    {
+      "url": "https://b055cbc1-fc23-417e-b4b1-7f66a2827d66.filesusr.com/ugd/f002fe_f8f552cec2984814b5915a68f6a75163.pdf",
+      "file": "media/f002fe_f8f552cec2984814b5915a68f6a75163.pdf",
+      "title": "September 2018",
+      "status": "cached",
+      "referencedBy": [
+        "newsletters"
+      ]
+    },
+    {
+      "url": "https://static.wixstatic.com/media/f002fe_fdcabaa6e950491e9a0bf621f3aeea04~mv2.jpg",
+      "file": "media/f002fe_fdcabaa6e950491e9a0bf621f3aeea04~mv2.jpg",
+      "title": null,
+      "status": "cached",
+      "referencedBy": [
+        "events"
+      ]
+    }
+  ]
+}

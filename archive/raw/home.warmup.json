@@ -1,0 +1,112 @@
+{
+  "platform": {
+    "ssrPropsUpdates": [
+      {
+        "comp-kei6x12u": {
+          "hidden": true
+        },
+        "comp-kei6x126": {
+          "isValid": false,
+          "maxLength": 100
+        },
+        "comp-kei6x1291": {
+          "isValid": false,
+          "maxLength": 250
+        },
+        "comp-kei6x12f1": {
+          "isValid": true
+        },
+        "comp-kei6x12n": {
+          "isValid": true
+        }
+      }
+    ],
+    "ssrStyleUpdates": [
+      {
+        "comp-kei6x12u": {
+          "visibility": "hidden !important"
+        }
+      }
+    ],
+    "ssrStructureUpdates": []
+  },
+  "pages": {
+    "compIdToTypeMap": {
+      "comp-jfi4j53n": "TPAGluedWidget",
+      "iai1h0nq": "BgImageStrip",
+      "DrpDwnMn0": "DropDownMenu",
+      "SITE_STRUCTURE_WRichText_1": "WRichText",
+      "masterPage": "MasterPage",
+      "SITE_HEADER": "HeaderContainer",
+      "PAGES_CONTAINER": "PagesContainer",
+      "SITE_FOOTER": "FooterContainer",
+      "SITE_PAGES": "PageGroup",
+      "BACKGROUND_GROUP": "BackgroundGroup",
+      "WIX_ADS": "FreemiumBannerDesktop",
+      "SCROLL_TO_TOP": "Anchor",
+      "SCROLL_TO_BOTTOM": "Anchor",
+      "comp-jfi4j53n-pinned-layer": "PinnedLayer",
+      "pinnedBottomRight": "DivWithChildren",
+      "SKIP_TO_CONTENT_BTN": "SkipToContentButton",
+      "mainPage_WPhoto_0": "WPhoto",
+      "mainPage_WRichText_2": "WRichText",
+      "comp-j2543m5a": "WRichText",
+      "comp-j3qb4ym1": "WPhoto",
+      "comp-j2544pzs": "WRichText",
+      "mainPage_SiteButton_0": "SiteButton",
+      "comp-j2543x7l": "SiteButton",
+      "comp-j25452ic": "SiteButton",
+      "FvGrdLn0": "FiveGridLine",
+      "comp-j253gchs": "WPhoto",
+      "comp-j253r8b9": "WRichText",
+      "comp-j253uag5": "WRichText",
+      "comp-j2540dnb": "WPhoto",
+      "comp-j2540wko": "WRichText",
+      "comp-j253klze": "WRichText",
+      "comp-j253hwl5": "WPhoto",
+      "i0p6jozl": "FiveGridLine",
+      "comp-k041gk7l": "LinkBar",
+      "ibbxjflg": "BgImageStrip",
+      "comp-lh2e1l24": "WPhoto",
+      "comp-mnv80xqd1": "WPhoto",
+      "comp-lmwxg207": "WPhoto",
+      "comp-lmwxj1h6": "WPhoto",
+      "comp-lbse9278": "WPhoto",
+      "comp-kei6x126": "TextInput",
+      "comp-kei6x1291": "TextInput",
+      "comp-kei6x12f1": "TextInput",
+      "comp-kei6x12n": "TextAreaInput",
+      "comp-kei6x12u": "WRichText",
+      "comp-kei6x12r": "SiteButton",
+      "comp-mnvakxfi": "WRichText",
+      "comp-mnv88p524": "WRichText",
+      "comp-jn98dskx": "WPhoto",
+      "comp-jn98dsl1": "WRichText",
+      "pageBackground_mainPage": "PageBackground",
+      "mainPage": "Page",
+      "comp-lg7fzxlv": "ClassicSection",
+      "comp-lg7fzxlw": "ClassicSection",
+      "comp-lg7fzxly": "ClassicSection",
+      "comp-lg7fzxlz": "ClassicSection",
+      "comp-je62stk2": "SlideShowContainer",
+      "comp-j253nqpc": "AppWidget",
+      "comp-lh2e1l0x": "SlideShowSlide",
+      "comp-mnv80xpm": "SlideShowSlide",
+      "comp-jn98cdx9": "SlideShowSlide",
+      "comp-je62stl4": "SlideShowSlide",
+      "comp-je62stm0": "SlideShowSlide",
+      "comp-kei6x11t": "FormContainer",
+      "comp-mnvakxfd": "Container",
+      "comp-mnv88p4y": "Container",
+      "comp-jn98dsjg": "Container",
+      "ContainermainPage": "Group",
+      "DYNAMIC_STRUCTURE_CONTAINER": "DynamicStructureContainer",
+      "site-root": "DivWithChildren",
+      "main_MF": "DivWithChildren",
+      "mainPage_wrapper": "PageMountUnmount",
+      "mainPage_wrapper_background": "PageMountUnmount"
+    }
+  },
+  "appsWarmupData": {},
+  "builderComponentsWarmupData": {}
+}

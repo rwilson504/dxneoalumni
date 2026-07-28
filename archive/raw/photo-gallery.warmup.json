@@ -1,0 +1,39 @@
+{
+  "platform": {
+    "ssrPropsUpdates": [],
+    "ssrStyleUpdates": [],
+    "ssrStructureUpdates": []
+  },
+  "pages": {
+    "compIdToTypeMap": {
+      "comp-jfi4j53n": "TPAGluedWidget",
+      "iai1h0nq": "BgImageStrip",
+      "DrpDwnMn0": "DropDownMenu",
+      "SITE_STRUCTURE_WRichText_1": "WRichText",
+      "masterPage": "MasterPage",
+      "SITE_HEADER": "HeaderContainer",
+      "PAGES_CONTAINER": "PagesContainer",
+      "SITE_FOOTER": "FooterContainer",
+      "SITE_PAGES": "PageGroup",
+      "BACKGROUND_GROUP": "BackgroundGroup",
+      "WIX_ADS": "FreemiumBannerDesktop",
+      "SCROLL_TO_TOP": "Anchor",
+      "SCROLL_TO_BOTTOM": "Anchor",
+      "comp-jfi4j53n-pinned-layer": "PinnedLayer",
+      "pinnedBottomRight": "DivWithChildren",
+      "SKIP_TO_CONTENT_BTN": "SkipToContentButton",
+      "comp-j25627bm": "MatrixGallery",
+      "pageBackground_l9rfb": "PageBackground",
+      "l9rfb": "Page",
+      "comp-lg7fzxm1": "ClassicSection",
+      "Containerl9rfb": "Group",
+      "DYNAMIC_STRUCTURE_CONTAINER": "DynamicStructureContainer",
+      "site-root": "DivWithChildren",
+      "main_MF": "DivWithChildren",
+      "l9rfb_wrapper": "PageMountUnmount",
+      "l9rfb_wrapper_background": "PageMountUnmount"
+    }
+  },
+  "appsWarmupData": {},
+  "builderComponentsWarmupData": {}
+}
