@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:sql": "node tools/check-migrations.mjs",
     "check:supabase": "node --env-file=.env tools/check-supabase.mjs",
     "extract": "node tools/extract-content/extract.mjs"
   },
@@ -23,6 +24,7 @@
     "@astrojs/check": "^0.9.4",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "pg-query-emscripten": "^5.1.0",
     "supabase": "^2.110.0-beta.33",
     "typescript": "^5.7.0"
   }
