@@ -3,10 +3,11 @@ import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import EventCard from '~/components/EventCard.astro';
 import { site } from '~/data/site';
-import { upcomingEvents, pastEvents } from '~/lib/events';
+import { events, splitByDate } from '~/lib/content';
 import hero from '~/assets/hero-group.jpg';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { upcoming: upcomingEvents, past: pastEvents } = splitByDate(events);
 const featured = (upcomingEvents.length ? upcomingEvents : pastEvents).slice(0, 3);
 const hasUpcoming = upcomingEvents.length > 0;
 ---

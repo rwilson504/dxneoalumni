@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import EventCard from '~/components/EventCard.astro';
-import { upcomingEvents, pastEvents, groupByYear } from '~/lib/events';
+import { events, splitByDate, groupByYear } from '~/lib/content';
 
+const { upcoming: upcomingEvents, past: pastEvents } = splitByDate(events);
 const pastByYear = groupByYear(pastEvents);
 ---
 
