@@ -1,11 +1,17 @@
--- Seed the roster carried over from the Wix site.
+-- Roster seed, carried over from the Wix site.
 --
--- IMPORTANT: every email below is a placeholder on the reserved .invalid TLD, which
--- can never receive mail. Replace each one with the brother's real address BEFORE
--- anyone tries to sign in — magic-link login matches on email, and a member cannot
--- claim their row until the address is correct.
+-- Safe to re-run: rows are matched on email and updated in place, so correcting a
+-- name or role here and re-running fixes the database. Existing sign-ins are kept.
 --
--- Promote at least one person to admin at the bottom of this file.
+-- Sign-in matches on email, so a member cannot claim their row until their address
+-- is correct. Addresses still on the reserved .invalid TLD are placeholders that can
+-- never receive mail — replace them before inviting anyone.
+--
+-- FULL RESET: to discard every member row and start over (this also deletes their
+-- dues history), uncomment the delete below. Sign-ins are re-linked further down, so
+-- anyone who has already logged in keeps working.
+--
+-- delete from public.members;
 
 insert into public.members
   (email, full_name, undergrad_chapter, class_year, officer_letter, is_virtual, role)
@@ -28,8 +34,25 @@ values
   ('mickey.nemergut@example.invalid', 'Mickey Nemergut', 'Kent State', '''06', null, false, 'member'),
   ('pat.rabideau@example.invalid', 'Pat Rabideau', 'Kent State', '''01', null, false, 'member'),
   ('jae.snow@example.invalid', 'Jae Snow', 'Kennesaw State', '''14', null, false, 'member'),
-  ('rick.wilson@example.invalid', 'Rick Wilson', 'Kent State', '''04', null, false, 'member')
-on conflict (email) do nothing;
+  ('rwilson504@gmail.com', 'Rick Wilson', 'Kent State', '''04', null, false, 'admin')
+on conflict (email) do update set
+  full_name         = excluded.full_name,
+  undergrad_chapter = excluded.undergrad_chapter,
+  class_year        = excluded.class_year,
+  officer_letter    = excluded.officer_letter,
+  is_virtual        = excluded.is_virtual,
+  role              = excluded.role;
 
--- Grant the first admin. Replace with a real address.
--- update public.members set role = 'admin' where email = 'you@example.com';
+-- Re-link anyone who has already signed in. claim_member_row only fires when an auth
+-- user is first created, so a member row replaced after that point would otherwise be
+-- orphaned from its account.
+update public.members m
+   set user_id = u.id
+  from auth.users u
+ where lower(m.email) = lower(u.email)
+   and m.user_id is distinct from u.id;
+
+select role, count(*) as members, count(user_id) as signed_in
+  from public.members
+ group by role
+ order by role;
