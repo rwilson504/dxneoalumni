@@ -69,6 +69,19 @@ git commit -am "db: add something" && git push
 Per-PR preview databases (Supabase Branching) are a paid feature — $0.01344 per branch per
 hour on Pro. Deploy-from-GitHub, used here, is included on the free plan.
 
+### Not done yet: local database testing
+
+The Supabase CLI can run the whole stack locally (`npx supabase start`, then
+`npx supabase db reset` to apply migrations and seed from scratch). That would let us prove
+the RLS policies behave correctly — including the claim-on-first-sign-in trigger — before
+anything reaches production.
+
+Deliberately skipped for now because it requires Docker and pulls several GB of images.
+Worth doing if the policies get more complex, or before any change that touches
+`guard_member_columns` or `claim_member_row`. Until then, the migration SQL is validated by
+parsing it against the real Postgres grammar, which catches syntax errors but not runtime
+behaviour.
+
 ### How access works
 
 Signing in does **not** create membership. A member row must already exist for that email
