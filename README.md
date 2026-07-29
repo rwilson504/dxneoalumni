@@ -208,7 +208,18 @@ re-run.
 Captions follow a convention worth preserving: photos from the same event are numbered,
 as in `Cleveland Whiskey Tour (1)` through `(5)`. The tool splits that into `group` and
 `groupIndex`, so the site can show one caption per event rather than repeating a numbered
-label on every tile. 73 of the 133 photos belong to such a group.
+label on every tile. 73 of the 133 photos belong to such a group. Only a *trailing* `(n)`
+counts, so a caption like `Cleveland Guardians (2) June 2023` stays standalone.
+
+`gallery.json` is generated, so it must never drift from the capture:
+
+```sh
+npm run verify-gallery
+```
+
+That re-derives every caption and grouping from
+[archive/photo-gallery-items.json](archive/photo-gallery-items.json), checks each photo
+still has its image in `src/assets/gallery`, and fails if anything has been edited by hand.
 
 [tools/extract-content](tools/extract-content) is the one-time migration that turned the
 archived events page into `src/data/events.json`. It has already run; the JSON is now
