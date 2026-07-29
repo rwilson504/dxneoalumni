@@ -116,6 +116,49 @@ for (const table of ['members', 'documents', 'dues_payments']) {
   );
 }
 
+// 6. Content tables. These fail until the content migration reaches production —
+// that is the point: it is how you confirm the push actually applied.
+{
+  const { status, body } = await rest('events?select=id&limit=1');
+  const missing = status === 404 || body?.code === '42P01';
+  record('content migration applied', !missing, missing ? 'events table not found' : `HTTP ${status}`);
+}
+
+// The public site is built from these, so an anonymous reader must be able to see them.
+for (const table of ['events', 'albums', 'photos']) {
+  const { status, body } = await rest(`${table}?select=id&limit=1`);
+  record(
+    `anonymous can read "${table}"`,
+    status === 200,
+    status === 200 ? 'readable' : `HTTP ${status}${body?.code ? ` (${body.code})` : ''}`
+  );
+}
+
+// The upload inbox is officer-only and names who uploaded what; it must not leak.
+{
+  const { status, body } = await rest('photo_uploads?select=id,storage_path');
+  const leaked = status === 200 && Array.isArray(body) && body.length > 0;
+  record(
+    'RLS blocks anonymous read of photo_uploads',
+    !leaked,
+    leaked ? `LEAKED ${body.length} rows` : `HTTP ${status}${body?.code ? ` (${body.code})` : ''}`
+  );
+}
+
+// Content is officer-maintained; an anonymous caller must not be able to add events.
+{
+  const res = await fetch(`${url}/rest/v1/events`, {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ slug: 'rls-probe', title: 'RLS Probe', year: 2026 }),
+  });
+  record(
+    'RLS blocks anonymous insert into events',
+    res.status === 401 || res.status === 403 || res.status === 404,
+    `HTTP ${res.status}`
+  );
+}
+
 const failed = results.filter((r) => !r.pass);
 console.log(`\n${results.length - failed.length}/${results.length} checks passed.`);
 process.exitCode = failed.length ? 1 : 0;
