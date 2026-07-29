@@ -128,23 +128,24 @@ grant select, insert, update, delete
   on public.events, public.albums, public.photos to authenticated;
 
 -- ---------------------------------------------------------------------------
--- Photo storage
+-- Content storage
 --
--- Public bucket: these images are already published on the open web, and public URLs
+-- One bucket holds both event images (`events/…`) and album photos (`albums/…`).
+-- Public, because these images are already published on the open web and public URLs
 -- let the static build fetch and optimise them without minting signed URLs at build
 -- time. Uploads remain officer-only.
 -- ---------------------------------------------------------------------------
 
 insert into storage.buckets (id, name, public)
-values ('gallery', 'gallery', true)
+values ('content', 'content', true)
 on conflict (id) do nothing;
 
-drop policy if exists gallery_read on storage.objects;
-create policy gallery_read on storage.objects
-  for select to anon, authenticated using (bucket_id = 'gallery');
+drop policy if exists content_read on storage.objects;
+create policy content_read on storage.objects
+  for select to anon, authenticated using (bucket_id = 'content');
 
-drop policy if exists gallery_write on storage.objects;
-create policy gallery_write on storage.objects
+drop policy if exists content_write on storage.objects;
+create policy content_write on storage.objects
   for all to authenticated
-  using (bucket_id = 'gallery' and public.is_officer())
-  with check (bucket_id = 'gallery' and public.is_officer());
+  using (bucket_id = 'content' and public.is_officer())
+  with check (bucket_id = 'content' and public.is_officer());
