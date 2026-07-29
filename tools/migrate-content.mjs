@@ -8,6 +8,9 @@
  * Writes supabase/seed-content.sql. Nothing is applied automatically — production
  * deploys ignore seed files, so this is pasted into the SQL editor once, deliberately.
  *
+ * Image files are NOT moved anywhere: they stay committed under src/assets, and these
+ * rows just name them. Only metadata lives in the database.
+ *
  * The interesting part is the gallery. Its captions carry three different numbering
  * conventions for "these photos belong together", and the shipped gallery.astro only
  * understood one of them:
@@ -16,7 +19,7 @@
  *     Founders Day 2019_2            10 photos
  *     Food Bank 7                    10 photos
  *
- * Honouring all three collapses 133 photos into 63 albums instead of 79.
+ * Honouring all three collapses 133 photos into 54 albums instead of 79.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -176,13 +179,13 @@ const lines = [
 
 for (const event of events) {
   lines.push(
-    `insert into public.events (slug, title, description, year, month, day, image_path, image_alt) values (`
+    `insert into public.events (slug, title, description, year, month, day, image_file, image_alt) values (`
     + `${q(event.slug)}, ${q(event.title)}, ${q(event.description)}, ${n(event.year)}, `
-    + `${n(event.month)}, ${n(event.day)}, ${q(event.image ? `events/${event.image}` : null)}, `
+    + `${n(event.month)}, ${n(event.day)}, ${q(event.image)}, `
     + `${q(event.imageAlt)})`
     + `\non conflict (slug) do update set title = excluded.title, description = excluded.description,`
     + ` year = excluded.year, month = excluded.month, day = excluded.day,`
-    + ` image_path = excluded.image_path, image_alt = excluded.image_alt;`
+    + ` image_file = excluded.image_file, image_alt = excluded.image_alt;`
   );
 }
 
@@ -203,10 +206,10 @@ lines.push('', '-- Photos ------------------------------------------------------
 for (const album of albums) {
   album.photos.forEach((photo, i) => {
     lines.push(
-      `insert into public.photos (album_id, storage_path, caption, sort_order) values (`
+      `insert into public.photos (album_id, file, caption, sort_order) values (`
       + `(select id from public.albums where slug = ${q(album.slug)}), `
-      + `${q(`albums/${photo.file}`)}, ${q(photo.caption)}, ${i})`
-      + `\non conflict (storage_path) do update set caption = excluded.caption,`
+      + `${q(photo.file)}, ${q(photo.caption)}, ${i})`
+      + `\non conflict (file) do update set caption = excluded.caption,`
       + ` sort_order = excluded.sort_order;`
     );
   });

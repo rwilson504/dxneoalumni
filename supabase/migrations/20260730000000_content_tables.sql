@@ -4,6 +4,13 @@
 -- can maintain it. The public site is still statically built — Astro reads these tables
 -- at build time — so everything here must be readable by `anon`.
 --
+-- Image FILES deliberately stay in git (src/assets/…) rather than moving to Storage.
+-- They total ~210MB, and Astro re-downloads remote images to optimise them, so hosting
+-- them here would spend the whole 5GB/month free egress allowance in about 24 cold
+-- builds while gaining nothing: the files are already committed and already optimised
+-- from local disk. These tables therefore hold metadata and name a file; Storage is
+-- used only as a staging inbox for new uploads (see photo_uploads below).
+--
 -- Dates are stored as year/month/day rather than a single `date` because the salvaged
 -- Wix content is genuinely imprecise: 9 of 45 events know only the year, and 14 know no
 -- day. Flattening those to a real date would invent precision the source never had.
@@ -22,7 +29,7 @@ create table if not exists public.events (
   year integer not null,
   month integer check (month between 1 and 12),
   day integer check (day between 1 and 31),
-  image_path text,
+  image_file text,
   image_alt text,
   sort_date date generated always as (
     make_date(year, coalesce(month, 12), coalesce(day, 28))
@@ -66,6 +73,9 @@ create index if not exists albums_event_id_idx on public.albums (event_id);
 -- ---------------------------------------------------------------------------
 -- Photos
 --
+-- `file` names an image committed under src/assets/gallery. A row only exists once the
+-- file is actually in the repo, so the build can never reference a missing image.
+--
 -- `caption` holds the original Wix caption verbatim, numbering and all
 -- ("Cleveland Whiskey Tour (2)"). The album supplies the display title; the caption is
 -- kept because it is the only description these images have ever had, and it is what
@@ -75,13 +85,33 @@ create index if not exists albums_event_id_idx on public.albums (event_id);
 create table if not exists public.photos (
   id uuid primary key default gen_random_uuid(),
   album_id uuid not null references public.albums (id) on delete cascade,
-  storage_path text not null unique,
+  file text not null unique,
   caption text,
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
 
 create index if not exists photos_album_id_idx on public.photos (album_id, sort_order);
+
+-- ---------------------------------------------------------------------------
+-- Photo uploads (staging inbox)
+--
+-- GitHub Pages is static, so a browser cannot commit to the repo. An officer uploading
+-- a photo parks the file in the `uploads` bucket and records it here. A GitHub Action
+-- then downsizes it, commits it to src/assets/gallery, inserts the real `photos` row,
+-- and clears both this row and the stored object. Anything still sitting here is work
+-- the Action has not picked up yet.
+-- ---------------------------------------------------------------------------
+
+create table if not exists public.photo_uploads (
+  id uuid primary key default gen_random_uuid(),
+  album_id uuid not null references public.albums (id) on delete cascade,
+  storage_path text not null unique,
+  caption text,
+  uploaded_by uuid references public.members (id) on delete set null,
+  error text,
+  created_at timestamptz not null default now()
+);
 
 -- ---------------------------------------------------------------------------
 -- Row Level Security
@@ -93,6 +123,7 @@ create index if not exists photos_album_id_idx on public.photos (album_id, sort_
 alter table public.events enable row level security;
 alter table public.albums enable row level security;
 alter table public.photos enable row level security;
+alter table public.photo_uploads enable row level security;
 
 drop policy if exists events_select on public.events;
 create policy events_select on public.events
@@ -121,31 +152,32 @@ create policy photos_write on public.photos
   for all to authenticated
   using (public.is_officer()) with check (public.is_officer());
 
+-- The inbox is officer-only in both directions; it never appears on the public site.
+drop policy if exists photo_uploads_all on public.photo_uploads;
+create policy photo_uploads_all on public.photo_uploads
+  for all to authenticated
+  using (public.is_officer()) with check (public.is_officer());
+
 -- RLS filters rows; it does not grant access to the table. Without these the API
 -- returns "42501 permission denied" for everyone, signed in or not.
 grant select on public.events, public.albums, public.photos to anon;
 grant select, insert, update, delete
-  on public.events, public.albums, public.photos to authenticated;
+  on public.events, public.albums, public.photos, public.photo_uploads to authenticated;
 
 -- ---------------------------------------------------------------------------
--- Content storage
+-- Upload staging
 --
--- One bucket holds both event images (`events/…`) and album photos (`albums/…`).
--- Public, because these images are already published on the open web and public URLs
--- let the static build fetch and optimise them without minting signed URLs at build
--- time. Uploads remain officer-only.
+-- Private, and deliberately not where images live long-term: the GitHub Action empties
+-- it as it commits each file into the repo. Nothing here is served to visitors, so it
+-- stays far below the free tier's 1GB.
 -- ---------------------------------------------------------------------------
 
 insert into storage.buckets (id, name, public)
-values ('content', 'content', true)
+values ('uploads', 'uploads', false)
 on conflict (id) do nothing;
 
-drop policy if exists content_read on storage.objects;
-create policy content_read on storage.objects
-  for select to anon, authenticated using (bucket_id = 'content');
-
-drop policy if exists content_write on storage.objects;
-create policy content_write on storage.objects
+drop policy if exists uploads_officer_all on storage.objects;
+create policy uploads_officer_all on storage.objects
   for all to authenticated
-  using (bucket_id = 'content' and public.is_officer())
-  with check (bucket_id = 'content' and public.is_officer());
+  using (bucket_id = 'uploads' and public.is_officer())
+  with check (bucket_id = 'uploads' and public.is_officer());
