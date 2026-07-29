@@ -56,6 +56,9 @@ pasted into the dashboard by hand.
 7. In the repo, add the same values under **Settings → Secrets and variables → Actions**:
    - Variable `PUBLIC_SUPABASE_URL`
    - Secret `PUBLIC_SUPABASE_ANON_KEY`
+   - Secret `SUPABASE_SERVICE_ROLE_KEY` — **only here**, never in `.env` or the repo. The
+     photo ingest job needs it to read the private uploads bucket and write rows on an
+     officer's behalf, neither of which the anon key can do.
 
 Until step 7 is done the member area shows a friendly "not switched on yet" message and the
 rest of the site is unaffected.

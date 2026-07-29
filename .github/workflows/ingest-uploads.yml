@@ -1,0 +1,49 @@
+name: Ingest photo uploads
+
+# Officers upload through the member area, which parks files in Supabase Storage
+# because a static site cannot commit to the repository. This picks them up.
+#
+# repository_dispatch lets a Supabase webhook trigger an immediate run; the schedule is
+# the safety net for when that is not wired up or a webhook is missed.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  repository_dispatch:
+    types: [photo-upload]
+  workflow_dispatch:
+
+# Never let two runs ingest the same upload concurrently.
+concurrency:
+  group: ingest-uploads
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - id: ingest
+        run: node tools/ingest-uploads.mjs
+        env:
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+      - name: Commit new photos
+        if: steps.ingest.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/assets/gallery
+          git commit -m "chore: add photos uploaded from the member area"
+          git push
