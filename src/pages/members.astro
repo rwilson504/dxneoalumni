@@ -334,4 +334,38 @@ import MemberPortal from '~/components/auth/MemberPortal';
     margin: 0;
     font-size: 1.05rem;
   }
+
+  .row-actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .field-wide {
+    display: grid;
+    gap: 0.3rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-block: 1rem;
+  }
+
+  .field-wide textarea,
+  .field-wide select,
+  .fields select,
+  .fields input[type='file'] {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font: inherit;
+    font-weight: 400;
+    background: var(--surface);
+  }
+
+  .field-wide textarea {
+    resize: vertical;
+  }
+
+  .fields label .hint {
+    font-weight: 400;
+  }
 </style>

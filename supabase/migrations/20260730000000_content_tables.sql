@@ -97,20 +97,27 @@ create index if not exists photos_album_id_idx on public.photos (album_id, sort_
 -- Photo uploads (staging inbox)
 --
 -- GitHub Pages is static, so a browser cannot commit to the repo. An officer uploading
--- a photo parks the file in the `uploads` bucket and records it here. A GitHub Action
--- then downsizes it, commits it to src/assets/gallery, inserts the real `photos` row,
--- and clears both this row and the stored object. Anything still sitting here is work
--- the Action has not picked up yet.
+-- an image parks the file in the `uploads` bucket and records it here. A GitHub Action
+-- then downsizes it, commits it to src/assets, updates the real row, and clears both
+-- this row and the stored object. Anything still sitting here is work the Action has
+-- not picked up yet; `error` is where it reports a failure back to the officer.
+--
+-- One upload targets either an album or an event, never both and never neither.
 -- ---------------------------------------------------------------------------
 
 create table if not exists public.photo_uploads (
   id uuid primary key default gen_random_uuid(),
-  album_id uuid not null references public.albums (id) on delete cascade,
+  album_id uuid references public.albums (id) on delete cascade,
+  event_id uuid references public.events (id) on delete cascade,
   storage_path text not null unique,
   caption text,
   uploaded_by uuid references public.members (id) on delete set null,
   error text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  constraint photo_uploads_one_target check (
+    (album_id is not null and event_id is null)
+    or (album_id is null and event_id is not null)
+  )
 );
 
 -- ---------------------------------------------------------------------------

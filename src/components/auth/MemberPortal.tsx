@@ -5,8 +5,10 @@ import { useSession } from './useSession';
 import SignInPanel from './SignInPanel';
 import OfficerDues from './OfficerDues';
 import AdminMembers from './AdminMembers';
+import EventsAdmin from './EventsAdmin';
+import PhotosAdmin from './PhotosAdmin';
 
-type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'roster';
+type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'events' | 'photos' | 'roster';
 
 export default function MemberPortal() {
   const { loading, session, member, notOnRoster } = useSession();
@@ -49,7 +51,13 @@ export default function MemberPortal() {
     { id: 'directory', label: 'Directory' },
     { id: 'dues', label: 'My dues' },
     { id: 'account', label: 'My details' },
-    ...(isOfficer ? [{ id: 'officer-dues' as TabId, label: 'Dues admin' }] : []),
+    ...(isOfficer
+      ? [
+          { id: 'officer-dues' as TabId, label: 'Dues admin' },
+          { id: 'events' as TabId, label: 'Events' },
+          { id: 'photos' as TabId, label: 'Photos' },
+        ]
+      : []),
     ...(isAdmin ? [{ id: 'roster' as TabId, label: 'Roster' }] : []),
   ];
 
@@ -70,6 +78,8 @@ export default function MemberPortal() {
         {active === 'dues' && <Dues member={member!} />}
         {active === 'account' && <Account member={member!} />}
         {active === 'officer-dues' && roster && <OfficerDues roster={roster} />}
+        {active === 'events' && <EventsAdmin />}
+        {active === 'photos' && <PhotosAdmin member={member!} />}
         {active === 'roster' && roster && (
           <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
         )}
