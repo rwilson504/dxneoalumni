@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react';
-import { getSupabase, type DuesPayment, type Member } from '~/lib/supabase';
+import { useCallback, useEffect, useState } from 'react';
+import { duesColumns, getSupabase, type DuesPayment, type Member } from '~/lib/supabase';
+import { officerRoles } from '~/data/site';
 import { useSession } from './useSession';
 import SignInPanel from './SignInPanel';
-
-const officerRoles: Record<string, string> = {
-  A: 'President',
-  B: 'Director of Programming',
-  C: 'Secretary',
-  D: 'Treasurer',
-  E: 'Director of Membership',
-};
+import OfficerDues from './OfficerDues';
+import AdminMembers from './AdminMembers';
 
 export default function MemberPortal() {
   const { loading, session, member, notOnRoster } = useSession();
+  const [roster, setRoster] = useState<Member[] | null>(null);
+
+  const loadRoster = useCallback(async () => {
+    const { data } = await getSupabase().from('members').select('*').order('full_name');
+    setRoster((data as Member[]) ?? []);
+  }, []);
+
+  useEffect(() => {
+    if (member) loadRoster();
+  }, [member, loadRoster]);
 
   if (loading) return <p className="muted">Checking your sign-in…</p>;
   if (!session) return <SignInPanel />;
@@ -34,6 +39,9 @@ export default function MemberPortal() {
     );
   }
 
+  const isOfficer = member!.role === 'officer' || member!.role === 'admin';
+  const isAdmin = member!.role === 'admin';
+
   return (
     <div className="portal">
       <header className="portal__head">
@@ -44,9 +52,14 @@ export default function MemberPortal() {
         <SignOutButton />
       </header>
 
-      <Directory currentMember={member!} />
+      <Directory roster={roster} currentMember={member!} />
       <Dues member={member!} />
       <Account member={member!} />
+
+      {isOfficer && roster && <OfficerDues roster={roster} />}
+      {isAdmin && roster && (
+        <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
+      )}
     </div>
   );
 }
@@ -66,28 +79,22 @@ function SignOutButton() {
   );
 }
 
-function Directory({ currentMember }: { currentMember: Member }) {
-  const [members, setMembers] = useState<Member[] | null>(null);
+function Directory({ roster, currentMember }: { roster: Member[] | null; currentMember: Member }) {
+  if (!roster) return <section className="panel"><p className="muted">Loading directory…</p></section>;
 
-  useEffect(() => {
-    getSupabase()
-      .from('members')
-      .select('*')
-      .order('full_name')
-      .then(({ data }) => setMembers(data ?? []));
-  }, []);
-
-  if (!members) return <section className="panel"><p className="muted">Loading directory…</p></section>;
+  // Officers can read every row, so the opt-out has to be honoured here rather than
+  // relying on the query to return only listed members.
+  const listed = roster.filter((m) => m.directory_opt_in || m.id === currentMember.id);
 
   return (
     <section className="panel">
       <h2>Member directory</h2>
       <p className="muted">
-        Contact details for {members.length} brothers. Members who opted out of the directory are
+        Contact details for {listed.length} brothers. Members who opted out of the directory are
         not listed.
       </p>
       <ul className="directory">
-        {members.map((m) => (
+        {listed.map((m) => (
           <li key={m.id}>
             <div>
               <p className="directory__name">
@@ -119,10 +126,10 @@ function Dues({ member }: { member: Member }) {
   useEffect(() => {
     getSupabase()
       .from('dues_payments')
-      .select('id, year, amount, method, paid_on')
+      .select(duesColumns)
       .eq('member_id', member.id)
       .order('year', { ascending: false })
-      .then(({ data }) => setPayments(data ?? []));
+      .then(({ data }) => setPayments((data as DuesPayment[]) ?? []));
   }, [member.id]);
 
   const currentYear = new Date().getFullYear();

@@ -231,4 +231,75 @@ import MemberPortal from '~/components/auth/MemberPortal';
     background: transparent;
     cursor: pointer;
   }
+
+  /* Officer and admin panels ------------------------------------------------ */
+
+  .panel__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .panel__head h2 {
+    margin-bottom: 0;
+  }
+
+  .inline-field {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
+  /* Wide officer tables scroll rather than squeezing their inputs. */
+  .panel {
+    overflow-x: auto;
+  }
+
+  .fields select,
+  .inline-field select,
+  .cell-input {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 0.88rem;
+    background: var(--surface);
+  }
+
+  .cell-input--amount {
+    width: 6.5rem;
+  }
+
+  .btn--small {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .table .badge {
+    margin-left: 0.4rem;
+  }
+
+  .table .paid {
+    color: #14532d;
+    font-weight: 600;
+  }
+
+  .table .unpaid {
+    color: var(--ink-faint);
+  }
+
+  .subpanel {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .subpanel h3 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
 </style>

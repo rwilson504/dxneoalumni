@@ -40,11 +40,14 @@ export type Member = {
 
 export type DuesPayment = {
   id: string;
+  member_id: string;
   year: number;
   amount: number;
   method: string | null;
   paid_on: string;
 };
+
+export const duesColumns = 'id, member_id, year, amount, method, paid_on';
 
 /** Absolute URL for magic-link redirects, honouring the GitHub Pages base path. */
 export function siteUrl(path: string): string {
