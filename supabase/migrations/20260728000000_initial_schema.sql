@@ -1,10 +1,11 @@
--- Northeast Ohio Alumni Chapter — database schema
+-- Northeast Ohio Alumni Chapter — initial schema
 --
 -- The site is fully static (GitHub Pages), so there is no server to enforce
 -- authorization. Every rule below is enforced by Postgres Row Level Security and
 -- applies no matter what the browser sends. Hiding UI is presentation only.
 --
--- Run this in the Supabase SQL editor on a new project.
+-- Applied automatically by the Supabase GitHub integration when pushed to main.
+-- Never edit this file after it has been applied — add a new migration instead.
 
 create extension if not exists citext;
 

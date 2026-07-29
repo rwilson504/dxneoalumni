@@ -29,23 +29,45 @@ Chosen to run entirely on free tiers at ~50 members.
 
 The site is fully static, so there is no server to check permissions. **All
 authorization is enforced by Postgres Row Level Security** — see
-[supabase/schema.sql](supabase/schema.sql). Hiding UI is presentation only.
+[supabase/migrations](supabase/migrations). Hiding UI is presentation only.
+
+Database changes are managed as migrations and applied by the **Supabase GitHub
+integration**: push to `main` and pending migrations run automatically. Nothing is
+pasted into the dashboard by hand.
 
 1. Create a free project at [supabase.com](https://supabase.com).
-2. Run [supabase/schema.sql](supabase/schema.sql) in the SQL editor, then
-   [supabase/seed.sql](supabase/seed.sql).
-3. **Replace the placeholder emails in the seed** with real addresses, and promote one
-   person to `admin`. Sign-in matches on email; nobody can get in until theirs is correct.
-4. Under **Authentication → URL Configuration**, add these redirect URLs:
+2. In the Supabase dashboard, go to **Project Settings → Integrations → GitHub**,
+   authorize GitHub, pick this repository, set **Working directory** to `.`, and enable
+   **Deploy to production**.
+3. Push to `main`. The migration in [supabase/migrations](supabase/migrations) is applied
+   automatically.
+4. Seed the roster **once**, by hand — production deploys deliberately ignore seed files:
+   run [supabase/seed.sql](supabase/seed.sql) in the SQL editor, **replacing the
+   placeholder emails with real addresses** and promoting one person to `admin`.
+   Sign-in matches on email, so nobody can get in until theirs is correct.
+5. Under **Authentication → URL Configuration**, add these redirect URLs:
    - `https://rwilson504.github.io/dxneoalumni/members`
    - `http://localhost:4321/dxneoalumni/members`
-5. Copy `.env.example` to `.env` and fill in the project URL and anon key.
-6. In the repo, add the same values under **Settings → Secrets and variables → Actions**:
+6. Copy `.env.example` to `.env` and fill in the project URL and anon key.
+7. In the repo, add the same values under **Settings → Secrets and variables → Actions**:
    - Variable `PUBLIC_SUPABASE_URL`
    - Secret `PUBLIC_SUPABASE_ANON_KEY`
 
-Until step 6 is done the member area shows a friendly "not switched on yet" message and the
+Until step 7 is done the member area shows a friendly "not switched on yet" message and the
 rest of the site is unaffected.
+
+### Changing the database
+
+Never edit an applied migration. Create a new one and push:
+
+```sh
+npx supabase migration new add_something
+# edit the generated file in supabase/migrations/
+git commit -am "db: add something" && git push
+```
+
+Per-PR preview databases (Supabase Branching) are a paid feature — $0.01344 per branch per
+hour on Pro. Deploy-from-GitHub, used here, is included on the free plan.
 
 ### How access works
 
