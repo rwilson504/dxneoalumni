@@ -54,11 +54,14 @@ pasted into the dashboard by hand.
    sufficient on its own.
 6. Copy `.env.example` to `.env` and fill in the project URL and anon key.
 7. In the repo, add the same values under **Settings → Secrets and variables → Actions**:
-   - Variable `PUBLIC_SUPABASE_URL`
+   - `PUBLIC_SUPABASE_URL` — variable or secret, the workflows accept either
    - Secret `PUBLIC_SUPABASE_ANON_KEY`
    - Secret `SUPABASE_SERVICE_ROLE_KEY` — **only here**, never in `.env` or the repo. The
      photo ingest job needs it to read the private uploads bucket and write rows on an
      officer's behalf, neither of which the anon key can do.
+
+   The build **fails** without the first two: the public pages are generated from the
+   database, and publishing an empty site would be worse than not publishing.
 
 Until step 7 is done the member area shows a friendly "not switched on yet" message and the
 rest of the site is unaffected.
