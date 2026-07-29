@@ -1,0 +1,131 @@
+---
+import { nav, resources, site, social } from '~/data/site';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <p class="footer__title">{site.name}</p>
+      <p class="footer__text">
+        Alumni from every Delta Chi chapter living in Northeast Ohio, gathering to celebrate
+        brotherhood and give back through philanthropy.
+      </p>
+      <p class="footer__text">Chartered {site.charteredOn}.</p>
+    </div>
+
+    <div>
+      <h2 class="footer__heading">Explore</h2>
+      <ul>
+        {nav.map((item) => <li><a href={`${base}${item.href}`}>{item.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__heading">Delta Chi</h2>
+      <ul>
+        {
+          resources.map((item) => (
+            <li>
+              <a href={item.href} rel="noopener noreferrer" target="_blank">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__heading">Connect</h2>
+      <ul>
+        {
+          social.map((item) => (
+            <li>
+              <a href={item.href} rel="noopener noreferrer" target="_blank">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer__legal">
+    <p>&copy; {year} Northeast Ohio Alumni Chapter of The Delta Chi Fraternity.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: rgb(255 255 255 / 0.72);
+    padding-top: 3rem;
+    margin-top: 4rem;
+    font-size: 0.92rem;
+  }
+
+  .footer__grid {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  @media (min-width: 720px) {
+    .footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    }
+  }
+
+  .footer__title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: #fff;
+    margin-bottom: 0.6rem;
+  }
+
+  .footer__text {
+    max-width: 42ch;
+    margin-bottom: 0.6rem;
+  }
+
+  .footer__heading {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--dx-gold);
+    margin-bottom: 0.75rem;
+  }
+
+  .footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .footer a {
+    color: rgb(255 255 255 / 0.78);
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .footer__legal {
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+    padding-block: 1.25rem;
+    font-size: 0.83rem;
+  }
+
+  .footer__legal p {
+    margin: 0;
+  }
+</style>

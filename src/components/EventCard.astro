@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate, displayTitle, eventImage, type ChapterEvent } from '~/lib/events';
+
+interface Props {
+  event: ChapterEvent;
+  loading?: 'eager' | 'lazy';
+}
+
+const { event, loading = 'lazy' } = Astro.props;
+const image = eventImage(event);
+---
+
+<article class="card">
+  {
+    image && (
+      <div class="card__media">
+        <Image src={image} alt={displayTitle(event)} width={520} height={390} loading={loading} />
+      </div>
+    )
+  }
+  <div class="card__body">
+    <p class="card__date">{formatDate(event)}</p>
+    <h3 class="card__title">{displayTitle(event)}</h3>
+    <p class="card__text">{event.description}</p>
+  </div>
+</article>

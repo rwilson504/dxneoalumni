@@ -1,0 +1,160 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { site } from '~/data/site';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="About Us"
+  description="The history, structure, and benefits of the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">About us</p>
+      <h1>Brotherhood that outlasts the chapter house</h1>
+      <p class="lede">
+        The Northeast Ohio Alumni Chapter of The Delta Chi Fraternity was formed for alumni from all
+        Delta Chi chapters living in the Northeast Ohio area, to gather at events to celebrate
+        brotherhood and social justice through philanthropic events.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose narrow">
+      <h2>The history</h2>
+      <p>
+        The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
+        closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
+        On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
+        Independence, Ohio &mdash; the same location the original chapter formed &mdash; and
+        committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
+        Chi Board of Regents approved the chartering of the current Alumni Chapter.
+      </p>
+
+      <h2>Structure</h2>
+      <p>
+        The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
+        International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
+        responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
+        way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>What are the benefits of joining?</h2>
+      <div class="grid grid--2 benefit-grid">
+        <div class="benefit">
+          <h3>Promote friendship</h3>
+          <ul>
+            <li>Reconnect with brothers you went to school with</li>
+            <li>Provide a welcoming environment for brothers new to Northeast Ohio</li>
+            <li>Meet brothers from other undergraduate chapters who live in the area</li>
+          </ul>
+        </div>
+        <div class="benefit">
+          <h3>Develop character</h3>
+          <ul>
+            <li>Give back to others by participating in philanthropic events</li>
+            <li>Provide leadership for undergraduate chapters</li>
+          </ul>
+        </div>
+        <div class="benefit">
+          <h3>Networking opportunities</h3>
+          <ul>
+            <li>Assist other Delta Chi alumni with potential job opportunities</li>
+            <li>Join a network of professionals that can help you find a new role</li>
+          </ul>
+        </div>
+        <div class="benefit">
+          <h3>Mentorship</h3>
+          <ul>
+            <li>Give back by providing support to undergraduate chapters</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose narrow">
+      <h2>What does my ${site.chapterDues} membership get me?</h2>
+      <p>
+        Virtual membership is ${site.virtualDues}. We invest most of our dues directly back into our
+        membership:
+      </p>
+      <ul>
+        <li>
+          <strong>Discounted tickets to events.</strong> On top of the group rates we negotiate, we
+          use dues to further reduce what members pay to attend.
+        </li>
+        <li><strong>Food at events.</strong> Appetizers are always on us.</li>
+        <li>
+          <strong>Speaker costs.</strong> Dues may cover expenses for speakers on professional and
+          personal growth &mdash; financial consultants, career counseling, and more.
+        </li>
+        <li>
+          <strong>Founder&rsquo;s Day.</strong> Each year the chapter coordinates a Founder&rsquo;s
+          Day event to bring brothers together on our &ldquo;birthday.&rdquo;
+        </li>
+        <li>
+          <strong>Alumni Rededication Ceremonies.</strong> We work with undergraduate chapters to
+          facilitate rededications for graduating seniors and alumni who haven&rsquo;t yet taken
+          part.
+        </li>
+        <li>
+          <strong>The convention bus tour.</strong> A &ldquo;must do&rdquo; when attending a Delta
+          Chi convention.
+        </li>
+        <li>
+          <strong>IHQ dues.</strong> Like undergraduate chapters, alumni chapters pay International
+          Headquarters dues. In return, IHQ provides alumni contact data, money management software,
+          and other resources.
+        </li>
+        <li>
+          <strong>Operating expenses.</strong> Postage, website, outreach, and communications.
+        </li>
+      </ul>
+
+      <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+        Join for ${site.chapterDues}/year
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .narrow {
+    max-width: 68ch;
+  }
+
+  .benefit-grid {
+    margin-top: 1.75rem;
+  }
+
+  .benefit {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-top: 4px solid var(--dx-red);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem 1rem;
+  }
+
+  .benefit h3 {
+    margin-top: 0;
+  }
+
+  .benefit ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .benefit li {
+    margin-bottom: 0.35rem;
+  }
+</style>

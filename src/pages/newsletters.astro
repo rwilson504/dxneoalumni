@@ -1,0 +1,117 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import newsletters from '~/data/newsletters.json';
+
+type Newsletter = {
+  label: string;
+  year: number | null;
+  month: number | null;
+  href: string;
+  external: boolean;
+};
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const all = newsletters as Newsletter[];
+
+const byYear = new Map<number, Newsletter[]>();
+for (const item of all) {
+  const year = item.year ?? 0;
+  byYear.set(year, [...(byYear.get(year) ?? []), item]);
+}
+const years = [...byYear.entries()].sort(([a], [b]) => b - a);
+---
+
+<BaseLayout
+  title="Newsletters"
+  description="Archive of newsletters from the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Archive</p>
+      <h1>Newsletters</h1>
+      <p class="lede">
+        {all.length} issues going back to 2018. Older issues are PDFs hosted here; newer issues open
+        in our mailing list archive.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      {
+        years.map(([year, items]) => (
+          <section class="year">
+            <h2>{year || 'Undated'}</h2>
+            <ul class="issues">
+              {items.map((item) => (
+                <li>
+                  <a
+                    href={item.external ? item.href : `${base}/${item.href}`}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    target={item.external ? '_blank' : undefined}
+                  >
+                    <span>{item.label}</span>
+                    <span class="kind">{item.external ? 'Web' : 'PDF'}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .year {
+    margin-bottom: 2.5rem;
+  }
+
+  .year h2 {
+    font-size: 1.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--dx-gold);
+    margin-bottom: 1rem;
+  }
+
+  .issues {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  }
+
+  .issues a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .issues a:hover {
+    border-color: var(--dx-red);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .kind {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+  }
+</style>

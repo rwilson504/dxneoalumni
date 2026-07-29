@@ -1,0 +1,113 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import EventCard from '~/components/EventCard.astro';
+import { upcomingEvents, pastEvents, groupByYear } from '~/lib/events';
+
+const pastByYear = groupByYear(pastEvents);
+---
+
+<BaseLayout
+  title="Events"
+  description="Upcoming and past events hosted by the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Events</p>
+      <h1>Where the brothers gather</h1>
+      <p class="lede">
+        Ballgames, breweries, happy hours, service projects, and Founder&rsquo;s Day. Ten years of
+        events &mdash; {pastEvents.length} of them and counting.
+      </p>
+    </div>
+  </section>
+
+  {
+    upcomingEvents.length > 0 && (
+      <section class="section section--alt" id="upcoming">
+        <div class="wrap">
+          <h2>Upcoming</h2>
+          <div class="grid grid--3">
+            {upcomingEvents.map((event) => (
+              <EventCard event={event} loading="eager" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" id="past">
+    <div class="wrap">
+      <h2>Past events</h2>
+      <nav class="years" aria-label="Jump to year">
+        {pastByYear.map(({ year }) => <a href={`#year-${year}`}>{year}</a>)}
+      </nav>
+
+      {
+        pastByYear.map(({ year, events }) => (
+          <section class="year" id={`year-${year}`}>
+            <h3 class="year__heading">
+              {year}
+              <span>{events.length} {events.length === 1 ? 'event' : 'events'}</span>
+            </h3>
+            <div class="grid grid--3">
+              {events.map((event) => (
+                <EventCard event={event} />
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .years {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .years a {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink-soft);
+    background: var(--surface-alt);
+  }
+
+  .years a:hover {
+    background: var(--dx-red);
+    border-color: var(--dx-red);
+    color: #fff;
+  }
+
+  .year {
+    margin-bottom: 3rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .year__heading {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--dx-gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .year__heading span {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+</style>

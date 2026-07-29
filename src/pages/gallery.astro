@@ -1,0 +1,79 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+const gallery = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/gallery/*.{jpg,jpeg,png,gif}',
+  { eager: true }
+);
+const photos = Object.values(gallery).map((module) => module.default);
+---
+
+<BaseLayout
+  title="Photo Gallery"
+  description="Photos from events hosted by the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Gallery</p>
+      <h1>Photos</h1>
+      <p class="lede">
+        Moments from ballgames, breweries, service projects, and Founder&rsquo;s Day dinners across
+        Northeast Ohio.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="masonry">
+        {
+          photos.map((photo, index) => (
+            <figure>
+              <Image
+                src={photo}
+                alt=""
+                width={640}
+                loading={index < 4 ? 'eager' : 'lazy'}
+              />
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .masonry {
+    columns: 1;
+    column-gap: 1rem;
+  }
+
+  @media (min-width: 620px) {
+    .masonry {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .masonry {
+      columns: 3;
+    }
+  }
+
+  figure {
+    margin: 0 0 1rem;
+    break-inside: avoid;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    background: var(--surface);
+  }
+
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

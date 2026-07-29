@@ -1,0 +1,220 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import EventCard from '~/components/EventCard.astro';
+import { site } from '~/data/site';
+import { upcomingEvents, pastEvents } from '~/lib/events';
+import hero from '~/assets/hero-group.jpg';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const featured = (upcomingEvents.length ? upcomingEvents : pastEvents).slice(0, 3);
+const hasUpcoming = upcomingEvents.length > 0;
+---
+
+<BaseLayout>
+  <section class="hero">
+    <Image class="hero__bg" src={hero} alt="" width={1600} height={784} loading="eager" />
+    <div class="hero__scrim"></div>
+    <div class="wrap hero__content">
+      <p class="hero__eyebrow">Chartered 2016 &middot; Northeast Ohio</p>
+      <h1>The bond doesn't end at graduation.</h1>
+      <p class="hero__lede">
+        The Northeast Ohio Alumni Chapter brings together Delta Chi alumni from every undergraduate
+        chapter living in the area &mdash; for brotherhood, philanthropy, and the friendships that
+        made it all worth it.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+          Join for ${site.chapterDues}/year
+        </a>
+        <a class="btn btn--on-dark" href={`${base}/about`}>Learn about the chapter</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">{hasUpcoming ? 'Upcoming events' : 'Most recent events'}</p>
+      <div class="head">
+        <h2>{hasUpcoming ? 'What’s next' : 'What we’ve been up to'}</h2>
+        <a href={`${base}/events`}>All events &rarr;</a>
+      </div>
+      <div class="grid grid--3">
+        {featured.map((event) => <EventCard event={event} loading="eager" />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap two-col">
+      <div>
+        <p class="eyebrow">About us</p>
+        <h2>Ten years of brotherhood, beyond the undergraduate experience</h2>
+        <p class="lede">
+          Formed for alumni from all Delta Chi chapters living in Northeast Ohio, we gather to
+          celebrate brotherhood and social justice through philanthropic events. The chapter was
+          re-chartered on {site.charteredOn} at the same steakhouse where the original chapter
+          began.
+        </p>
+        <a class="btn btn--ghost" href={`${base}/about`}>Our story</a>
+      </div>
+      <ul class="benefits">
+        <li><strong>Promote friendship</strong> Reconnect with brothers you went to school with, and meet those you didn&rsquo;t.</li>
+        <li><strong>Develop character</strong> Give back through philanthropy and support our undergraduate chapters.</li>
+        <li><strong>Build your network</strong> Join a network of professionals across every industry.</li>
+        <li><strong>Mentor the next generation</strong> Show undergraduates what comes after graduation.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap join">
+      <div>
+        <p class="eyebrow">How to join</p>
+        <h2>Become an active member</h2>
+        <p class="lede">
+          Membership is ${site.chapterDues} a year, or ${site.virtualDues} for virtual members who
+          live outside the area. Dues go straight back into the membership &mdash; discounted event
+          tickets, food at events, Founder&rsquo;s Day, and alumni rededication ceremonies.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+            Join today
+          </a>
+          <a class="btn btn--ghost" href={`${base}/membership`}>See the roster</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    color: #fff;
+    display: grid;
+    align-items: center;
+    min-height: clamp(420px, 62vh, 620px);
+  }
+
+  .hero__bg,
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero__bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__scrim {
+    background: linear-gradient(100deg, rgb(22 22 26 / 0.92) 0%, rgb(22 22 26 / 0.74) 45%, rgb(22 22 26 / 0.35) 100%);
+  }
+
+  .hero__content {
+    padding-block: 3.5rem;
+  }
+
+  .hero__eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dx-gold);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h1 {
+    max-width: 16ch;
+    margin-bottom: 1rem;
+  }
+
+  .hero__lede {
+    max-width: 56ch;
+    font-size: 1.08rem;
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+
+  .head h2 {
+    margin: 0;
+  }
+
+  .head a {
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .two-col {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 860px) {
+    .two-col {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .benefits {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .benefits li {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--dx-gold);
+    border-radius: var(--radius);
+    padding: 0.95rem 1.15rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .benefits strong {
+    display: block;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .join {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+
+  .join .lede {
+    margin-inline: auto;
+  }
+
+  .join .hero__actions {
+    justify-content: center;
+  }
+</style>

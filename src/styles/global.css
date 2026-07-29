@@ -1,0 +1,267 @@
+:root {
+  /* Sampled from the Delta Chi coat of arms */
+  --dx-red: #c4303c;
+  --dx-red-dark: #8f1f28;
+  --dx-gold: #e8b01f;
+  --dx-gold-soft: #f6dc9a;
+  --dx-buff: #f5ecd9;
+
+  --ink: #16161a;
+  --ink-soft: #4a4a55;
+  --ink-faint: #767683;
+  --rule: #e2ddd3;
+  --surface: #ffffff;
+  --surface-alt: #faf7f1;
+
+  --shadow-sm: 0 1px 2px rgb(22 22 26 / 0.06), 0 1px 3px rgb(22 22 26 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(22 22 26 / 0.08), 0 2px 4px -2px rgb(22 22 26 / 0.06);
+  --shadow-lg: 0 12px 20px -6px rgb(22 22 26 / 0.14);
+
+  --radius: 10px;
+  --radius-lg: 16px;
+  --page: 1140px;
+
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--surface);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: clamp(2.1rem, 5vw, 3.2rem);
+}
+h2 {
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+}
+h3 {
+  font-size: 1.2rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--dx-red-dark);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--dx-red);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+:focus-visible {
+  outline: 3px solid var(--dx-gold);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Layout ------------------------------------------------------------------ */
+
+.wrap {
+  width: min(100% - 2.5rem, var(--page));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.section--alt {
+  background: var(--surface-alt);
+  border-block: 1px solid var(--rule);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dx-red);
+  margin: 0 0 0.5rem;
+}
+
+.lede {
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Buttons ----------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn--primary {
+  background: var(--dx-red);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--dx-red-dark);
+  color: #fff;
+}
+
+.btn--ghost {
+  border-color: currentColor;
+  color: var(--ink);
+}
+
+.btn--ghost:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn--on-dark {
+  border-color: rgb(255 255 255 / 0.5);
+  color: #fff;
+}
+
+.btn--on-dark:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+/* Cards ------------------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.card__media {
+  aspect-ratio: 4 / 3;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card__body {
+  padding: 1.15rem 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.card__date {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dx-red);
+}
+
+.card__title {
+  font-size: 1.08rem;
+  margin: 0;
+}
+
+.card__text {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+}
+
+/* Utility ----------------------------------------------------------------- */
+
+.prose h3 {
+  margin-top: 2rem;
+}
+
+.prose ul {
+  padding-left: 1.2rem;
+}
+
+.prose li {
+  margin-bottom: 0.35rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

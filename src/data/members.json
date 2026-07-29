@@ -1,0 +1,21 @@
+[
+  { "name": "Brian Cain", "officer": "A", "chapter": "Kent State", "classYear": "'01", "virtual": false },
+  { "name": "Dan Russell", "officer": "B", "chapter": "Kent State", "classYear": "'03", "virtual": false },
+  { "name": "Kenny Strait", "officer": "C", "chapter": "Kent State", "classYear": "'24", "virtual": true },
+  { "name": "Justin (J.D.) Donnelly", "officer": "D", "chapter": "Kent State", "classYear": "'02", "virtual": false },
+  { "name": "Geoff Westerfield", "officer": "E", "chapter": "Kent State / Ohio State", "classYear": "'01", "virtual": false },
+  { "name": "Chris Adams", "officer": null, "chapter": "Kent State", "classYear": "'00", "virtual": false },
+  { "name": "Chuck Bonacci", "officer": null, "chapter": "Kent State", "classYear": "'96", "virtual": false },
+  { "name": "Steve Bossart", "officer": null, "chapter": "Kent State", "classYear": "'90", "virtual": false },
+  { "name": "C.J. Costas", "officer": null, "chapter": "Iowa", "classYear": "'05", "virtual": true },
+  { "name": "Christofer Gutekunst", "officer": null, "chapter": "Kent State", "classYear": "'05", "virtual": true },
+  { "name": "Michael Hilgert", "officer": null, "chapter": "Kent State", "classYear": "'95", "virtual": false },
+  { "name": "Nick Hohenberger", "officer": null, "chapter": "Kent State", "classYear": "'00", "virtual": false },
+  { "name": "Benjamin Klein", "officer": null, "chapter": "Kent State", "classYear": null, "virtual": false },
+  { "name": "Michael Lippy", "officer": null, "chapter": "Kent State", "classYear": "'04", "virtual": false },
+  { "name": "Keith Marunski", "officer": null, "chapter": "Kent State", "classYear": "'03", "virtual": false },
+  { "name": "Mickey Nemergut", "officer": null, "chapter": "Kent State", "classYear": "'06", "virtual": false },
+  { "name": "Pat Rabideau", "officer": null, "chapter": "Kent State", "classYear": "'01", "virtual": false },
+  { "name": "Jae Snow", "officer": null, "chapter": "Kennesaw State", "classYear": "'14", "virtual": false },
+  { "name": "Rick Wilson", "officer": null, "chapter": "Kent State", "classYear": "'04", "virtual": false }
+]

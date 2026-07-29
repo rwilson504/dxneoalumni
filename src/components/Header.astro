@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import { nav, site } from '~/data/site';
+import logo from '~/assets/logo-shield.png';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
+const isActive = (href: string) => current === href || (href !== '/' && current.startsWith(href));
+---
+
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="brand" href={`${base}/`}>
+      <Image src={logo} alt="" width={38} height={42} loading="eager" />
+      <span class="brand__text">
+        <strong>Delta Chi</strong>
+        <span>Northeast Ohio Alumni Chapter</span>
+      </span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="visually-hidden" />
+    <label for="nav-toggle" class="nav-toggle" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="nav" aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={`${base}${item.href}`} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--primary nav__cta" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+        Join
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .masthead {
+    background: var(--ink);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 3px solid var(--dx-red);
+  }
+
+  .masthead__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .brand__text strong {
+    font-family: var(--font-display);
+    font-size: 1.18rem;
+    letter-spacing: 0.01em;
+  }
+
+  .brand__text span {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--dx-gold);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 1.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+
+  .nav a {
+    color: rgb(255 255 255 / 0.85);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding-block: 0.25rem;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav a:hover {
+    color: #fff;
+  }
+
+  .nav a[aria-current='page'] {
+    color: #fff;
+    border-bottom-color: var(--dx-gold);
+  }
+
+  .nav__cta {
+    padding: 0.45rem 1.1rem;
+    font-size: 0.88rem;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  @media (max-width: 940px) {
+    .nav-toggle {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .nav {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding-bottom: 0.9rem;
+    }
+
+    .nav ul {
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    #nav-toggle:checked ~ .nav {
+      display: flex;
+    }
+  }
+</style>

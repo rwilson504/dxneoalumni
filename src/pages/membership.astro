@@ -1,0 +1,196 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { site, officerRoles } from '~/data/site';
+import members from '~/data/members.json';
+
+type Member = {
+  name: string;
+  officer: string | null;
+  chapter: string;
+  classYear: string | null;
+  virtual: boolean;
+};
+
+const roster = members as Member[];
+const officers = roster.filter((m) => m.officer);
+const brothers = roster.filter((m) => !m.officer);
+const year = new Date().getFullYear();
+---
+
+<BaseLayout
+  title="Membership"
+  description="Officers and members of the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity, and how to join."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Membership</p>
+      <h1>{year} Alumni Chapter members</h1>
+      <p class="lede">
+        Becoming a member is about more than staying connected &mdash; it&rsquo;s about reigniting
+        the bond of brotherhood that first brought us together, and building relationships with
+        brothers from chapters all over the country.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <h2>Chapter officers</h2>
+      <div class="grid grid--3">
+        {
+          officers.map((member) => (
+            <div class="officer">
+              <span class="officer__letter" aria-hidden="true">
+                {member.officer}
+              </span>
+              <div>
+                <p class="officer__name">{member.name}</p>
+                <p class="officer__role">{officerRoles[member.officer!]}</p>
+                <p class="officer__meta">
+                  {member.chapter} {member.classYear}
+                  {member.virtual && <span class="tag">Virtual</span>}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Members</h2>
+      <ul class="roster">
+        {
+          brothers.map((member) => (
+            <li>
+              <span class="roster__name">{member.name}</span>
+              <span class="roster__meta">
+                {member.chapter}
+                {member.classYear ? ` ${member.classYear}` : ''}
+                {member.virtual && <span class="tag">Virtual</span>}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap prose narrow">
+      <h2>Join the chapter</h2>
+      <p>
+        Your ${site.chapterDues} annual membership (or ${site.virtualDues} for virtual members)
+        helps strengthen local programming, enhance chapter collaboration, and create welcoming,
+        high-quality experiences for brothers at every stage of life. Most importantly, it keeps our
+        shared legacy strong.
+      </p>
+      <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+        Sign up through PayPal
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .officer {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+  }
+
+  .officer__letter {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--dx-red);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .officer p {
+    margin: 0;
+  }
+
+  .officer__name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+  }
+
+  .officer__role {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--dx-red-dark);
+  }
+
+  .officer__meta {
+    font-size: 0.86rem;
+    color: var(--ink-faint);
+  }
+
+  .roster {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .roster li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.8rem 1.15rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .roster li:last-child {
+    border-bottom: none;
+  }
+
+  .roster li:nth-child(odd) {
+    background: var(--surface-alt);
+  }
+
+  .roster__name {
+    font-weight: 600;
+  }
+
+  .roster__meta {
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+  }
+
+  .tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background: var(--dx-gold-soft);
+    color: #6b4c00;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .narrow {
+    max-width: 66ch;
+  }
+</style>

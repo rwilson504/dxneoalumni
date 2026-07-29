@@ -1,0 +1,97 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import awards from '~/data/awards.json';
+
+type AwardYear = { period: string; awards: string[] };
+const timeline = awards as AwardYear[];
+const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
+---
+
+<BaseLayout
+  title="Awards"
+  description="Awards earned by the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity, including the Chicago Cup."
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Recognition</p>
+      <h1>Chapter awards</h1>
+      <p class="lede">
+        {total} awards from The Delta Chi Fraternity since the chapter was re-chartered &mdash;
+        including three Chicago Cups, the highest honor an alumni chapter can earn.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <ol class="timeline">
+        {
+          timeline.map((entry) => (
+            <li>
+              <h2>{entry.period}</h2>
+              <ul>
+                {entry.awards.map((award) => (
+                  <li class={award.startsWith('Chicago Cup') ? 'is-cup' : ''}>{award}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 1.5rem;
+    border-left: 3px solid var(--rule);
+    display: grid;
+    gap: 2rem;
+  }
+
+  .timeline > li {
+    position: relative;
+  }
+
+  .timeline > li::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.5rem - 9px);
+    top: 0.55rem;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--dx-red);
+    border: 3px solid var(--surface-alt);
+  }
+
+  .timeline h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .timeline ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .timeline ul li {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.55rem 0.95rem;
+    font-size: 0.95rem;
+  }
+
+  .timeline ul li.is-cup {
+    border-color: var(--dx-gold);
+    background: var(--dx-gold-soft);
+    font-weight: 600;
+  }
+</style>
