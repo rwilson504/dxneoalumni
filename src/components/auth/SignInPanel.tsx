@@ -5,8 +5,9 @@ type Status = { kind: 'idle' | 'sending' | 'sent' | 'error'; message?: string };
 
 function explain(error: AuthError): string {
   switch (error.code) {
+    // The quota is project-wide, not per address, so don't imply this address was just used.
     case 'over_email_send_rate_limit':
-      return 'A link was just sent to that address. Give it a minute before asking for another.';
+      return 'Too many sign-in emails have gone out recently. Please wait a few minutes and try again.';
     case 'validation_failed':
       return 'That doesn’t look like a valid email address.';
     default:
