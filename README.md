@@ -56,6 +56,7 @@ pasted into the dashboard by hand.
 Until step 7 is done the member area shows a friendly "not switched on yet" message and the
 rest of the site is unaffected.
 
+
 ### Changing the database
 
 Never edit an applied migration. Create a new one and push:
