@@ -1,12 +1,27 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import galleryData from '~/data/gallery.json';
 
-const gallery = import.meta.glob<{ default: ImageMetadata }>(
+type GalleryPhoto = {
+  file: string;
+  /** Verbatim caption from the Wix site, e.g. "Cleveland Whiskey Tour (2)". */
+  caption: string;
+  group: string | null;
+  groupIndex: number | null;
+};
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/gallery/*.{jpg,jpeg,png,gif}',
   { eager: true }
 );
-const photos = Object.values(gallery).map((module) => module.default);
+
+const photos = (galleryData as GalleryPhoto[])
+  .map((photo) => ({
+    ...photo,
+    image: images[`/src/assets/gallery/${photo.file}`]?.default,
+  }))
+  .filter((photo) => photo.image);
 ---
 
 <BaseLayout
@@ -31,11 +46,12 @@ const photos = Object.values(gallery).map((module) => module.default);
           photos.map((photo, index) => (
             <figure>
               <Image
-                src={photo}
-                alt=""
+                src={photo.image!}
+                alt={photo.caption}
                 width={640}
                 loading={index < 4 ? 'eager' : 'lazy'}
               />
+              <figcaption>{photo.group ?? photo.caption}</figcaption>
             </figure>
           ))
         }
@@ -75,5 +91,12 @@ const photos = Object.values(gallery).map((module) => module.default);
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  figcaption {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-faint);
   }
 </style>

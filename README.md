@@ -147,6 +147,7 @@ Site content lives in [src/data](src/data) and is hand-edited:
 | `members.json` | Roster and officer letters |
 | `awards.json` | Chapter awards by year |
 | `newsletters.json` | Newsletter index (local PDFs and external links) |
+| `gallery.json` | 133 photos with captions, generated \u2014 see [the photo gallery](#the-photo-gallery) |
 | `site.ts` | Navigation, social links, dues amounts, PayPal URL |
 
 Images referenced by `events.json` live in `src/assets/events` and are optimized to
@@ -167,8 +168,9 @@ deliberately — this content does not exist anywhere else.
 |---|---|
 | `raw/` | Untouched page HTML + Wix warmup JSON |
 | `content/` | Readable markdown per page |
-| `media/` | 93 full-resolution images and newsletter PDFs |
+| `media/` | 202 full-resolution images and newsletter PDFs |
 | `newsletters-mailchimp/` | 18 newsletters that were hosted off-site on Mailchimp |
+| `photo-gallery-items.json` | All 133 gallery photos with their original captions |
 | `manifest.json` | Source URL → local file, with titles and referencing pages |
 
 Regenerate with:
@@ -180,6 +182,33 @@ npm run scrape
 ```
 
 The scraper is resumable — existing files are skipped.
+
+### The photo gallery
+
+The gallery needed separate handling. Wix server-renders only the first 15 photos and
+reveals the rest through a **Show More** button, so `scrape.mjs` — which is plain HTTP —
+only ever saw a fraction of them. The per-photo captions exist nowhere in the page source,
+the warmup JSON, or the media filenames; they are `aria-label` attributes on the rendered
+tiles and nothing else.
+
+So the list was lifted out of a real browser session once, by clicking Show More until it
+disappeared (20 clicks) and reading the labels off the DOM, then committed to
+[archive/photo-gallery-items.json](archive/photo-gallery-items.json). That file is the
+irreplaceable part; everything downstream is derived from it:
+
+```sh
+cd tools/wix-archive
+npm run gallery
+```
+
+That downloads any missing originals into `archive/media`, copies them into
+`src/assets/gallery`, and regenerates `src/data/gallery.json`. It is resumable and safe to
+re-run.
+
+Captions follow a convention worth preserving: photos from the same event are numbered,
+as in `Cleveland Whiskey Tour (1)` through `(5)`. The tool splits that into `group` and
+`groupIndex`, so the site can show one caption per event rather than repeating a numbered
+label on every tile. 73 of the 133 photos belong to such a group.
 
 [tools/extract-content](tools/extract-content) is the one-time migration that turned the
 archived events page into `src/data/events.json`. It has already run; the JSON is now

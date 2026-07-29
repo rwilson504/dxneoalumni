@@ -5,7 +5,8 @@
   "type": "module",
   "description": "One-time salvage tool: archives content and media from the legacy Wix site.",
   "scripts": {
-    "scrape": "node scrape.mjs"
+    "scrape": "node scrape.mjs",
+    "gallery": "node gallery.mjs"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
