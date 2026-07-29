@@ -1,0 +1,234 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import MemberPortal from '~/components/auth/MemberPortal';
+---
+
+<BaseLayout title="Member Area" description="Sign in to the Northeast Ohio Alumni Chapter member area.">
+  <section class="section">
+    <div class="wrap member-area">
+      <MemberPortal client:only="react" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .member-area {
+    max-width: 900px;
+  }
+
+  .member-area .muted {
+    color: var(--ink-faint);
+  }
+
+  .member-area .hint {
+    font-size: 0.88rem;
+    color: var(--ink-faint);
+  }
+
+  .member-area .error {
+    color: var(--dx-red-dark);
+    font-weight: 600;
+  }
+
+  .portal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .portal__head h1 {
+    margin: 0;
+  }
+
+  .panel {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel h2 {
+    margin-top: 0;
+    font-size: 1.35rem;
+  }
+
+  .notice {
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--dx-gold);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.6rem;
+    max-width: 60ch;
+  }
+
+  .notice h2 {
+    margin-top: 0;
+  }
+
+  .signin {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 26rem;
+  }
+
+  .signin label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .signin input,
+  .fields input {
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font: inherit;
+    background: var(--surface);
+  }
+
+  .signin button {
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+  }
+
+  .directory {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .directory li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .directory li:last-child {
+    border-bottom: none;
+  }
+
+  .directory__name {
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .directory__meta {
+    margin: 0;
+    font-size: 0.87rem;
+    color: var(--ink-faint);
+  }
+
+  .directory__contact {
+    display: grid;
+    gap: 0.1rem;
+    font-size: 0.88rem;
+    text-align: right;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--dx-gold-soft);
+    color: #6b4c00;
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+  }
+
+  .badge--you {
+    background: var(--dx-red);
+    color: #fff;
+  }
+
+  .status {
+    font-weight: 600;
+    border-radius: var(--radius);
+    padding: 0.6rem 0.9rem;
+    display: inline-block;
+  }
+
+  .status--ok {
+    background: #e6f4ea;
+    color: #14532d;
+  }
+
+  .status--due {
+    background: var(--dx-gold-soft);
+    color: #6b4c00;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: var(--surface);
+    font-size: 0.92rem;
+  }
+
+  .table th,
+  .table td {
+    text-align: left;
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .table th {
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .fields {
+    display: grid;
+    gap: 0.9rem;
+    margin-block: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .fields {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .fields label {
+    display: grid;
+    gap: 0.3rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.93rem;
+  }
+
+  .panel button {
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn--ghost {
+    background: transparent;
+    cursor: pointer;
+  }
+</style>
