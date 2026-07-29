@@ -56,6 +56,15 @@ pasted into the dashboard by hand.
 Until step 7 is done the member area shows a friendly "not switched on yet" message and the
 rest of the site is unaffected.
 
+### Verifying the backend
+
+```sh
+npm run check:supabase
+```
+
+Confirms the project is awake, the migrations applied, table privileges are granted, and —
+most importantly — that an anonymous caller cannot read member or dues data. Run it after
+any migration.
 
 ### Changing the database
 

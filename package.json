@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:supabase": "node --env-file=.env tools/check-supabase.mjs",
     "extract": "node tools/extract-content/extract.mjs"
   },
   "dependencies": {
