@@ -6,9 +6,12 @@ import SignInPanel from './SignInPanel';
 import OfficerDues from './OfficerDues';
 import AdminMembers from './AdminMembers';
 
+type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'roster';
+
 export default function MemberPortal() {
   const { loading, session, member, notOnRoster } = useSession();
   const [roster, setRoster] = useState<Member[] | null>(null);
+  const [active, setActive] = useState<TabId>('directory');
 
   const loadRoster = useCallback(async () => {
     const { data } = await getSupabase().from('members').select('*').order('full_name');
@@ -42,6 +45,14 @@ export default function MemberPortal() {
   const isOfficer = member!.role === 'officer' || member!.role === 'admin';
   const isAdmin = member!.role === 'admin';
 
+  const tabs: { id: TabId; label: string }[] = [
+    { id: 'directory', label: 'Directory' },
+    { id: 'dues', label: 'My dues' },
+    { id: 'account', label: 'My details' },
+    ...(isOfficer ? [{ id: 'officer-dues' as TabId, label: 'Dues admin' }] : []),
+    ...(isAdmin ? [{ id: 'roster' as TabId, label: 'Roster' }] : []),
+  ];
+
   return (
     <div className="portal">
       <header className="portal__head">
@@ -52,14 +63,55 @@ export default function MemberPortal() {
         <SignOutButton />
       </header>
 
-      <Directory roster={roster} currentMember={member!} />
-      <Dues member={member!} />
-      <Account member={member!} />
+      <Tabs tabs={tabs} active={active} onSelect={setActive} />
 
-      {isOfficer && roster && <OfficerDues roster={roster} />}
-      {isAdmin && roster && (
-        <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
-      )}
+      <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`}>
+        {active === 'directory' && <Directory roster={roster} currentMember={member!} />}
+        {active === 'dues' && <Dues member={member!} />}
+        {active === 'account' && <Account member={member!} />}
+        {active === 'officer-dues' && roster && <OfficerDues roster={roster} />}
+        {active === 'roster' && roster && (
+          <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Tabs({
+  tabs,
+  active,
+  onSelect,
+}: {
+  tabs: { id: TabId; label: string }[];
+  active: TabId;
+  onSelect: (id: TabId) => void;
+}) {
+  return (
+    <div className="tabs" role="tablist" aria-label="Member area sections">
+      {tabs.map((tab, i) => (
+        <button
+          key={tab.id}
+          id={`tab-${tab.id}`}
+          role="tab"
+          type="button"
+          className={tab.id === active ? 'tab tab--active' : 'tab'}
+          aria-selected={tab.id === active}
+          aria-controls={`panel-${tab.id}`}
+          tabIndex={tab.id === active ? 0 : -1}
+          onClick={() => onSelect(tab.id)}
+          onKeyDown={(e) => {
+            const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+            if (!step) return;
+            e.preventDefault();
+            const next = tabs[(i + step + tabs.length) % tabs.length];
+            onSelect(next.id);
+            document.getElementById(`tab-${next.id}`)?.focus();
+          }}
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
   );
 }
