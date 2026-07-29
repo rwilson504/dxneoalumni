@@ -42,9 +42,18 @@ const GROUPING = [
 function splitCaption(caption) {
   for (const re of GROUPING) {
     const m = caption.match(re);
-    if (m) return { name: m[1].trim(), index: Number(m[2]) };
+    if (m) return { name: tidy(m[1]), index: Number(m[2]) };
   }
-  return { name: caption.trim(), index: null };
+  return { name: tidy(caption), index: null };
+}
+
+/**
+ * Collapses runs of whitespace. "V Foundation  2024" and "V Foundation 2024" are photos
+ * (4) and (1)/(3) of one occasion, typed inconsistently in Wix; without this they become
+ * two albums whose slugs then collide on insert and merge by accident anyway.
+ */
+function tidy(text) {
+  return text.replace(/\s+/g, ' ').trim();
 }
 
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july',
@@ -82,6 +91,19 @@ const albums = [...albumsByKey.values()].map((album) => {
   album.photos.sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
   return { ...album, year, month, slug: slugify(album.title) };
 });
+
+// A slug collision means two albums would silently merge via ON CONFLICT, taking
+// whichever title landed last. Fail loudly instead of shipping that quietly.
+const slugs = new Map();
+for (const album of albums) {
+  if (slugs.has(album.slug)) {
+    console.error(`Slug collision on "${album.slug}":`);
+    console.error(`  ${JSON.stringify(slugs.get(album.slug))}`);
+    console.error(`  ${JSON.stringify(album.title)}`);
+    process.exit(1);
+  }
+  slugs.set(album.slug, album.title);
+}
 
 // ---------------------------------------------------------------------------
 // Event linking

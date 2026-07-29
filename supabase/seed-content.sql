@@ -139,9 +139,7 @@ insert into public.albums (slug, title, event_id, year, month) values ('top-golf
 on conflict (slug) do update set title = excluded.title, event_id = excluded.event_id, year = excluded.year, month = excluded.month;
 insert into public.albums (slug, title, event_id, year, month) values ('children-s-hunger-alliance-may-2024', 'Children''s Hunger Alliance May 2024', (select id from public.events where slug = '2024-2024-childrens-hunger-alliance-charity-event'), 2024, 5)
 on conflict (slug) do update set title = excluded.title, event_id = excluded.event_id, year = excluded.year, month = excluded.month;
-insert into public.albums (slug, title, event_id, year, month) values ('v-foundation-2024', 'V Foundation  2024', (select id from public.events where slug = '2024-2024-v-foundation-headshot-fundrasier'), 2024, null)
-on conflict (slug) do update set title = excluded.title, event_id = excluded.event_id, year = excluded.year, month = excluded.month;
-insert into public.albums (slug, title, event_id, year, month) values ('v-foundation-2024', 'V Foundation 2024', null, 2024, null)
+insert into public.albums (slug, title, event_id, year, month) values ('v-foundation-2024', 'V Foundation 2024', (select id from public.events where slug = '2024-2024-v-foundation-headshot-fundrasier'), 2024, null)
 on conflict (slug) do update set title = excluded.title, event_id = excluded.event_id, year = excluded.year, month = excluded.month;
 insert into public.albums (slug, title, event_id, year, month) values ('great-lakes-hop-college-march-2024', 'Great Lakes Hop College March 2024', (select id from public.events where slug = '2024-2024-great-lakes-brewery-hop-college'), 2024, 3)
 on conflict (slug) do update set title = excluded.title, event_id = excluded.event_id, year = excluded.year, month = excluded.month;
@@ -305,11 +303,11 @@ insert into public.photos (album_id, file, caption, sort_order) values ((select 
 on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
 insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'children-s-hunger-alliance-may-2024'), 'f002fe_3fe57ba045a242cfa3422721244b7c14-mv2.jpeg', 'Children''s Hunger Alliance May 2024', 0)
 on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
-insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'v-foundation-2024'), 'f002fe_eadcd00c35b849c181bb8038a059bb52-mv2.jpg', 'V Foundation  2024 (4)', 0)
-on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
 insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'v-foundation-2024'), 'f002fe_c41792680d104053bb0907415733514e-mv2.jpg', 'V Foundation 2024 (1)', 0)
 on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
 insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'v-foundation-2024'), 'f002fe_77959c49c0d34fc388a763ddfc61891d-mv2.jpg', 'V Foundation 2024 (3)', 1)
+on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
+insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'v-foundation-2024'), 'f002fe_eadcd00c35b849c181bb8038a059bb52-mv2.jpg', 'V Foundation  2024 (4)', 2)
 on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
 insert into public.photos (album_id, file, caption, sort_order) values ((select id from public.albums where slug = 'great-lakes-hop-college-march-2024'), 'f002fe_303e83fedf3344bd814d31e8a0c0e654-mv2.jpeg', 'Great Lakes Hop College March 2024 (1)', 0)
 on conflict (file) do update set caption = excluded.caption, sort_order = excluded.sort_order;
