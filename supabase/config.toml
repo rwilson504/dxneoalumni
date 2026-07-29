@@ -248,6 +248,12 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
+# Applies to local dev and preview branches only. Production templates are NOT deployed by
+# the GitHub integration — paste this file into Authentication > Emails in the dashboard.
+[auth.email.template.magic_link]
+subject = "Your Delta Chi NEO sign-in link"
+content_path = "./supabase/templates/magic-link.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true

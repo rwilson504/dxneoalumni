@@ -66,6 +66,21 @@ Confirms the project is awake, the migrations applied, table privileges are gran
 most importantly — that an anonymous caller cannot read member or dues data. Run it after
 any migration.
 
+### Email delivery
+
+**Custom SMTP is required before inviting anyone.** With Supabase's built-in sender, Auth
+refuses to deliver to any address that isn't a member of the project's Supabase team — every
+other brother gets *"Email address not authorized"*. It is also capped at 2 messages per hour.
+
+Set one up under **Authentication → Emails → SMTP Settings**. Any SMTP provider works; the
+sender name and address you configure there is what members see.
+
+The branded magic-link template lives in
+[supabase/templates/magic-link.html](supabase/templates/magic-link.html). The GitHub
+integration does **not** deploy auth config, so paste it into **Authentication → Emails →
+Magic Link** in the dashboard. `config.toml` points at the same file so local dev and preview
+branches match.
+
 ### Changing the database
 
 Never edit an applied migration. Create a new one and push:
