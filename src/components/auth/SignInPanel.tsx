@@ -1,6 +1,18 @@
 import { useState } from 'react';
+import type { AuthError } from '@supabase/supabase-js';
 import { getSupabase, isSupabaseConfigured, siteUrl } from '~/lib/supabase';
 type Status = { kind: 'idle' | 'sending' | 'sent' | 'error'; message?: string };
+
+function explain(error: AuthError): string {
+  switch (error.code) {
+    case 'over_email_send_rate_limit':
+      return 'A link was just sent to that address. Give it a minute before asking for another.';
+    case 'validation_failed':
+      return 'That doesn’t look like a valid email address.';
+    default:
+      return error.message;
+  }
+}
 
 export default function SignInPanel() {
   const [email, setEmail] = useState('');
@@ -23,12 +35,13 @@ export default function SignInPanel() {
 
     const { error } = await getSupabase().auth.signInWithOtp({
       email: email.trim(),
+      // shouldCreateUser must stay at its default of true. Supabase Auth knows nothing
+      // about the members table, so setting it false would reject every brother who has
+      // not signed in before — there is no auth.users row to match until they do.
       options: { emailRedirectTo: siteUrl('/members') },
     });
 
-    setStatus(
-      error ? { kind: 'error', message: error.message } : { kind: 'sent' }
-    );
+    setStatus(error ? { kind: 'error', message: explain(error) } : { kind: 'sent' });
   }
 
   if (status.kind === 'sent') {
