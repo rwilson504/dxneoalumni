@@ -35,6 +35,29 @@ jobs:
 
       - run: npm ci
 
+      # The Supabase GitHub integration applies migrations in PARALLEL with this build,
+      # so a push that adds a column and the code using it will race: the build queries
+      # a column that does not exist yet and fails. Wait for that check to finish.
+      - name: Wait for Supabase migrations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 40); do
+            state=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/check-runs" \
+              --jq '[.check_runs[] | select(.name == "Supabase Preview")] | first | "\(.status):\(.conclusion)"' 2>/dev/null || echo "")
+
+            case "$state" in
+              completed:success) echo "Migrations applied."; exit 0 ;;
+              completed:*)       echo "Migration check finished as ${state#completed:}; building anyway."; exit 0 ;;
+              "" | null*)
+                # No such check on this commit — nothing to wait for after a short grace period.
+                if [ "$i" -ge 4 ]; then echo "No Supabase check on this commit."; exit 0; fi ;;
+              *) echo "Migrations $state, waiting..." ;;
+            esac
+            sleep 10
+          done
+          echo "Timed out waiting for migrations; building anyway."
+
       - run: npm run build
         env:
           # Accepts either storage: the URL is not sensitive so the README suggests a
