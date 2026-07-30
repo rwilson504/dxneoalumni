@@ -173,6 +173,10 @@ import MemberPortal from '~/components/auth/MemberPortal';
   }
 
   .badge {
+    /* inline-block + nowrap so a badge never breaks mid-text: a wrapped inline element
+       with a background renders as two half-pills. */
+    display: inline-block;
+    white-space: nowrap;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.06em;
