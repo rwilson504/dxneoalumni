@@ -80,7 +80,10 @@ export type Photo = {
   file: string;
   caption: string | null;
   sort_order: number;
+  removed_at: string | null;
 };
+
+export const photoColumns = 'id, album_id, file, caption, sort_order, removed_at';
 
 export type PhotoUpload = {
   id: string;

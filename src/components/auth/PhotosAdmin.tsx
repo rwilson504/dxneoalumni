@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   albumColumns,
   describeError,
   eventColumns,
   formatPartialDate,
   getSupabase,
+  photoColumns,
   slugify,
   type Album,
   type ChapterEventRow,
   type Member,
+  type Photo,
   type PhotoUpload,
 } from '~/lib/supabase';
 
@@ -29,9 +31,10 @@ const blank: Draft = { id: null, slug: '', title: '', event_id: '', year: '', mo
 export default function PhotosAdmin({ member }: { member: Member }) {
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [events, setEvents] = useState<ChapterEventRow[]>([]);
-  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [pending, setPending] = useState<PhotoUpload[]>([]);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [openAlbum, setOpenAlbum] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -40,7 +43,7 @@ export default function PhotosAdmin({ member }: { member: Member }) {
     const [albumRes, eventRes, photoRes, pendingRes] = await Promise.all([
       supabase.from('albums').select(albumColumns).order('sort_date', { ascending: false, nullsFirst: false }),
       supabase.from('events').select(eventColumns).order('sort_date', { ascending: false }),
-      supabase.from('photos').select('album_id'),
+      supabase.from('photos').select(photoColumns).order('sort_order'),
       supabase.from('photo_uploads').select('id, album_id, event_id, storage_path, caption, error, created_at')
         .order('created_at'),
     ]);
@@ -50,13 +53,8 @@ export default function PhotosAdmin({ member }: { member: Member }) {
 
     setAlbums((albumRes.data as Album[]) ?? []);
     setEvents((eventRes.data as ChapterEventRow[]) ?? []);
+    setPhotos((photoRes.data as Photo[]) ?? []);
     setPending((pendingRes.data as PhotoUpload[]) ?? []);
-
-    const tally: Record<string, number> = {};
-    for (const row of (photoRes.data as { album_id: string }[]) ?? []) {
-      tally[row.album_id] = (tally[row.album_id] ?? 0) + 1;
-    }
-    setCounts(tally);
   }
 
   useEffect(() => {
@@ -92,15 +90,29 @@ export default function PhotosAdmin({ member }: { member: Member }) {
   }
 
   async function removeAlbum(album: Album) {
-    const count = counts[album.id] ?? 0;
+    const count = photos.filter((p) => p.album_id === album.id).length;
     const warning = count
-      ? `Delete "${album.title}"? Its ${count} photo record(s) go too. The image files stay in the repository.`
+      ? `Delete "${album.title}"? Its ${count} photo record(s) go too, permanently. The image files stay in the repository.`
       : `Delete the empty album "${album.title}"?`;
     if (!window.confirm(warning)) return;
 
     const { error: err } = await getSupabase().from('albums').delete().eq('id', album.id);
     if (err) {
-      setError(err.message);
+      setError(describeError(err));
+      return;
+    }
+    await load();
+  }
+
+  /** Taking a photo down is reversible: the row stays, the public build skips it. */
+  async function setRemoved(photo: Photo, removed: boolean) {
+    const { error: err } = await getSupabase()
+      .from('photos')
+      .update({ removed_at: removed ? new Date().toISOString() : null })
+      .eq('id', photo.id);
+
+    if (err) {
+      setError(describeError(err));
       return;
     }
     await load();
@@ -215,34 +227,61 @@ export default function PhotosAdmin({ member }: { member: Member }) {
             </tr>
           </thead>
           <tbody>
-            {albums.map((album) => (
-              <tr key={album.id}>
-                <td>{album.title}</td>
-                <td>{formatPartialDate(album.year, album.month, album.day)}</td>
-                <td>{counts[album.id] ?? 0}</td>
-                <td>{eventTitle(album.event_id)}</td>
-                <td>
-                  <div className="row-actions">
-                    <button className="btn btn--ghost btn--small" type="button"
-                      onClick={() => setDraft({
-                        id: album.id,
-                        slug: album.slug,
-                        title: album.title,
-                        event_id: album.event_id ?? '',
-                        year: album.year ? String(album.year) : '',
-                        month: album.month ? String(album.month) : '',
-                        day: album.day ? String(album.day) : '',
-                      })}>
-                      Edit
-                    </button>
-                    <button className="btn btn--ghost btn--small" type="button"
-                      onClick={() => removeAlbum(album)}>
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {albums.map((album) => {
+              const mine = photos.filter((p) => p.album_id === album.id);
+              const live = mine.filter((p) => !p.removed_at).length;
+              const hidden = mine.length - live;
+              const open = openAlbum === album.id;
+
+              return (
+                <Fragment key={album.id}>
+                  <tr>
+                    <td>{album.title}</td>
+                    <td>{formatPartialDate(album.year, album.month, album.day)}</td>
+                    <td>
+                      {live}
+                      {hidden > 0 && <span className="badge">{hidden} hidden</span>}
+                    </td>
+                    <td>{eventTitle(album.event_id)}</td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                          className="btn btn--ghost btn--small"
+                          type="button"
+                          aria-expanded={open}
+                          onClick={() => setOpenAlbum(open ? null : album.id)}
+                        >
+                          {open ? 'Hide photos' : 'Photos'}
+                        </button>
+                        <button className="btn btn--ghost btn--small" type="button"
+                          onClick={() => setDraft({
+                            id: album.id,
+                            slug: album.slug,
+                            title: album.title,
+                            event_id: album.event_id ?? '',
+                            year: album.year ? String(album.year) : '',
+                            month: album.month ? String(album.month) : '',
+                            day: album.day ? String(album.day) : '',
+                          })}>
+                          Edit
+                        </button>
+                        <button className="btn btn--ghost btn--small" type="button"
+                          onClick={() => removeAlbum(album)}>
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {open && (
+                    <tr>
+                      <td colSpan={5}>
+                        <PhotoList photos={mine} onToggle={setRemoved} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
 
@@ -253,6 +292,47 @@ export default function PhotosAdmin({ member }: { member: Member }) {
         )}
       </section>
     </>
+  );
+}
+
+function PhotoList({
+  photos,
+  onToggle,
+}: {
+  photos: Photo[];
+  onToggle: (photo: Photo, removed: boolean) => Promise<void>;
+}) {
+  const [busy, setBusy] = useState<string | null>(null);
+
+  if (photos.length === 0) return <p className="muted">No photos in this album yet.</p>;
+
+  async function toggle(photo: Photo) {
+    setBusy(photo.id);
+    await onToggle(photo, !photo.removed_at);
+    setBusy(null);
+  }
+
+  return (
+    <ul className="photo-list">
+      {photos.map((photo) => (
+        <li key={photo.id} className={photo.removed_at ? 'is-removed' : undefined}>
+          <div>
+            <p className="photo-list__caption">{photo.caption || photo.file}</p>
+            <p className="directory__meta">
+              {photo.removed_at ? 'Hidden from the site' : 'Live'}
+            </p>
+          </div>
+          <button
+            className="btn btn--ghost btn--small"
+            type="button"
+            disabled={busy === photo.id}
+            onClick={() => toggle(photo)}
+          >
+            {photo.removed_at ? 'Put back' : 'Take down'}
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }
 

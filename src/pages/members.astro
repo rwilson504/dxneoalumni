@@ -368,4 +368,37 @@ import MemberPortal from '~/components/auth/MemberPortal';
   .fields label .hint {
     font-weight: 400;
   }
+
+  .photo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .photo-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.45rem 0.7rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+  }
+
+  .photo-list li.is-removed {
+    opacity: 0.55;
+  }
+
+  .photo-list li.is-removed .photo-list__caption {
+    text-decoration: line-through;
+  }
+
+  .photo-list__caption {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
 </style>

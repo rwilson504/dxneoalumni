@@ -68,6 +68,7 @@ async function fetchContent() {
     supabase
       .from('photos')
       .select('album_id, file, caption, sort_order')
+      .is('removed_at', null)
       .order('sort_order'),
   ]);
 
