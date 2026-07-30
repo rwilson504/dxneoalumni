@@ -28,7 +28,13 @@ type Draft = {
 
 const blank: Draft = { id: null, slug: '', title: '', event_id: '', year: '', month: '', day: '' };
 
-export default function PhotosAdmin({ member }: { member: Member }) {
+export default function PhotosAdmin({
+  member,
+  thumbnails,
+}: {
+  member: Member;
+  thumbnails: Record<string, string>;
+}) {
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [events, setEvents] = useState<ChapterEventRow[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -275,7 +281,7 @@ export default function PhotosAdmin({ member }: { member: Member }) {
                   {open && (
                     <tr>
                       <td colSpan={5}>
-                        <PhotoList photos={mine} onToggle={setRemoved} />
+                        <PhotoList photos={mine} thumbnails={thumbnails} onToggle={setRemoved} />
                       </td>
                     </tr>
                   )}
@@ -297,9 +303,11 @@ export default function PhotosAdmin({ member }: { member: Member }) {
 
 function PhotoList({
   photos,
+  thumbnails,
   onToggle,
 }: {
   photos: Photo[];
+  thumbnails: Record<string, string>;
   onToggle: (photo: Photo, removed: boolean) => Promise<void>;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
@@ -322,11 +330,26 @@ function PhotoList({
       <ul className="photo-list">
         {photos.map((photo) => (
           <li key={photo.id} className={photo.removed_at ? 'is-removed' : undefined}>
-            <div>
-              <p className="photo-list__caption">{photo.caption || photo.file}</p>
-              <p className="directory__meta">
-                {photo.removed_at ? 'Hidden from the gallery' : 'Live on the gallery'}
-              </p>
+            <div className="photo-list__item">
+              {/* A row can outlive its file, so don't render an image with no source. */}
+              {thumbnails[photo.file] ? (
+                <img
+                  className="photo-list__thumb"
+                  src={thumbnails[photo.file]}
+                  alt=""
+                  width={48}
+                  height={36}
+                  loading="lazy"
+                />
+              ) : (
+                <span className="photo-list__thumb" aria-hidden="true" />
+              )}
+              <div>
+                <p className="photo-list__caption">{photo.caption || photo.file}</p>
+                <p className="directory__meta">
+                  {photo.removed_at ? 'Hidden from the gallery' : 'Live on the gallery'}
+                </p>
+              </div>
             </div>
             <button
               className="btn btn--ghost btn--small"

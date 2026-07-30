@@ -8,6 +8,7 @@
  * Astro from local disk. These rows only name them.
  */
 import { createClient } from '@supabase/supabase-js';
+import { getImage } from 'astro:assets';
 
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -190,4 +191,18 @@ export function eventImage(file: string | null): ImageMetadata | null {
 
 export function galleryImage(file: string): ImageMetadata | null {
   return galleryImages[`/src/assets/gallery/${file}`]?.default ?? null;
+}
+
+/**
+ * Thumbnails for the officer photo list, keyed by file name. Built from the whole folder
+ * rather than the visible photos so hidden ones can still be recognised and put back.
+ */
+export async function galleryThumbnails(): Promise<Record<string, string>> {
+  const entries = await Promise.all(
+    Object.entries(galleryImages).map(async ([path, mod]) => {
+      const thumb = await getImage({ src: mod.default, width: 96, height: 72, format: 'webp' });
+      return [path.split('/').pop()!, thumb.src] as const;
+    })
+  );
+  return Object.fromEntries(entries);
 }

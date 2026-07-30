@@ -10,7 +10,7 @@ import PhotosAdmin from './PhotosAdmin';
 
 type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'events' | 'photos' | 'roster';
 
-export default function MemberPortal() {
+export default function MemberPortal({ thumbnails }: { thumbnails: Record<string, string> }) {
   const { loading, session, member, notOnRoster } = useSession();
   const [roster, setRoster] = useState<Member[] | null>(null);
   const [active, setActive] = useState<TabId>('directory');
@@ -79,7 +79,7 @@ export default function MemberPortal() {
         {active === 'account' && <Account member={member!} />}
         {active === 'officer-dues' && roster && <OfficerDues roster={roster} />}
         {active === 'events' && <EventsAdmin member={member!} />}
-        {active === 'photos' && <PhotosAdmin member={member!} />}
+        {active === 'photos' && <PhotosAdmin member={member!} thumbnails={thumbnails} />}
         {active === 'roster' && roster && (
           <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
         )}

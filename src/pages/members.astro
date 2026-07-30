@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import MemberPortal from '~/components/auth/MemberPortal';
+import { galleryThumbnails } from '~/lib/content';
+
+const thumbnails = await galleryThumbnails();
 ---
 
 <BaseLayout title="Member Area" description="Sign in to the Northeast Ohio Alumni Chapter member area.">
   <section class="section">
     <div class="wrap member-area">
-      <MemberPortal client:only="react" />
+      <MemberPortal client:only="react" thumbnails={thumbnails} />
     </div>
   </section>
 </BaseLayout>
@@ -404,6 +407,22 @@ import MemberPortal from '~/components/auth/MemberPortal';
     margin: 0;
     font-weight: 600;
     font-size: 0.9rem;
+  }
+
+  .photo-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .photo-list__thumb {
+    width: 48px;
+    height: 36px;
+    flex: none;
+    object-fit: cover;
+    border-radius: 4px;
+    background: var(--rule);
   }
 
   /* Sits inside a panel rather than standing alone, so it needs its own spacing. */
