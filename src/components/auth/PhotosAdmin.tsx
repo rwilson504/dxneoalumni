@@ -313,26 +313,33 @@ function PhotoList({
   }
 
   return (
-    <ul className="photo-list">
-      {photos.map((photo) => (
-        <li key={photo.id} className={photo.removed_at ? 'is-removed' : undefined}>
-          <div>
-            <p className="photo-list__caption">{photo.caption || photo.file}</p>
-            <p className="directory__meta">
-              {photo.removed_at ? 'Hidden from the site' : 'Live'}
-            </p>
-          </div>
-          <button
-            className="btn btn--ghost btn--small"
-            type="button"
-            disabled={busy === photo.id}
-            onClick={() => toggle(photo)}
-          >
-            {photo.removed_at ? 'Put back' : 'Take down'}
-          </button>
-        </li>
-      ))}
-    </ul>
+    <>
+      <p className="hint">
+        Taking a photo down removes it from the public gallery at the next rebuild. The image
+        file itself stays in the site&rsquo;s repository history and cannot be erased, so this
+        hides a photo rather than deleting it.
+      </p>
+      <ul className="photo-list">
+        {photos.map((photo) => (
+          <li key={photo.id} className={photo.removed_at ? 'is-removed' : undefined}>
+            <div>
+              <p className="photo-list__caption">{photo.caption || photo.file}</p>
+              <p className="directory__meta">
+                {photo.removed_at ? 'Hidden from the gallery' : 'Live on the gallery'}
+              </p>
+            </div>
+            <button
+              className="btn btn--ghost btn--small"
+              type="button"
+              disabled={busy === photo.id}
+              onClick={() => toggle(photo)}
+            >
+              {photo.removed_at ? 'Put back' : 'Take down'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -406,6 +413,14 @@ function Uploader({
       <p className="muted">
         Pick an album, choose the photos, and upload. They are resized to under 1&nbsp;MB and
         added to the site automatically — they will not appear on the gallery straight away.
+      </p>
+
+      <p className="notice notice--inline">
+        <strong>Uploads are permanent.</strong> Photos are committed to this site&rsquo;s public
+        code repository, which keeps every version of every file forever. Taking a photo down
+        later removes it from the gallery, but it stays downloadable from the repository&rsquo;s
+        history and cannot be fully erased. Only upload photos everyone pictured is happy to
+        have public.
       </p>
 
       <div className="fields">
