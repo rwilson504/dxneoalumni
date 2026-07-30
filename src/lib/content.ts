@@ -13,6 +13,7 @@ const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 export type ChapterEvent = {
+  id: string;
   slug: string;
   title: string;
   description: string | null;
@@ -22,6 +23,8 @@ export type ChapterEvent = {
   image_file: string | null;
   image_alt: string | null;
   sort_date: string;
+  /** Set only when a linked album actually has visible photos to link to. */
+  albumSlug: string | null;
 };
 
 export type GalleryAlbum = {
@@ -59,11 +62,11 @@ async function fetchContent() {
   const [eventRes, albumRes, photoRes] = await Promise.all([
     supabase
       .from('events')
-      .select('slug, title, description, year, month, day, image_file, image_alt, sort_date')
+      .select('id, slug, title, description, year, month, day, image_file, image_alt, sort_date')
       .order('sort_date', { ascending: false }),
     supabase
       .from('albums')
-      .select('id, slug, title, year, month, sort_date')
+      .select('id, slug, title, event_id, year, month, sort_date')
       .order('sort_date', { ascending: false, nullsFirst: false }),
     supabase
       .from('photos')
@@ -76,12 +79,13 @@ async function fetchContent() {
     if (res.error) throw new Error(`Supabase: ${res.error.message}`);
   }
 
-  const events = (eventRes.data ?? []) as ChapterEvent[];
-  const albumRows = (albumRes.data ?? []) as (Omit<GalleryAlbum, 'photos'> & { id: string })[];
+  const eventRows = (eventRes.data ?? []) as Omit<ChapterEvent, 'albumSlug'>[];
+  const albumRows = (albumRes.data ?? []) as
+    (Omit<GalleryAlbum, 'photos'> & { id: string; event_id: string | null })[];
   const photos = (photoRes.data ?? []) as
     { album_id: string; file: string; caption: string | null; sort_order: number }[];
 
-  assertNotEmpty('events', events);
+  assertNotEmpty('events', eventRows);
   assertNotEmpty('albums', albumRows);
   assertNotEmpty('photos', photos);
 
@@ -92,9 +96,24 @@ async function fetchContent() {
     byAlbum.set(photo.album_id, bucket);
   }
 
-  const albums: GalleryAlbum[] = albumRows
-    .map(({ id, ...album }) => ({ ...album, photos: byAlbum.get(id) ?? [] }))
-    .filter((album) => album.photos.length > 0);
+  const withPhotos = albumRows.filter((album) => (byAlbum.get(album.id) ?? []).length > 0);
+
+  // Only albums that survived the photo filter can be linked to; pointing an event at an
+  // album the gallery does not render would be a dead anchor.
+  const albumByEvent = new Map<string, string>();
+  for (const album of withPhotos) {
+    if (album.event_id) albumByEvent.set(album.event_id, album.slug);
+  }
+
+  const events: ChapterEvent[] = eventRows.map((event) => ({
+    ...event,
+    albumSlug: albumByEvent.get(event.id) ?? null,
+  }));
+
+  const albums: GalleryAlbum[] = withPhotos.map(({ id, event_id, ...album }) => ({
+    ...album,
+    photos: byAlbum.get(id) ?? [],
+  }));
 
   return { events, albums };
 }

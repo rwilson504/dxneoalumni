@@ -78,7 +78,7 @@ export default function MemberPortal() {
         {active === 'dues' && <Dues member={member!} />}
         {active === 'account' && <Account member={member!} />}
         {active === 'officer-dues' && roster && <OfficerDues roster={roster} />}
-        {active === 'events' && <EventsAdmin />}
+        {active === 'events' && <EventsAdmin member={member!} />}
         {active === 'photos' && <PhotosAdmin member={member!} />}
         {active === 'roster' && roster && (
           <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />

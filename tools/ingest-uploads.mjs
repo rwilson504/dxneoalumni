@@ -37,7 +37,9 @@ if (!url || !serviceKey) {
 const supabase = createClient(url, serviceKey, { auth: { persistSession: false } });
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const galleryDir = join(root, 'src', 'assets', 'gallery');
+const eventsDir = join(root, 'src', 'assets', 'events');
 mkdirSync(galleryDir, { recursive: true });
+mkdirSync(eventsDir, { recursive: true });
 
 const { data: uploads, error } = await supabase
   .from('photo_uploads')
@@ -92,34 +94,49 @@ for (const upload of uploads) {
   // resized one must become .jpg or the bytes and the name disagree.
   const extension = output.changed ? 'jpg' : (upload.storage_path.split('.').pop() ?? 'jpg');
   const file = `${upload.id}.${extension}`;
+  const isEvent = Boolean(upload.event_id);
 
-  writeFileSync(join(galleryDir, file), output.buffer);
+  writeFileSync(join(isEvent ? eventsDir : galleryDir, file), output.buffer);
   console.log(
     `  ${(original.length / 1048576).toFixed(2)} -> ${(output.buffer.length / 1048576).toFixed(2)} MB  ${file}`
   );
 
-  // Append to the end of the album.
-  const { data: last } = await supabase
-    .from('photos')
-    .select('sort_order')
-    .eq('album_id', upload.album_id)
-    .order('sort_order', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  if (isEvent) {
+    // Replaces whatever the event pointed at; the old file is left in place rather than
+    // deleted, since another event could in principle reference it.
+    const { error: updateError } = await supabase
+      .from('events')
+      .update({ image_file: file })
+      .eq('id', upload.event_id);
 
-  const { error: insertError } = await supabase.from('photos').insert({
-    album_id: upload.album_id,
-    file,
-    caption: upload.caption,
-    sort_order: (last?.sort_order ?? -1) + 1,
-  });
+    if (updateError) {
+      await fail(upload, `could not set the event image: ${updateError.message}`);
+      continue;
+    }
+  } else {
+    // Append to the end of the album.
+    const { data: last } = await supabase
+      .from('photos')
+      .select('sort_order')
+      .eq('album_id', upload.album_id)
+      .order('sort_order', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-  if (insertError) {
-    await fail(upload, `could not record photo: ${insertError.message}`);
-    continue;
+    const { error: insertError } = await supabase.from('photos').insert({
+      album_id: upload.album_id,
+      file,
+      caption: upload.caption,
+      sort_order: (last?.sort_order ?? -1) + 1,
+    });
+
+    if (insertError) {
+      await fail(upload, `could not record photo: ${insertError.message}`);
+      continue;
+    }
   }
 
-  // Only clear the staging rows once the photo row exists, so a crash leaves the
+  // Only clear the staging rows once the target row is updated, so a crash leaves the
   // upload to be retried rather than losing it.
   await supabase.storage.from('uploads').remove([upload.storage_path]);
   await supabase.from('photo_uploads').delete().eq('id', upload.id);

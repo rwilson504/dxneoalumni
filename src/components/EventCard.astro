@@ -9,6 +9,7 @@ interface Props {
 
 const { event, loading = 'lazy' } = Astro.props;
 const image = eventImage(event.image_file);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <article class="card">
@@ -29,5 +30,21 @@ const image = eventImage(event.image_file);
     <p class="card__date">{formatDate(event.year, event.month, event.day)}</p>
     <h3 class="card__title">{displayTitle(event)}</h3>
     <p class="card__text">{event.description}</p>
+    {
+      event.albumSlug && (
+        <a class="card__link" href={`${base}/gallery#${event.albumSlug}`}>
+          See the photos &rarr;
+        </a>
+      )
+    }
   </div>
 </article>
+
+<style>
+  .card__link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+</style>

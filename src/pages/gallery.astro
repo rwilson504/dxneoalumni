@@ -43,7 +43,7 @@ let rendered = 0;
     <div class="wrap">
       {
         sections.map((album) => (
-          <section class="album">
+          <section class="album" id={album.slug}>
             <h2 class="album__heading">
               {album.title}
               {album.dateLabel && <span>{album.dateLabel}</span>}
@@ -74,6 +74,8 @@ let rendered = 0;
 <style>
   .album {
     margin-bottom: 2rem;
+    /* Linked to from event cards, so keep the heading clear of the sticky header. */
+    scroll-margin-top: 5rem;
   }
 
   .album__heading {

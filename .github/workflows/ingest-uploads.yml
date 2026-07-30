@@ -44,6 +44,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/assets/gallery
-          git commit -m "chore: add photos uploaded from the member area"
+          git add src/assets/gallery src/assets/events
+          git commit -m "chore: add images uploaded from the member area"
           git push
