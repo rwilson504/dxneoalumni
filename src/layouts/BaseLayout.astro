@@ -22,7 +22,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={`${import.meta.env.BASE_URL}/favicon.svg`} type="image/svg+xml" />
+    {/* BASE_URL is "/" at a domain root, so trim it or the href becomes protocol-relative. */}
+    <link
+      rel="icon"
+      href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`}
+      type="image/svg+xml"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
