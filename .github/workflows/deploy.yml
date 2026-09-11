@@ -4,9 +4,11 @@ on:
   push:
     branches: [main]
   # A push made with GITHUB_TOKEN deliberately does not trigger other workflows, so the
-  # ingest job's commit would otherwise never be published.
+  # ingest job's commit would otherwise never be published. The keepalive is here too: it
+  # runs every three days, so chaining off it republishes the database-driven pages (the
+  # event count, new events entered in the member area) without anyone pushing.
   workflow_run:
-    workflows: ['Ingest photo uploads']
+    workflows: ['Ingest photo uploads', 'Supabase keepalive']
     types: [completed]
   workflow_dispatch:
 
@@ -50,7 +52,8 @@ jobs:
               completed:success) echo "Migrations applied."; exit 0 ;;
               completed:*)       echo "Migration check finished as ${state#completed:}; building anyway."; exit 0 ;;
               "" | null*)
-                # No such check on this commit — nothing to wait for after a short grace period.
+                # No such check on this commit, so there is nothing to wait for after a
+                # short grace period.
                 if [ "$i" -ge 4 ]; then echo "No Supabase check on this commit."; exit 0; fi ;;
               *) echo "Migrations $state, waiting..." ;;
             esac
