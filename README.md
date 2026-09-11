@@ -141,7 +141,18 @@ npm install
 npm run dev      # http://localhost:4321/dxneoalumni
 npm run build    # static output in dist/
 npm run check    # type + template diagnostics
+npm run check:content  # fails on any em dash in src/
 ```
+
+Enable the pre-push hook once per clone, so a push is blocked before anything reaches
+GitHub rather than failing later in CI. Git does not carry this setting in a clone:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+Chapter copy never uses em dashes: they read as a tell that the text was machine-written.
+Rewrite with a comma, a colon, or a full stop instead of substituting an en dash.
 
 Pushing to `main` builds and publishes to GitHub Pages via
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml), and the Supabase GitHub

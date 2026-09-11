@@ -1,0 +1,10 @@
+#!/bin/sh
+# Blocks the push if an em dash reached src/. See tools/check-content.mjs.
+# Enable once per clone with: git config core.hooksPath .githooks
+
+if ! npm run --silent check:content; then
+    echo ""
+    echo "Push blocked: rewrite the lines above without an em dash."
+    echo "Use a comma, a colon, or a full stop. Do not swap in an en dash."
+    exit 1
+fi
