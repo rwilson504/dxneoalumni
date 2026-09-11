@@ -59,7 +59,7 @@ export default function AdminMembers({
     <section className="panel">
       <h2>Roster administration</h2>
       <p className="muted">
-        Adding someone here is what lets them sign in — the address must match the one they use.
+        Adding someone here is what lets them sign in. The address must match the one they use.
         Roles and officer letters can only be changed from this panel.
       </p>
 
@@ -106,7 +106,7 @@ export default function AdminMembers({
                     onChange={(e) => patch(m, { officer_letter: e.target.value || null })}
                     aria-label={`Officer letter for ${m.full_name}`}
                   >
-                    <option value="">—</option>
+                    <option value="">None</option>
                     {Object.entries(officerRoles).map(([letter, title]) => (
                       <option key={letter} value={letter}>
                         {title}

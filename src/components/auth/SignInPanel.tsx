@@ -38,7 +38,7 @@ export default function SignInPanel() {
       email: email.trim(),
       // shouldCreateUser must stay at its default of true. Supabase Auth knows nothing
       // about the members table, so setting it false would reject every brother who has
-      // not signed in before — there is no auth.users row to match until they do.
+      // not signed in before. There is no auth.users row to match until they do.
       options: { emailRedirectTo: siteUrl('/members') },
     });
 
@@ -51,7 +51,7 @@ export default function SignInPanel() {
         <h2>Check your email</h2>
         <p>
           We sent a sign-in link to <strong>{email}</strong>. It’s good for one hour. Open it on
-          this device and you’ll be signed straight in — no password to remember.
+          this device and you’ll be signed straight in, with no password to remember.
         </p>
         <p className="hint">
           Nothing arrived? Check spam, then confirm with an officer that we have this address on
@@ -86,7 +86,7 @@ export default function SignInPanel() {
       {status.kind === 'error' && <p className="error">{status.message}</p>}
 
       <p className="hint">
-        Use the address the chapter has on file. There’s no password — we email you a link each
+        Use the address the chapter has on file. There’s no password; we email you a link each
         time.
       </p>
     </form>

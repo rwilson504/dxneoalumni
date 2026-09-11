@@ -4,7 +4,7 @@ const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const anonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 /**
- * The anon key is meant to be public — it identifies the project, it does not grant
+ * The anon key is meant to be public. It identifies the project, it does not grant
  * access. Every table is protected by Row Level Security, so what a signed-in browser
  * can read or write is decided by Postgres, not by this client.
  */
@@ -106,7 +106,7 @@ export function slugify(text: string): string {
 }
 
 /**
- * Postgres 42P01 is "relation does not exist" — here it always means the content
+ * Postgres 42P01 is "relation does not exist". Here it always means the content
  * migration has not been applied yet, which is worth saying plainly rather than
  * showing an officer a raw driver error.
  */
@@ -124,7 +124,7 @@ export function describeError(error: { code?: string; message: string } | null):
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
-/** Formats a partial date honestly — "2019", "March 2024", "13 October 2025". */
+/** Formats a partial date honestly: "2019", "March 2024", "13 October 2025". */
 export function formatPartialDate(
   year: number | null,
   month: number | null,

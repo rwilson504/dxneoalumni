@@ -127,7 +127,7 @@ export default function PhotosAdmin({
   if (!albums) return <section className="panel"><p className="muted">Loading albums…</p></section>;
 
   const eventTitle = (id: string | null) =>
-    id ? events.find((e) => e.id === id)?.title ?? '—' : '—';
+    id ? events.find((e) => e.id === id)?.title ?? 'None' : 'None';
 
   return (
     <>
@@ -138,7 +138,7 @@ export default function PhotosAdmin({
           <h2>Waiting to be published</h2>
           <p className="muted">
             These are queued. A scheduled job adds them to the site and they disappear from
-            this list — usually within a few minutes of the next build.
+            this list, usually within a few minutes of the next build.
           </p>
           <ul className="directory">
             {pending.map((upload) => (
@@ -198,7 +198,7 @@ export default function PhotosAdmin({
             </div>
 
             <label className="field-wide">
-              Linked event <span className="hint">optional — leave blank for albums that aren’t an event</span>
+              Linked event <span className="hint">optional, leave blank for albums that aren’t an event</span>
               <select value={draft.event_id}
                 onChange={(e) => setDraft({ ...draft, event_id: e.target.value })}>
                 <option value="">Not linked to an event</option>
@@ -435,7 +435,7 @@ function Uploader({
       <h2>Add photos</h2>
       <p className="muted">
         Pick an album, choose the photos, and upload. They are resized to under 1&nbsp;MB and
-        added to the site automatically — they will not appear on the gallery straight away.
+        added to the site automatically, but they will not appear on the gallery straight away.
       </p>
 
       <p className="notice notice--inline">
@@ -470,7 +470,7 @@ function Uploader({
       {files.length > 0 && (
         <p className="hint">
           {files.length} file(s) selected
-          {tooBig.length > 0 && ` — ${tooBig.length} over 25 MB and will be rejected`}
+          {tooBig.length > 0 && `, ${tooBig.length} over 25 MB and will be rejected`}
         </p>
       )}
 
@@ -484,7 +484,7 @@ function Uploader({
       </button>
 
       {albums.length === 0 && (
-        <p className="hint">Create an album first — every photo belongs to one.</p>
+        <p className="hint">Create an album first. Every photo belongs to one.</p>
       )}
     </section>
   );

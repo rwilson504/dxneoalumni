@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "check:content": "node tools/check-content.mjs",
     "check:sql": "node tools/check-migrations.mjs",
     "check:supabase": "node --env-file=.env tools/check-supabase.mjs",
     "lockfile:check": "node tools/check-lockfile.mjs",

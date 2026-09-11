@@ -199,7 +199,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
           )}
 
           <p className="hint">
-            Leave month or day blank if you only know roughly when it happened &mdash; undated
+            Leave month or day blank if you only know roughly when it happened. Undated
             events sort to the end of their year rather than pretending to a date. A new image
             replaces the old one on the site within a few minutes, once the next build runs.
           </p>
@@ -265,7 +265,7 @@ async function uploadEventImage(eventId: string, file: File, memberId: string) {
   const supabase = getSupabase();
 
   // An event has one image, so a second upload before the ingest job runs should replace
-  // the queued one rather than join it — otherwise both files land in git permanently and
+  // the queued one rather than join it, otherwise both files land in git permanently and
   // only the last would be used.
   const { data: queued } = await supabase
     .from('photo_uploads')

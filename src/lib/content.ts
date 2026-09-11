@@ -4,7 +4,7 @@
  * The site is static: this runs during `astro build`, never in a visitor's browser.
  * Officers edit content in the member area, a rebuild publishes it.
  *
- * Image FILES are not in the database — they live in src/assets and are optimised by
+ * Image FILES are not in the database. They live in src/assets and are optimised by
  * Astro from local disk. These rows only name them.
  */
 import { createClient } from '@supabase/supabase-js';
@@ -44,8 +44,8 @@ export type GalleryAlbum = {
 function assertNotEmpty(what: string, rows: unknown[]) {
   if (rows.length === 0) {
     throw new Error(
-      `No ${what} returned from Supabase. Refusing to build a site with no ${what} — `
-      + 'check the project is awake and the content seed has been run.'
+      `No ${what} returned from Supabase. Refusing to build a site with no ${what}. `
+      + 'Check the project is awake and the content seed has been run.'
     );
   }
 }
@@ -128,7 +128,7 @@ export const albums = content.albums;
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];
 
-/** Formats only the precision actually known — "2019", "March 2024", "October 13, 2025". */
+/** Formats only the precision actually known: "2019", "March 2024", "October 13, 2025". */
 export function formatDate(
   year: number | null,
   month: number | null,

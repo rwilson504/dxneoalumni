@@ -71,7 +71,7 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
   return (
     <section className="panel">
       <div className="panel__head">
-        <h2>Dues — all members</h2>
+        <h2>Dues for all members</h2>
         <label className="inline-field">
           Year
           <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
@@ -118,7 +118,7 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
                       <>
                         <td className="paid">Paid</td>
                         <td>${Number(payment.amount).toFixed(2)}</td>
-                        <td>{payment.method ?? '—'}</td>
+                        <td>{payment.method ?? 'Not recorded'}</td>
                         <td>{payment.paid_on}</td>
                         <td>
                           <button

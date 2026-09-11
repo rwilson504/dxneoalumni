@@ -6,7 +6,7 @@ export type SessionState = {
   loading: boolean;
   session: Session | null;
   member: Member | null;
-  /** Signed in, but no member row matched the address — i.e. not on the roster. */
+  /** Signed in, but no member row matched the address, i.e. not on the roster. */
   notOnRoster: boolean;
 };
 

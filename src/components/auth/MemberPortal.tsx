@@ -36,7 +36,7 @@ export default function MemberPortal({ thumbnails }: { thumbnails: Record<string
           chapter roster, so there’s nothing here for you yet.
         </p>
         <p className="hint">
-          If you’re a paid member, ask an officer to add this address — or sign in with the one the
+          If you’re a paid member, ask an officer to add this address, or sign in with the one the
           chapter already has.
         </p>
         <SignOutButton />
@@ -221,7 +221,7 @@ function Dues({ member }: { member: Member }) {
                   <tr key={p.id}>
                     <td>{p.year}</td>
                     <td>${Number(p.amount).toFixed(2)}</td>
-                    <td>{p.method ?? '—'}</td>
+                    <td>{p.method ?? 'Not recorded'}</td>
                     <td>{p.paid_on}</td>
                   </tr>
                 ))}
