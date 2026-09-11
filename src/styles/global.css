@@ -111,6 +111,12 @@ img {
   outline-color: var(--dx-gold);
 }
 
+.masthead #nav-toggle:focus-visible + .nav-toggle {
+  outline: 3px solid var(--dx-gold);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
 /* Layout ------------------------------------------------------------------ */
 
 .wrap {

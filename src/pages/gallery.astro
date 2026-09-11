@@ -3,8 +3,10 @@ import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { albums, formatDate, galleryImage } from '~/lib/content';
 
-// Albums arrive newest first; a photo whose file is missing from the repo is dropped
-// rather than rendered as a broken tile.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Albums arrive newest first. Use the first available image as the cover and drop an
+// album rather than rendering a broken card when none of its files are in the repo.
 const sections = albums
   .map((album) => ({
     ...album,
@@ -14,14 +16,11 @@ const sections = albums
       album.year && !album.title.includes(String(album.year))
         ? formatDate(album.year, album.month)
         : '',
-    photos: album.photos
-      .map((photo) => ({ ...photo, image: galleryImage(photo.file) }))
-      .filter((photo) => photo.image),
+    cover: album.photos.map((photo) => galleryImage(photo.file)).find(Boolean),
   }))
-  .filter((album) => album.photos.length > 0);
+  .filter((album) => album.cover);
 
-const total = sections.reduce((n, album) => n + album.photos.length, 0);
-let rendered = 0;
+const total = albums.reduce((count, album) => count + album.photos.length, 0);
 ---
 
 <BaseLayout
@@ -41,86 +40,93 @@ let rendered = 0;
 
   <section class="section section--alt">
     <div class="wrap">
-      {
-        sections.map((album) => (
-          <section class="album" id={album.slug}>
-            <h2 class="album__heading">
-              {album.title}
-              {album.dateLabel && <span>{album.dateLabel}</span>}
-            </h2>
-            <div class="tiles">
-              {album.photos.map((photo) => {
-                rendered++;
-                return (
-                  <figure>
-                    <Image
-                      src={photo.image!}
-                      alt={photo.caption ?? album.title}
-                      width={520}
-                      height={390}
-                      loading={rendered <= 6 ? 'eager' : 'lazy'}
-                    />
-                  </figure>
-                );
-              })}
-            </div>
-          </section>
-        ))
-      }
+      <ul class="albums">
+        {
+          sections.map((album, index) => (
+            <li id={album.slug}>
+              <a href={`${base}/gallery/${album.slug}`}>
+                <Image
+                  src={album.cover!}
+                  alt=""
+                  width={520}
+                  height={390}
+                  loading={index < 6 ? 'eager' : 'lazy'}
+                />
+                <span class="album__body">
+                  <strong>{album.title}</strong>
+                  <span>
+                    {album.dateLabel && <span>{album.dateLabel} &middot; </span>}
+                    {album.photos.length} {album.photos.length === 1 ? 'photo' : 'photos'}
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .album {
-    margin-bottom: 2rem;
-    /* Linked to from event cards, so keep the heading clear of the sticky header. */
+  .albums {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .albums li {
+    min-width: 0;
     scroll-margin-top: 5rem;
   }
 
-  .album__heading {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    margin: 0 0 0.75rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .album__heading span {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--ink-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  /* A uniform grid rather than CSS columns: 30 of the albums hold a single photo, and
-     columns would leave two thirds of their row blank. */
-  .tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
-  }
-
-  figure {
-    margin: 0;
-    border-radius: var(--radius);
+  .albums a {
+    display: block;
+    height: 100%;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
     background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
   }
 
-  figure img {
+  .albums a:hover {
+    color: var(--ink);
+    border-color: var(--dx-red);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .albums img {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+  }
+
+  .album__body {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .album__body strong {
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    line-height: 1.25;
+  }
+
+  .album__body > span {
+    color: var(--ink-faint);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 </style>

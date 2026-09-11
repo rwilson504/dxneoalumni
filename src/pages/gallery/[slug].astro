@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { albums, formatDate, galleryImage, type GalleryAlbum } from '~/lib/content';
+
+export function getStaticPaths() {
+  return albums.map((album) => ({ params: { slug: album.slug }, props: { album } }));
+}
+
+interface Props {
+  album: GalleryAlbum;
+}
+
+const { album } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const dateLabel = formatDate(album.year, album.month);
+const photos = album.photos
+  .map((photo) => ({ ...photo, image: galleryImage(photo.file) }))
+  .filter((photo) => photo.image);
+---
+
+<BaseLayout
+  title={album.title}
+  description={`Photos from ${album.title}, hosted by the Northeast Ohio Alumni Chapter of The Delta Chi Fraternity.`}
+>
+  <section class="section">
+    <div class="wrap">
+      <a class="back" href={`${base}/gallery`}>&larr; All albums</a>
+      <p class="eyebrow">Photo gallery</p>
+      <h1>{album.title}</h1>
+      <p class="lede">
+        {dateLabel && <>{dateLabel} &middot; </>}
+        {photos.length} {photos.length === 1 ? 'photo' : 'photos'}
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap photos">
+      {
+        photos.map((photo, index) => (
+          <figure>
+            <Image
+              src={photo.image!}
+              alt={photo.caption ?? album.title}
+              width={720}
+              height={540}
+              loading={index < 4 ? 'eager' : 'lazy'}
+            />
+            {photo.caption && <figcaption>{photo.caption}</figcaption>}
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    align-items: start;
+    gap: 1rem;
+  }
+
+  figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  figure img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  figcaption {
+    padding: 0.7rem 0.9rem 0.8rem;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+</style>

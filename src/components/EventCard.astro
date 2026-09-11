@@ -32,7 +32,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <p class="card__text">{event.description}</p>
     {
       event.albumSlug && (
-        <a class="card__link" href={`${base}/gallery#${event.albumSlug}`}>
+        <a class="card__link" href={`${base}/gallery/${event.albumSlug}`}>
           See the photos &rarr;
         </a>
       )
