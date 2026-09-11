@@ -4,8 +4,8 @@ name: Relock
 #
 # npm only resolves the optional dependency branches that apply to the machine it runs
 # on. Developing on Windows therefore produces a lockfile missing packages that Linux
-# needs — `@napi-rs/wasm-runtime` requires `@emnapi/core`, which never gets resolved on
-# Windows — and `npm ci` in CI then rejects it as out of sync. Neither `--os=linux` nor
+# needs. `@napi-rs/wasm-runtime` requires `@emnapi/core`, which never gets resolved on
+# Windows, and `npm ci` in CI then rejects it as out of sync. Neither `--os=linux` nor
 # deleting the lockfile fixes that from a Windows machine.
 #
 # Run this from the Actions tab after any dependency change made on Windows.

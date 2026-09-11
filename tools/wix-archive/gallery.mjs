@@ -5,7 +5,7 @@
  * 15 photos server-side and reveals the rest through a "Show More" button that
  * calls back to the client-side component. The captions live nowhere but the
  * rendered DOM. So the list was lifted out of a real browser session once and
- * committed to archive/photo-gallery-items.json — see the README. This script
+ * committed to archive/photo-gallery-items.json, see the README. This script
  * takes that list and does the rest over plain HTTP:
  *
  *   archive/media/           full-resolution originals (resumable)

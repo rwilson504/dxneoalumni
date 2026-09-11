@@ -19,7 +19,7 @@ const results = [];
 
 function record(name, pass, detail) {
   results.push({ name, pass, detail });
-  console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? ` — ${detail}` : ''}`);
+  console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? `: ${detail}` : ''}`);
 }
 
 async function rest(path) {
@@ -53,7 +53,7 @@ for (const table of ['members', 'documents', 'dues_payments']) {
 }
 
 // 3. Table grants. RLS filters rows but does not grant access to the table itself.
-// Without grants every request fails with 42501 — including signed-in members.
+  // Without grants every request fails with 42501, including signed-in members.
 // `documents` is the probe because its policy explicitly allows anonymous reads,
 // so anything other than 200 here means the grants are missing.
 {
@@ -62,7 +62,7 @@ for (const table of ['members', 'documents', 'dues_payments']) {
   record(
     'table privileges granted to API roles',
     status === 200 && !denied,
-    denied ? `42501 permission denied — run the grants migration` : `HTTP ${status}`
+    denied ? `42501 permission denied, run the grants migration` : `HTTP ${status}`
   );
 }
 
@@ -74,7 +74,7 @@ for (const table of ['members', 'documents', 'dues_payments']) {
     'RLS blocks anonymous read of members',
     !leaked,
     leaked
-      ? `LEAKED ${body.length} rows — check that RLS is enabled!`
+      ? `LEAKED ${body.length} rows, check that RLS is enabled!`
       : `HTTP ${status}${body?.code ? ` (${body.code})` : ''}`
   );
 }
@@ -116,7 +116,7 @@ for (const table of ['members', 'documents', 'dues_payments']) {
   );
 }
 
-// 6. Content tables. These fail until the content migration reaches production —
+// 6. Content tables. These fail until the content migration reaches production, and
 // that is the point: it is how you confirm the push actually applied.
 {
   const { status, body } = await rest('events?select=id&limit=1');

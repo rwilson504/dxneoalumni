@@ -2,7 +2,7 @@
 applyTo: "**"
 ---
 
-# dxneoalumni — repo rules for AI agents
+# dxneoalumni: repo rules for AI agents
 
 **This repository is public.** Anything committed here is world-readable and is
 part of the chapter's public face.
@@ -22,8 +22,8 @@ Documentation that serves a *human visitor or maintainer* is fine (`README.md`,
 
 ## Where learnings go instead
 
-Durable findings about this site — brand decisions, CSS gotchas, content-model
-traps, review technique — belong in the machine-level marketplace clone
+Durable findings about this site, such as brand decisions, CSS gotchas, content-model
+traps and review technique, belong in the machine-level marketplace clone
 (normally `D:\rwilson504\agent-plugins-personal`, resolvable from
 `(Get-Item "$HOME\.copilot\agents").Target`), under `src/skills/`:
 
@@ -35,14 +35,14 @@ traps, review technique — belong in the machine-level marketplace clone
 | Chapter facts, event/newsletter/social copy | `deltachi-neo-copywriting` |
 
 After editing a skill, run `pwsh scripts/build-plugins.ps1` then
-`pwsh scripts/lint.ps1` in the clone, and commit there — not here.
+`pwsh scripts/lint.ps1` in the clone, and commit there, not here.
 
 ## Repo-specific hard rules
 
 - Never put `SUPABASE_SERVICE_ROLE_KEY` or any secret in a file. Anon key +
   project URL come from `.env` locally and repo vars/secrets in CI.
 - Never edit an applied migration in `supabase/migrations/`; add a new one.
-- Never delete or rewrite `archive/` — it is the only copy of the Wix content.
+- Never delete or rewrite `archive/`. It is the only copy of the Wix content.
 - Events, albums and photos are read from **Supabase** at build time
   (`src/lib/content.ts`). Editing `src/data/events.json` or `gallery.json` does
   **not** change the live pages.

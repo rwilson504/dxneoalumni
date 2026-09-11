@@ -1,7 +1,7 @@
 /**
  * One-time salvage of the legacy Wix site.
  *
- * Wix serves fully server-rendered HTML, so a plain fetch is enough — no browser needed.
+ * Wix serves fully server-rendered HTML, so a plain fetch is enough, with no browser needed.
  * Outputs into <repo>/archive:
  *   raw/       untouched HTML per page (last-resort backup)
  *   content/   readable markdown per page

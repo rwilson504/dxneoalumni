@@ -2,7 +2,7 @@
  * Parses every migration and seed file with the real PostgreSQL grammar.
  *
  * Migrations are applied to PRODUCTION automatically when main is pushed, and there is
- * no local database to try them against (that needs Docker — see the README). Parsing
+ * no local database to try them against (that needs Docker, see the README). Parsing
  * catches syntax errors before they reach the live project. It does NOT catch runtime
  * problems: a policy that references a missing column parses perfectly well.
  *
@@ -47,7 +47,7 @@ function splitStatements(sql) {
       continue;
     }
     // Only look for a dollar-quote tag when one can actually start here, and match
-    // against a short window — slicing the rest of the file per character is O(n^2).
+    // against a short window; slicing the rest of the file per character is O(n^2).
     if (ch === '$') {
       const tag = sql.slice(i, i + 64).match(/^\$([A-Za-z_]\w*)?\$/)?.[0];
       if (tag) {
@@ -84,7 +84,7 @@ const BATCH_BYTES = 4000;
 
 /**
  * The WASM parser never frees between calls, so it exhausts its heap after roughly
- * 30-40KB of cumulative input and then aborts — and an aborted instance stays poisoned,
+ * 30-40KB of cumulative input and then aborts, and an aborted instance stays poisoned,
  * failing every later file for unrelated reasons. The budget is therefore measured in
  * bytes parsed, not calls: one 60KB file dies just as readily as a hundred small ones.
  */

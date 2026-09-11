@@ -13,15 +13,21 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ROOTS = ['src'];
-const EXTENSIONS = ['.astro', '.ts', '.tsx', '.js', '.mjs', '.json', '.md', '.html', '.css'];
+const ROOTS = ['src', 'tools', '.github'];
+const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git']);
+// This file necessarily contains the thing it looks for.
+const SELF = fileURLToPath(import.meta.url);
+const EXTENSIONS = ['.astro', '.ts', '.tsx', '.js', '.mjs', '.json', '.md', '.html', '.css', '.yml'];
 const PATTERN = /\u2014|&mdash;|&#8212;|&#x2014;/gi;
 
 function* files(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
-    if (entry.isDirectory()) yield* files(path);
-    else if (EXTENSIONS.some((e) => entry.name.endsWith(e))) yield path;
+    if (entry.isDirectory()) {
+      if (!SKIP_DIRS.has(entry.name)) yield* files(path);
+    } else if (path !== SELF && EXTENSIONS.some((e) => entry.name.endsWith(e))) {
+      yield path;
+    }
   }
 }
 
@@ -42,4 +48,4 @@ if (found > 0) {
   console.error(`\n${found} em dash(es) found. Rewrite the sentence: use a comma, colon, or full stop.`);
   process.exit(1);
 }
-console.log('No em dashes in src/.');
+console.log(`No em dashes in ${ROOTS.join(', ')}.`);

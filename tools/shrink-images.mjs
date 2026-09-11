@@ -27,7 +27,7 @@ const MAX_EDGE = 2400;
  * photo without turning it to mush, and resizing alone overshoots on noisy images.
  *
  * Output is always JPEG when it had to re-encode, so callers must honour the returned
- * `format` when naming the file — writing JPEG bytes to a .png would mislabel it.
+ * `format` when naming the file; writing JPEG bytes to a .png would mislabel it.
  */
 export async function shrink(input, maxBytes = MAX_BYTES) {
   if (input.length <= maxBytes) return { buffer: input, changed: false };
@@ -104,5 +104,5 @@ if (isMain) {
 
   console.log(`\n${touched} file(s) over ${mb(MAX_BYTES)} MB`);
   console.log(`total ${mb(before)} MB -> ${mb(after)} MB  (saves ${mb(before - after)} MB)`);
-  if (!write) console.log('\nreport only — pass --write to apply');
+  if (!write) console.log('\nreport only, pass --write to apply');
 }

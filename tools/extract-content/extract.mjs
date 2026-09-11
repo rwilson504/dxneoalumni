@@ -4,7 +4,7 @@
  * On the Wix page each block of thumbnails appears immediately *before* the run of
  * event headings it belongs to, in matching order, so images pair to events positionally.
  *
- * Output is a seed file. Once written it is hand-maintained — this is a migration,
+ * Output is a seed file. Once written it is hand-maintained: this is a migration,
  * not a build step.
  */
 
@@ -44,7 +44,7 @@ function safeAssetName(file) {
 /** Titles are inconsistent ("Oct. 15, 2022", "June 27th:", "Feb 1st 2025"). Pull what we can. */
 function parseMonthDay(text) {
   if (!text) return { month: null, day: null };
-  // Must match whole month words — a loose \b(mar)[a-z]* also matches "Mariners".
+  // Must match whole month words; a loose \b(mar)[a-z]* also matches "Mariners".
   const match = text.match(
     /\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sept?(?:ember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b\.?\s*(\d{1,2})(?:st|nd|rd|th)?\b/i
   ) ?? text.match(
