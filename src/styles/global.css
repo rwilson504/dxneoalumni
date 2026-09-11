@@ -1,14 +1,33 @@
+/* Self-hosted so the brand renders identically on every platform. Latin subset,
+   variable weight. Licences sit beside the files in src/assets/fonts/. */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../assets/fonts/montserrat-variable.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('../assets/fonts/source-serif-4-variable.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  /* Sampled from the Delta Chi coat of arms */
-  --dx-red: #c4303c;
-  --dx-red-dark: #8f1f28;
-  --dx-gold: #e8b01f;
-  --dx-gold-soft: #f6dc9a;
+  /* HQ brand guide values. The -dark and -soft shades are derived from these:
+     same hue, lightness shifted -13.7 / +26.9. Re-derive them if the base changes. */
+  --dx-red: #cb2e32;
+  --dx-red-dark: #951e21;
+  --dx-gold: #f1bd19;
+  --dx-gold-soft: #fae399;
   --dx-buff: #f5ecd9;
 
   --ink: #16161a;
   --ink-soft: #4a4a55;
-  --ink-faint: #767683;
+  --ink-faint: #6b6b78;
   --rule: #e2ddd3;
   --surface: #ffffff;
   --surface-alt: #faf7f1;
@@ -21,8 +40,8 @@
   --radius-lg: 16px;
   --page: 1140px;
 
-  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --font-body: 'Montserrat', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: 'Source Serif 4', "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
 }
 
 *,
@@ -80,9 +99,16 @@ img {
 }
 
 :focus-visible {
-  outline: 3px solid var(--dx-gold);
+  outline: 3px solid var(--ink);
   outline-offset: 2px;
   border-radius: 3px;
+}
+
+/* Gold only clears 3:1 against the dark surfaces; ink only clears it against the light ones. */
+.masthead :focus-visible,
+.hero :focus-visible,
+.footer :focus-visible {
+  outline-color: var(--dx-gold);
 }
 
 /* Layout ------------------------------------------------------------------ */
@@ -177,6 +203,23 @@ img {
 .btn--on-dark:hover {
   background: #fff;
   color: var(--ink);
+}
+
+/* Header auth ------------------------------------------------------------- */
+
+/* Lives here, not in Header.astro: the link is rendered by a React island, which
+   gets no data-astro-cid attribute, so scoped rules never match it. */
+.header-auth {
+  color: var(--dx-gold);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-auth:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 /* Cards ------------------------------------------------------------------- */

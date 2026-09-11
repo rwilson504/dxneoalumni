@@ -1,0 +1,7 @@
+#!/bin/sh
+# Normalise package-lock.json to registry.npmjs.org so GitHub Actions can install.
+# Enable with: git config core.hooksPath .githooks
+if git diff --cached --name-only | grep -q '^package-lock\.json$'; then
+	node tools/check-lockfile.mjs --fix || exit 1
+	git add package-lock.json
+fi

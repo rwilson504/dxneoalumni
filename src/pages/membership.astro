@@ -79,17 +79,19 @@ const year = new Date().getFullYear();
   </section>
 
   <section class="section section--alt">
-    <div class="wrap prose narrow">
-      <h2>Join the chapter</h2>
-      <p>
-        Your ${site.chapterDues} annual membership (or ${site.virtualDues} for virtual members)
-        helps strengthen local programming, enhance chapter collaboration, and create welcoming,
-        high-quality experiences for brothers at every stage of life. Most importantly, it keeps our
-        shared legacy strong.
-      </p>
-      <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
-        Sign up through PayPal
-      </a>
+    <div class="wrap">
+      <div class="prose narrow">
+        <h2>Join the chapter</h2>
+        <p>
+          Your ${site.chapterDues} annual membership (or ${site.virtualDues} for virtual members)
+          helps strengthen local programming, enhance chapter collaboration, and create welcoming,
+          high-quality experiences for brothers at every stage of life. Most importantly, it keeps our
+          shared legacy strong.
+        </p>
+        <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+          Sign up through PayPal
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

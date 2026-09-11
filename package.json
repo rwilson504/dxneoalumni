@@ -10,6 +10,8 @@
     "check": "astro check",
     "check:sql": "node tools/check-migrations.mjs",
     "check:supabase": "node --env-file=.env tools/check-supabase.mjs",
+    "lockfile:check": "node tools/check-lockfile.mjs",
+    "lockfile:fix": "node tools/check-lockfile.mjs --fix",
     "extract": "node tools/extract-content/extract.mjs"
   },
   "dependencies": {

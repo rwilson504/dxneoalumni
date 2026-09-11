@@ -22,24 +22,26 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </section>
 
   <section class="section section--alt">
-    <div class="wrap prose narrow">
-      <h2>The history</h2>
-      <p>
-        The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
-        closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
-        On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
-        Independence, Ohio &mdash; the same location the original chapter formed &mdash; and
-        committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
-        Chi Board of Regents approved the chartering of the current Alumni Chapter.
-      </p>
+    <div class="wrap">
+      <div class="prose narrow">
+        <h2>The history</h2>
+        <p>
+          The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
+          closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
+          On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
+          Independence, Ohio &mdash; the same location the original chapter formed &mdash; and
+          committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
+          Chi Board of Regents approved the chartering of the current Alumni Chapter.
+        </p>
 
-      <h2>Structure</h2>
-      <p>
-        The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
-        International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
-        responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
-        way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
-      </p>
+        <h2>Structure</h2>
+        <p>
+          The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
+          International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
+          responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
+          way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -80,48 +82,50 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </section>
 
   <section class="section section--alt">
-    <div class="wrap prose narrow">
-      <h2>What does my ${site.chapterDues} membership get me?</h2>
-      <p>
-        Virtual membership is ${site.virtualDues}. We invest most of our dues directly back into our
-        membership:
-      </p>
-      <ul>
-        <li>
-          <strong>Discounted tickets to events.</strong> On top of the group rates we negotiate, we
-          use dues to further reduce what members pay to attend.
-        </li>
-        <li><strong>Food at events.</strong> Appetizers are always on us.</li>
-        <li>
-          <strong>Speaker costs.</strong> Dues may cover expenses for speakers on professional and
-          personal growth &mdash; financial consultants, career counseling, and more.
-        </li>
-        <li>
-          <strong>Founder&rsquo;s Day.</strong> Each year the chapter coordinates a Founder&rsquo;s
-          Day event to bring brothers together on our &ldquo;birthday.&rdquo;
-        </li>
-        <li>
-          <strong>Alumni Rededication Ceremonies.</strong> We work with undergraduate chapters to
-          facilitate rededications for graduating seniors and alumni who haven&rsquo;t yet taken
-          part.
-        </li>
-        <li>
-          <strong>The convention bus tour.</strong> A &ldquo;must do&rdquo; when attending a Delta
-          Chi convention.
-        </li>
-        <li>
-          <strong>IHQ dues.</strong> Like undergraduate chapters, alumni chapters pay International
-          Headquarters dues. In return, IHQ provides alumni contact data, money management software,
-          and other resources.
-        </li>
-        <li>
-          <strong>Operating expenses.</strong> Postage, website, outreach, and communications.
-        </li>
-      </ul>
+    <div class="wrap">
+      <div class="prose narrow">
+        <h2>What does my ${site.chapterDues} membership get me?</h2>
+        <p>
+          Virtual membership is ${site.virtualDues}. We invest most of our dues directly back into our
+          membership:
+        </p>
+        <ul>
+          <li>
+            <strong>Discounted tickets to events.</strong> On top of the group rates we negotiate, we
+            use dues to further reduce what members pay to attend.
+          </li>
+          <li><strong>Food at events.</strong> Appetizers are always on us.</li>
+          <li>
+            <strong>Speaker costs.</strong> Dues may cover expenses for speakers on professional and
+            personal growth &mdash; financial consultants, career counseling, and more.
+          </li>
+          <li>
+            <strong>Founder&rsquo;s Day.</strong> Each year the chapter coordinates a Founder&rsquo;s
+            Day event to bring brothers together on our &ldquo;birthday.&rdquo;
+          </li>
+          <li>
+            <strong>Alumni Rededication Ceremonies.</strong> We work with undergraduate chapters to
+            facilitate rededications for graduating seniors and alumni who haven&rsquo;t yet taken
+            part.
+          </li>
+          <li>
+            <strong>The convention bus tour.</strong> A &ldquo;must do&rdquo; when attending a Delta
+            Chi convention.
+          </li>
+          <li>
+            <strong>IHQ dues.</strong> Like undergraduate chapters, alumni chapters pay International
+            Headquarters dues. In return, IHQ provides alumni contact data, money management software,
+            and other resources.
+          </li>
+          <li>
+            <strong>Operating expenses.</strong> Postage, website, outreach, and communications.
+          </li>
+        </ul>
 
-      <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
-        Join for ${site.chapterDues}/year
-      </a>
+        <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
+          Join for ${site.chapterDues}/year
+        </a>
+      </div>
     </div>
   </section>
 </BaseLayout>

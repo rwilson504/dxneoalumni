@@ -84,8 +84,9 @@ const isActive = (href: string) => current === href || (href !== '/' && current.
   }
 
   .brand__text span {
-    font-size: 0.72rem;
-    letter-spacing: 0.09em;
+    /* Fluid: Montserrat is wide enough that a fixed size pushes the toggle onto its own row. */
+    font-size: clamp(0.58rem, 2.3vw, 0.72rem);
+    letter-spacing: 0.07em;
     text-transform: uppercase;
     color: var(--dx-gold);
   }
@@ -105,7 +106,7 @@ const isActive = (href: string) => current === href || (href !== '/' && current.
     flex-wrap: wrap;
   }
 
-  .nav a {
+  .nav ul a {
     color: rgb(255 255 255 / 0.85);
     text-decoration: none;
     font-size: 0.92rem;
@@ -114,11 +115,11 @@ const isActive = (href: string) => current === href || (href !== '/' && current.
     border-bottom: 2px solid transparent;
   }
 
-  .nav a:hover {
+  .nav ul a:hover {
     color: #fff;
   }
 
-  .nav a[aria-current='page'] {
+  .nav ul a[aria-current='page'] {
     color: #fff;
     border-bottom-color: var(--dx-gold);
   }
@@ -128,24 +129,12 @@ const isActive = (href: string) => current === href || (href !== '/' && current.
     font-size: 0.88rem;
   }
 
-  .header-auth {
-    color: var(--dx-gold);
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .header-auth:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
-
   .nav-toggle {
     display: none;
   }
 
-  @media (max-width: 940px) {
+  /* Montserrat is wide enough that the full nav row stops fitting below ~1180px. */
+  @media (max-width: 1200px) {
     .nav-toggle {
       display: flex;
       flex-direction: column;
