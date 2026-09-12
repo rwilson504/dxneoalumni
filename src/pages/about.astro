@@ -3,6 +3,17 @@ import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { site } from '~/data/site';
 import founders from '~/assets/gallery/f002fe_6cc2358307c3457b8de502da8caeeaf9-mv2.jpg';
+import friendship from '~/assets/value-friendship.png';
+import character from '~/assets/value-character.png';
+import justice from '~/assets/value-justice.png';
+import education from '~/assets/value-education.png';
+
+const values = [
+  { icon: friendship, label: 'Friendship' },
+  { icon: character, label: 'Character' },
+  { icon: justice, label: 'Justice' },
+  { icon: education, label: 'Education' },
+];
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -20,6 +31,22 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         Delta Chi chapters living in the Northeast Ohio area, to gather at events to celebrate
         brotherhood and social justice through philanthropic events.
       </p>
+    </div>
+  </section>
+
+  <section class="section values">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--on-dark">What Delta Chi stands for</p>
+      <ul class="values-grid">
+        {
+          values.map((value) => (
+            <li class="value">
+              <Image src={value.icon} alt="" aria-hidden="true" width={72} height={72} />
+              <p>{value.label}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -144,6 +171,46 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <style>
   .narrow {
     max-width: 68ch;
+  }
+
+  /* Gold on cream washes out, so the official value marks get a charcoal ground. */
+  .values {
+    background: #16161a;
+    color: #fff;
+    padding-block: 2.75rem;
+  }
+
+  .eyebrow--on-dark {
+    color: var(--dx-gold);
+  }
+
+  .values-grid {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.75rem 1rem;
+  }
+
+  .value {
+    text-align: center;
+  }
+
+  .value img {
+    width: 60px;
+    height: auto;
+    margin: 0 auto 0.7rem;
+    display: block;
+  }
+
+  .value p {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dx-gold);
   }
 
   .history {
