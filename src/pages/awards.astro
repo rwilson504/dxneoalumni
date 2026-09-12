@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import awards from '~/data/awards.json';
 import shield from '~/assets/dx-shield-gold.png';
+import shieldOutline from '~/assets/dx-shield-outline.png';
 
 type AwardYear = { period: string; awards: string[] };
 const timeline = awards as AwardYear[];
@@ -42,7 +43,8 @@ const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chica
     </div>
   </section>
 
-  <section class="section section--alt">
+  <section class="section section--alt timeline-section">
+    <Image class="watermark" src={shieldOutline} alt="" aria-hidden="true" width={620} height={775} />
     <div class="wrap">
       <ol class="timeline">
         {
@@ -105,6 +107,29 @@ const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chica
     color: var(--dx-gold);
     font-weight: 700;
     font-size: 1.05rem;
+  }
+
+  /* The guide's signature look: a large line-art shield cropped off the panel edge. */
+  .timeline-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-section .wrap {
+    position: relative;
+    z-index: 1;
+  }
+
+  .watermark {
+    position: absolute;
+    right: -5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(520px, 48vw);
+    height: auto;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .timeline {
