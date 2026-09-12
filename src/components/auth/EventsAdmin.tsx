@@ -16,15 +16,14 @@ type Draft = {
   slug: string;
   title: string;
   description: string;
-  year: string;
-  month: string;
-  day: string;
+  location: string;
+  date: string;
   image_alt: string;
 };
 
 const blank: Draft = {
   id: null, slug: '', title: '', description: '',
-  year: String(new Date().getFullYear()), month: '', day: '', image_alt: '',
+  location: '', date: new Date().toISOString().slice(0, 10), image_alt: '',
 };
 
 function toDraft(event: ChapterEventRow): Draft {
@@ -33,9 +32,8 @@ function toDraft(event: ChapterEventRow): Draft {
     slug: event.slug,
     title: event.title,
     description: event.description ?? '',
-    year: String(event.year),
-    month: event.month ? String(event.month) : '',
-    day: event.day ? String(event.day) : '',
+    location: event.location ?? '',
+    date: `${event.year}-${String(event.month ?? 1).padStart(2, '0')}-${String(event.day ?? 1).padStart(2, '0')}`,
     image_alt: event.image_alt ?? '',
   };
 }
@@ -68,14 +66,16 @@ export default function EventsAdmin({ member }: { member: Member }) {
     if (!draft) return;
     setSaving(true);
     setError(null);
+    const [year, month, day] = draft.date.split('-').map(Number);
 
     const row = {
       slug: draft.slug.trim() || slugify(draft.title),
       title: draft.title.trim(),
       description: draft.description.trim() || null,
-      year: Number(draft.year),
-      month: draft.month ? Number(draft.month) : null,
-      day: draft.day ? Number(draft.day) : null,
+      location: draft.location.trim() || null,
+      year,
+      month,
+      day,
       image_alt: draft.image_alt.trim() || null,
     };
 
@@ -92,6 +92,10 @@ export default function EventsAdmin({ member }: { member: Member }) {
       setError(describeError(err));
       return;
     }
+
+    // Keep the persisted id in the form before uploading. If the upload fails, retrying
+    // must update this event rather than insert a duplicate.
+    setDraft((current) => current ? { ...current, id: saved.id } : current);
 
     if (image) {
       const uploadError = await uploadEventImage(saved.id, image, member.id);
@@ -149,19 +153,14 @@ export default function EventsAdmin({ member }: { member: Member }) {
               />
             </label>
             <label>
-              Year
-              <input type="number" value={draft.year}
-                onChange={(e) => setDraft({ ...draft, year: e.target.value })} />
+              Date
+              <input type="date" value={draft.date}
+                onChange={(e) => setDraft({ ...draft, date: e.target.value })} />
             </label>
             <label>
-              Month <span className="hint">optional</span>
-              <input type="number" min="1" max="12" value={draft.month}
-                onChange={(e) => setDraft({ ...draft, month: e.target.value })} />
-            </label>
-            <label>
-              Day <span className="hint">optional</span>
-              <input type="number" min="1" max="31" value={draft.day}
-                onChange={(e) => setDraft({ ...draft, day: e.target.value })} />
+              Address <span className="hint">optional</span>
+              <input type="text" autoComplete="street-address" value={draft.location}
+                onChange={(e) => setDraft({ ...draft, location: e.target.value })} />
             </label>
             <label>
               Image description
@@ -199,14 +198,13 @@ export default function EventsAdmin({ member }: { member: Member }) {
           )}
 
           <p className="hint">
-            Leave month or day blank if you only know roughly when it happened. Undated
-            events sort to the end of their year rather than pretending to a date. A new image
-            replaces the old one on the site within a few minutes, once the next build runs.
+            A new image replaces the old one on the site within a few minutes, once the next
+            build runs.
           </p>
 
           <div className="row-actions">
             <button className="btn btn--primary" type="button" onClick={save}
-              disabled={saving || !draft.title.trim() || !draft.year
+              disabled={saving || !draft.title.trim() || !draft.date
                 || Boolean(image && image.size > MAX_UPLOAD)}>
               {saving ? 'Saving…' : 'Save event'}
             </button>
@@ -218,7 +216,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
         </div>
       )}
 
-      <table className="table">
+      <table className="table table--responsive">
         <thead>
           <tr>
             <th>Event</th>
@@ -229,12 +227,12 @@ export default function EventsAdmin({ member }: { member: Member }) {
         <tbody>
           {events.map((event) => (
             <tr key={event.id}>
-              <td>
+              <td data-label="Event">
                 {event.title}
                 {pendingImages.has(event.id) && <span className="badge">New image queued</span>}
               </td>
-              <td>{formatPartialDate(event.year, event.month, event.day)}</td>
-              <td>
+              <td data-label="When">{formatPartialDate(event.year, event.month, event.day)}</td>
+              <td data-label="Actions">
                 <div className="row-actions">
                   <button className="btn btn--ghost btn--small" type="button"
                     onClick={() => { setDraft(toDraft(event)); setImage(null); }}>
@@ -265,7 +263,7 @@ async function uploadEventImage(eventId: string, file: File, memberId: string) {
   const supabase = getSupabase();
 
   // An event has one image, so a second upload before the ingest job runs should replace
-  // the queued one rather than join it, otherwise both files land in git permanently and
+  // the queued one rather than join it. Otherwise both files land in git permanently and
   // only the last would be used.
   const { data: queued } = await supabase
     .from('photo_uploads')

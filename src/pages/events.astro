@@ -5,6 +5,9 @@ import { events, splitByDate, groupByYear } from '~/lib/content';
 
 const { upcoming: upcomingEvents, past: pastEvents } = splitByDate(events);
 const pastByYear = groupByYear(pastEvents);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const calendarUrl = new URL(`${base}/events/calendar.ics`, Astro.site).href;
+const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(calendarUrl)}`;
 ---
 
 <BaseLayout
@@ -16,9 +19,15 @@ const pastByYear = groupByYear(pastEvents);
       <p class="eyebrow">Events</p>
       <h1>Where the brothers gather</h1>
       <p class="lede">
-        Ballgames, breweries, happy hours, service projects, and Founder&rsquo;s Day. Since
+        Ballgames, breweries, happy hours, service projects, and Founders&rsquo; Day. Since
         2016 we have held {pastEvents.length} gatherings, and counting.
       </p>
+      <div class="calendar-actions">
+        <a class="btn btn--primary" href={googleCalendarUrl} target="_blank" rel="noreferrer">
+          Add to Google Calendar
+        </a>
+        <a class="btn btn--ghost" href={calendarUrl}>Calendar feed</a>
+      </div>
     </div>
   </section>
 
@@ -64,6 +73,13 @@ const pastByYear = groupByYear(pastEvents);
 </BaseLayout>
 
 <style>
+  .calendar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
   .years {
     display: flex;
     flex-wrap: wrap;

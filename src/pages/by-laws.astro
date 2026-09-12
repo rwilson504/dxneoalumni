@@ -19,7 +19,8 @@ const revised = 'October 13, 2023';
   </section>
 
   <section class="section section--alt">
-    <div class="wrap bylaws">
+    <div class="wrap">
+      <div class="bylaws">
       <p class="preamble">
         The name of this organization shall be the Northeast Ohio Alumni Chapter of The Delta Chi
         Fraternity. Its purpose shall be to continue to provide opportunities for alumni of The
@@ -42,35 +43,48 @@ const revised = 'October 13, 2023';
         </ol>
       </article>
 
-      <article>
+      <article class="officers">
         <h2>II. Officers</h2>
         <ol type="A">
           <li>
-            The <strong>&ldquo;A&rdquo;</strong> shall serve as <strong>President</strong>,
-            responsible for overseeing the functions and progress of the chapter, serving as
+            <span class="officer-heading">
+              The <strong>&ldquo;A&rdquo;</strong> shall serve as{' '}<strong>President</strong>,
+            </span>
+            <span>responsible for overseeing the functions and progress of the chapter, serving as
             official spokesperson, representing the chapter at official fraternity events, and
-            chairing all chapter meetings.
+            chairing all chapter meetings.</span>
           </li>
           <li>
-            The <strong>&ldquo;B&rdquo;</strong> shall serve as
-            <strong>Director of Programming</strong>, responsible for planning and executing all
+            <span class="officer-heading">
+              The <strong>&ldquo;B&rdquo;</strong> shall serve as{' '}
+              <strong>Director of Programming</strong>,
+            </span>
+            <span>responsible for planning and executing all
             social and philanthropic events. The &ldquo;B&rdquo; will be acting &ldquo;A&rdquo; in
-            the absence of the &ldquo;A&rdquo;.
+            the absence of the &ldquo;A&rdquo;.</span>
           </li>
           <li>
-            The <strong>&ldquo;C&rdquo;</strong> shall serve as <strong>Secretary</strong>,
-            responsible for all official correspondence and maintaining chapter records. The
+            <span class="officer-heading">
+              The <strong>&ldquo;C&rdquo;</strong> shall serve as{' '}<strong>Secretary</strong>,
+            </span>
+            <span>responsible for all official correspondence and maintaining chapter records. The
             &ldquo;C&rdquo; or designee serves as the chapter&rsquo;s social media, email, and
-            website manager.
+            website manager.</span>
           </li>
           <li>
-            The <strong>&ldquo;D&rdquo;</strong> shall serve as <strong>Treasurer</strong>,
-            responsible for collecting dues, filing taxes, and making all necessary expenditures.
+            <span class="officer-heading">
+              The <strong>&ldquo;D&rdquo;</strong> shall serve as{' '}<strong>Treasurer</strong>,
+            </span>
+            <span>responsible for collecting dues, filing taxes, and making all necessary expenditures.</span>
           </li>
           <li>
-            The <strong>&ldquo;E&rdquo;</strong> shall serve as
-            <strong>Director of Membership</strong>, responsible for actively recruiting new alumni
+            <span class="officer-heading">
+              The <strong>&ldquo;E&rdquo;</strong> shall serve as{' '}
+              <strong>Director of Membership</strong>,
+            </span>
+            <span>responsible for actively recruiting new alumni
             members and working with IHQ to obtain records of alumni in or newly moved to the area.
+            </span>
           </li>
         </ol>
         <p>
@@ -200,6 +214,7 @@ const revised = 'October 13, 2023';
       </article>
 
       <p class="rev">Revised {revised}</p>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -233,6 +248,16 @@ const revised = 'October 13, 2023';
 
   .bylaws li {
     margin-bottom: 0.6rem;
+  }
+
+  .officers > ol > li {
+    margin-bottom: 1rem;
+    padding-left: 0.35rem;
+  }
+
+  .officer-heading {
+    display: block;
+    margin-bottom: 0.2rem;
   }
 
   .bylaws ol ol {

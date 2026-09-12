@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { site } from '~/data/site';
+import { currentDuesRate } from '~/lib/content';
 import founders from '~/assets/gallery/f002fe_6cc2358307c3457b8de502da8caeeaf9-mv2.jpg';
 import friendship from '~/assets/value-friendship.png';
 import character from '~/assets/value-character.png';
@@ -58,25 +59,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <p>
             The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
             closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
-            On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
-            Independence, Ohio, the same location where the original chapter formed. There they
-            committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
-            Chi Board of Regents approved the chartering of the current Alumni Chapter.
+            On October 13, 2016, a large group of Brothers gathered at Harry&rsquo;s Steakhouse in
+            Independence, Ohio, the same location where the original chapter formed. They signed the
+            petition to charter the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta Chi
+            Board of Regents approved the charter of the current Alumni Chapter.
           </p>
         </div>
 
         <figure class="history__figure">
           <Image src={founders} alt="Brothers gathered at the 2016 chartering dinner" width={1400} height={686} />
-          <figcaption>Some of the brothers who rechartered the chapter, 2016.</figcaption>
+          <figcaption>Some of the Brothers who rechartered the chapter, 2016.</figcaption>
         </figure>
 
         <div class="prose narrow">
           <h2>Structure</h2>
           <p>
             The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
-            International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
+            International Delta Chi Fraternity, in the same way as an Undergraduate Chapter. We are
             responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
-            way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
+            way an Undergraduate Chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
           </p>
         </div>
       </div>
@@ -90,16 +91,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="benefit">
           <h3>Promote friendship</h3>
           <ul>
-            <li>Reconnect with brothers you went to school with</li>
-            <li>Provide a welcoming environment for brothers new to Northeast Ohio</li>
-            <li>Meet brothers from other undergraduate chapters who live in the area</li>
+            <li>Reconnect with Brothers you went to school with</li>
+            <li>Provide a welcoming environment for Brothers new to Northeast Ohio</li>
+            <li>Meet Brothers from other Undergraduate Chapters who live in the area</li>
           </ul>
         </div>
         <div class="benefit">
           <h3>Develop character</h3>
           <ul>
             <li>Give back to others by participating in philanthropic events</li>
-            <li>Provide leadership for undergraduate chapters</li>
+            <li>Provide leadership for Undergraduate Chapters</li>
           </ul>
         </div>
         <div class="benefit">
@@ -112,7 +113,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="benefit">
           <h3>Mentorship</h3>
           <ul>
-            <li>Give back by providing support to undergraduate chapters</li>
+            <li>Give back by providing support to Undergraduate Chapters</li>
           </ul>
         </div>
       </div>
@@ -122,9 +123,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <section class="section section--alt">
     <div class="wrap">
       <div class="prose narrow">
-        <h2>What does my ${site.chapterDues} membership get me?</h2>
+        <h2>What does my ${currentDuesRate.chapterAmount} membership get me?</h2>
         <p>
-          Virtual membership is ${site.virtualDues}. We invest most of our dues directly back into our
+          Virtual membership is ${currentDuesRate.virtualAmount}. We invest most of our dues directly back into our
           membership:
         </p>
         <ul>
@@ -132,26 +133,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <strong>Discounted tickets to events.</strong> On top of the group rates we negotiate, we
             use dues to further reduce what members pay to attend.
           </li>
-          <li><strong>Food at events.</strong> Appetizers are always on us.</li>
           <li>
-            <strong>Speaker costs.</strong> Dues may cover expenses for speakers on professional and
-            personal growth: financial consultants, career counseling, and more.
+            <strong>Food at events.</strong> Dues cover appetizers or discounted food at some events,
+            including most Happy Hours.
           </li>
           <li>
-            <strong>Founder&rsquo;s Day.</strong> Each year the chapter coordinates a Founder&rsquo;s
-            Day event to bring brothers together on our &ldquo;birthday.&rdquo;
+            <strong>Planned speaker programs.</strong> Our recruitment plans include speakers on
+            professional and personal growth, such as financial consultants and career counselors.
           </li>
           <li>
-            <strong>Alumni Rededication Ceremonies.</strong> We work with undergraduate chapters to
+            <strong>Founders&rsquo; Day.</strong> Each year the chapter coordinates a Founders&rsquo;
+            Day event to bring Brothers together on our &ldquo;birthday.&rdquo;
+          </li>
+          <li>
+            <strong>Alumni Rededication Ceremonies.</strong> We work with Undergraduate Chapters to
             facilitate rededications for graduating seniors and alumni who haven&rsquo;t yet taken
             part.
           </li>
           <li>
-            <strong>The convention bus tour.</strong> A &ldquo;must do&rdquo; when attending a Delta
-            Chi convention.
+            <strong>The Convention bus tour.</strong> Dues provide working capital for this
+            &ldquo;must do&rdquo; activity at the Delta Chi International Convention.
           </li>
           <li>
-            <strong>IHQ dues.</strong> Like undergraduate chapters, alumni chapters pay International
+            <strong>IHQ dues.</strong> Like Undergraduate Chapters, Alumni Chapters pay International
             Headquarters dues. In return, IHQ provides alumni contact data, money management software,
             and other resources.
           </li>
@@ -161,7 +165,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </ul>
 
         <a class="btn btn--primary" href={site.duesUrl} rel="noopener noreferrer" target="_blank">
-          Join for ${site.chapterDues}/year
+          Join for ${currentDuesRate.chapterAmount}/year
         </a>
       </div>
     </div>

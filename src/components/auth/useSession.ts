@@ -6,8 +6,9 @@ export type SessionState = {
   loading: boolean;
   session: Session | null;
   member: Member | null;
-  /** Signed in, but no member row matched the address, i.e. not on the roster. */
+  /** Signed in, but no member row matched the address, meaning they are not on the roster. */
   notOnRoster: boolean;
+  error: string | null;
 };
 
 export function useSession(): SessionState {
@@ -16,11 +17,12 @@ export function useSession(): SessionState {
     session: null,
     member: null,
     notOnRoster: false,
+    error: null,
   });
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
-      setState({ loading: false, session: null, member: null, notOnRoster: false });
+      setState({ loading: false, session: null, member: null, notOnRoster: false, error: null });
       return;
     }
 
@@ -29,18 +31,26 @@ export function useSession(): SessionState {
 
     async function load(session: Session | null) {
       if (!session) {
-        if (active) setState({ loading: false, session: null, member: null, notOnRoster: false });
+        if (active) {
+          setState({ loading: false, session: null, member: null, notOnRoster: false, error: null });
+        }
         return;
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('members')
         .select('*')
         .eq('user_id', session.user.id)
         .maybeSingle();
 
       if (active) {
-        setState({ loading: false, session, member: data ?? null, notOnRoster: !data });
+        setState({
+          loading: false,
+          session,
+          member: data ?? null,
+          notOnRoster: !error && !data,
+          error: error?.message ?? null,
+        });
       }
     }
 

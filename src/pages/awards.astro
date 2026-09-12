@@ -1,12 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import awards from '~/data/awards.json';
+import { awardTimeline } from '~/lib/content';
 import shield from '~/assets/dx-shield-gold.png';
 import shieldOutline from '~/assets/dx-shield-outline.png';
 
-type AwardYear = { period: string; awards: string[] };
-const timeline = awards as AwardYear[];
+const timeline = awardTimeline;
 const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
 const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chicago Cup')));
 ---
@@ -20,7 +19,7 @@ const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chica
       <p class="eyebrow">Recognition</p>
       <h1>Chapter awards</h1>
       <p class="lede">
-        {total} awards from The Delta Chi Fraternity since the chapter was re-chartered, including
+        {total} awards from The Delta Chi Fraternity since the chapter was rechartered, including
         three Chicago Cups, the highest honor an alumni chapter can earn.
       </p>
     </div>

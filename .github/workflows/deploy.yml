@@ -37,6 +37,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm test
+
       # The Supabase GitHub integration applies migrations in PARALLEL with this build,
       # so a push that adds a column and the code using it will race: the build queries
       # a column that does not exist yet and fails. Wait for that check to finish.
@@ -68,6 +70,8 @@ jobs:
           # without it now that the public pages come from the database.
           PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL || secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+
+          - run: npm run test:build
 
       - uses: actions/upload-pages-artifact@v5
         with:

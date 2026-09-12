@@ -7,8 +7,10 @@
  * Image FILES are not in the database. They live in src/assets and are optimised by
  * Astro from local disk. These rows only name them.
  */
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { getImage } from 'astro:assets';
+import legacyAwards from '~/data/awards.json';
+import { site } from '~/data/site';
 
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -18,6 +20,7 @@ export type ChapterEvent = {
   slug: string;
   title: string;
   description: string | null;
+  location: string | null;
   year: number;
   month: number | null;
   day: number | null;
@@ -36,6 +39,89 @@ export type GalleryAlbum = {
   sort_date: string | null;
   photos: { file: string; caption: string | null }[];
 };
+
+export type AwardYear = { period: string; awards: string[] };
+export type CurrentDuesRate = { year: number; chapterAmount: number; virtualAmount: number };
+
+const AWARD_NAME_UPDATES: Record<string, string> = {
+  'Outstanding Communication': 'Outstanding Alumni Chapter Communication',
+  'Outstanding Chapter Programming': 'Outstanding Alumni Chapter Programming',
+  'Outstanding Chapter Member': 'Outstanding Alumni Chapter Member',
+};
+
+function legacyAwardTimeline(): AwardYear[] {
+  return legacyAwards.map((entry) => ({
+    period: entry.period,
+    awards: entry.awards.map((award) => {
+      const [name, recipient] = award.split(':', 2);
+      const updatedName = AWARD_NAME_UPDATES[name] ?? name;
+      return recipient ? `${updatedName}: ${recipient.trim()}` : updatedName;
+    }),
+  }));
+}
+
+async function fetchAwards(supabase: SupabaseClient): Promise<AwardYear[]> {
+  const [typeResult, awardResult] = await Promise.all([
+    supabase.from('award_types').select('id, name'),
+    supabase.from('chapter_awards').select('award_type_id, period_start, recipient')
+      .order('period_start', { ascending: false }),
+  ]);
+
+  const missing = [typeResult.error, awardResult.error]
+    .some((error) => error?.code === '42P01' || error?.code === 'PGRST205');
+  if (missing) return legacyAwardTimeline();
+  if (typeResult.error) throw new Error(`Supabase awards: ${typeResult.error.message}`);
+  if (awardResult.error) throw new Error(`Supabase awards: ${awardResult.error.message}`);
+
+  const typeRows = (typeResult.data ?? []) as { id: string; name: string }[];
+  const awardRows = (awardResult.data ?? []) as {
+    award_type_id: string;
+    period_start: number;
+    recipient: string | null;
+  }[];
+  assertNotEmpty('award types', typeRows);
+  assertNotEmpty('chapter awards', awardRows);
+  const names = new Map(typeRows.map((type) => [type.id, type.name]));
+  const byPeriod = new Map<number, string[]>();
+  for (const award of awardRows) {
+    const name = names.get(award.award_type_id);
+    if (!name) continue;
+    const label = award.recipient ? `${name}: ${award.recipient}` : name;
+    const bucket = byPeriod.get(award.period_start) ?? [];
+    bucket.push(label);
+    byPeriod.set(award.period_start, bucket);
+  }
+
+  return [...byPeriod.entries()]
+    .sort(([left], [right]) => right - left)
+    .map(([start, awards]) => ({ period: `${start} - ${start + 1}`, awards }));
+}
+
+async function fetchCurrentDuesRate(supabase: SupabaseClient): Promise<CurrentDuesRate> {
+  const currentYear = new Date().getFullYear();
+  const { data, error } = await supabase
+    .from('dues_rates')
+    .select('year, chapter_amount, virtual_amount')
+    .lte('year', currentYear)
+    .order('year', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error?.code === '42P01' || error?.code === 'PGRST205') {
+    return { year: currentYear, chapterAmount: site.chapterDues, virtualAmount: site.virtualDues };
+  }
+  if (error) throw new Error(`Supabase dues rates: ${error.message}`);
+  if (!data) {
+    return { year: currentYear, chapterAmount: site.chapterDues, virtualAmount: site.virtualDues };
+  }
+
+  const rate = data as { year: number; chapter_amount: number; virtual_amount: number };
+  return {
+    year: rate.year,
+    chapterAmount: Number(rate.chapter_amount),
+    virtualAmount: Number(rate.virtual_amount),
+  };
+}
 
 /**
  * Publishing an empty gallery because the database was asleep would be worse than
@@ -63,7 +149,7 @@ async function fetchContent() {
   const [eventRes, albumRes, photoRes] = await Promise.all([
     supabase
       .from('events')
-      .select('id, slug, title, description, year, month, day, image_file, image_alt, sort_date')
+      .select('*')
       .order('sort_date', { ascending: false }),
     supabase
       .from('albums')
@@ -116,7 +202,9 @@ async function fetchContent() {
     photos: byAlbum.get(id) ?? [],
   }));
 
-  return { events, albums };
+  const awards = await fetchAwards(supabase);
+  const duesRate = await fetchCurrentDuesRate(supabase);
+  return { events, albums, awards, duesRate };
 }
 
 // One round trip per build rather than one per page that imports this.
@@ -124,6 +212,8 @@ const content = await fetchContent();
 
 export const events = content.events;
 export const albums = content.albums;
+export const awardTimeline = content.awards;
+export const currentDuesRate = content.duesRate;
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];

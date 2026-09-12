@@ -127,7 +127,7 @@ export default function PhotosAdmin({
   if (!albums) return <section className="panel"><p className="muted">Loading albums…</p></section>;
 
   const eventTitle = (id: string | null) =>
-    id ? events.find((e) => e.id === id)?.title ?? 'None' : 'None';
+    id ? events.find((e) => e.id === id)?.title ?? 'Not found' : 'None';
 
   return (
     <>
@@ -198,7 +198,7 @@ export default function PhotosAdmin({
             </div>
 
             <label className="field-wide">
-              Linked event <span className="hint">optional, leave blank for albums that aren’t an event</span>
+              Linked event <span className="hint">optional; leave blank for albums that aren’t an event</span>
               <select value={draft.event_id}
                 onChange={(e) => setDraft({ ...draft, event_id: e.target.value })}>
                 <option value="">Not linked to an event</option>
@@ -222,7 +222,7 @@ export default function PhotosAdmin({
           </div>
         )}
 
-        <table className="table">
+        <table className="table table--responsive">
           <thead>
             <tr>
               <th>Album</th>
@@ -242,14 +242,14 @@ export default function PhotosAdmin({
               return (
                 <Fragment key={album.id}>
                   <tr>
-                    <td>{album.title}</td>
-                    <td>{formatPartialDate(album.year, album.month, album.day)}</td>
-                    <td>
+                    <td data-label="Album">{album.title}</td>
+                    <td data-label="When">{formatPartialDate(album.year, album.month, album.day)}</td>
+                    <td data-label="Photos">
                       {live}
                       {hidden > 0 && <span className="badge">{hidden} hidden</span>}
                     </td>
-                    <td>{eventTitle(album.event_id)}</td>
-                    <td>
+                    <td data-label="Event">{eventTitle(album.event_id)}</td>
+                    <td data-label="Actions">
                       <div className="row-actions">
                         <button
                           className="btn btn--ghost btn--small"
@@ -279,7 +279,7 @@ export default function PhotosAdmin({
                     </td>
                   </tr>
                   {open && (
-                    <tr>
+                    <tr className="table__details">
                       <td colSpan={5}>
                         <PhotoList photos={mine} thumbnails={thumbnails} onToggle={setRemoved} />
                       </td>
@@ -435,7 +435,7 @@ function Uploader({
       <h2>Add photos</h2>
       <p className="muted">
         Pick an album, choose the photos, and upload. They are resized to under 1&nbsp;MB and
-        added to the site automatically, but they will not appear on the gallery straight away.
+        added to the site automatically. They will not appear on the gallery straight away.
       </p>
 
       <p className="notice notice--inline">
@@ -470,7 +470,7 @@ function Uploader({
       {files.length > 0 && (
         <p className="hint">
           {files.length} file(s) selected
-          {tooBig.length > 0 && `, ${tooBig.length} over 25 MB and will be rejected`}
+          {tooBig.length > 0 && `; ${tooBig.length} over 25 MB and will be rejected`}
         </p>
       )}
 
