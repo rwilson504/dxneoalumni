@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { site } from '~/data/site';
+import founders from '~/assets/gallery/f002fe_6cc2358307c3457b8de502da8caeeaf9-mv2.jpg';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -23,24 +25,33 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <section class="section section--alt">
     <div class="wrap">
-      <div class="prose narrow">
-        <h2>The history</h2>
-        <p>
-          The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
-          closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
-          On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
-          Independence, Ohio, the same location where the original chapter formed. There they
-          committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
-          Chi Board of Regents approved the chartering of the current Alumni Chapter.
-        </p>
+      <div class="history">
+        <div class="prose narrow">
+          <h2>The history</h2>
+          <p>
+            The Alumni Chapter started back in the early 2000&rsquo;s and ran for a few years, but was
+            closed. In 2016 a group of dedicated alumni felt the Alumni Chapter needed to be reformed.
+            On October 13th, 2016 a large group of alumni gathered at Harry&rsquo;s Steakhouse in
+            Independence, Ohio, the same location where the original chapter formed. There they
+            committed to chartering the Northeast Ohio Alumni Chapter. On {site.charteredOn}, the Delta
+            Chi Board of Regents approved the chartering of the current Alumni Chapter.
+          </p>
+        </div>
 
-        <h2>Structure</h2>
-        <p>
-          The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
-          International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
-          responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
-          way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
-        </p>
+        <figure class="history__figure">
+          <Image src={founders} alt="Brothers gathered at the 2016 chartering dinner" width={1400} height={686} />
+          <figcaption>The brothers who rechartered the chapter, 2016.</figcaption>
+        </figure>
+
+        <div class="prose narrow">
+          <h2>Structure</h2>
+          <p>
+            The Alumni Chapter is set up as a separate 501(c)(7) entity affiliated with the
+            International Delta Chi Fraternity, in the same way as an undergraduate chapter. We are
+            responsible for all our own tax filings and are <strong>not</strong> tax exempt in the same
+            way an undergraduate chapter is. Read our <a href={`${base}/by-laws`}>chapter by-laws</a>.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -133,6 +144,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <style>
   .narrow {
     max-width: 68ch;
+  }
+
+  .history {
+    display: grid;
+    gap: 2rem;
+  }
+
+  /* The photo is a 2:1 panorama, so it runs full width rather than being cropped square. */
+  .history__figure {
+    margin: 0;
+  }
+
+  .history__figure img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--rule);
+  }
+
+  .history__figure figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted, #6b6b6b);
   }
 
   .benefit-grid {

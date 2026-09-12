@@ -1,10 +1,13 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import awards from '~/data/awards.json';
+import shield from '~/assets/dx-shield-gold.png';
 
 type AwardYear = { period: string; awards: string[] };
 const timeline = awards as AwardYear[];
 const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
+const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chicago Cup')));
 ---
 
 <BaseLayout
@@ -19,6 +22,23 @@ const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
         {total} awards from The Delta Chi Fraternity since the chapter was re-chartered, including
         three Chicago Cups, the highest honor an alumni chapter can earn.
       </p>
+    </div>
+  </section>
+
+  <section class="section cups">
+    <div class="wrap">
+      <p class="eyebrow">The highest honor an alumni chapter can earn</p>
+      <ul class="cup-grid">
+        {
+          cupYears.map((entry) => (
+            <li class="cup">
+              <Image class="cup__mark" src={shield} alt="" width={96} height={103} />
+              <p class="cup__name">Chicago Cup</p>
+              <p class="cup__year">{entry.period}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -43,6 +63,50 @@ const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
 </BaseLayout>
 
 <style>
+  /* Sits directly under the lede, so it drops its own top padding rather than stacking. */
+  .cups {
+    padding-top: 0;
+    padding-bottom: 3rem;
+  }
+
+  .cup-grid {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    max-width: 58rem;
+  }
+
+  .cup {
+    background: var(--dx-red);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem 1.25rem;
+    text-align: center;
+  }
+
+  .cup__mark {
+    width: 60px;
+    height: auto;
+    margin: 0 auto 0.75rem;
+    display: block;
+  }
+
+  .cup__name {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .cup__year {
+    margin: 0.2rem 0 0;
+    color: var(--dx-gold);
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
   .timeline {
     list-style: none;
     margin: 0;
