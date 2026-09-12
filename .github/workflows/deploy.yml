@@ -71,7 +71,7 @@ jobs:
           PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL || secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
 
-          - run: npm run test:build
+      - run: npm run test:build
 
       - uses: actions/upload-pages-artifact@v5
         with:
