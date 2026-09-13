@@ -86,3 +86,11 @@ export function matchesSearch(query: string, ...values: unknown[]): boolean {
   if (!normalizedQuery) return true;
   return values.some((value) => String(value ?? '').toLocaleLowerCase().includes(normalizedQuery));
 }
+
+export type PaymentStatusFilter = 'all' | 'paid' | 'unpaid';
+
+export function matchesPaymentStatus(filter: PaymentStatusFilter, hasPayment: boolean): boolean {
+  return filter === 'all'
+    || (filter === 'paid' && hasPayment)
+    || (filter === 'unpaid' && !hasPayment);
+}

@@ -9,6 +9,7 @@ import {
   formatIcsDate,
   formatPartialDate,
   googleMapsDirectionsUrl,
+  matchesPaymentStatus,
   matchesSearch,
   slugify,
 } from '../src/lib/content-utils.ts';
@@ -109,5 +110,19 @@ describe('matchesSearch', () => {
 
   it('rejects records without the query', () => {
     assert.equal(matchesSearch('Akron', 'Rick Wilson', 'Kent State'), false);
+  });
+});
+
+describe('matchesPaymentStatus', () => {
+  it('shows every record for all', () => {
+    assert.equal(matchesPaymentStatus('all', true), true);
+    assert.equal(matchesPaymentStatus('all', false), true);
+  });
+
+  it('separates paid and unpaid records', () => {
+    assert.equal(matchesPaymentStatus('paid', true), true);
+    assert.equal(matchesPaymentStatus('paid', false), false);
+    assert.equal(matchesPaymentStatus('unpaid', false), true);
+    assert.equal(matchesPaymentStatus('unpaid', true), false);
   });
 });

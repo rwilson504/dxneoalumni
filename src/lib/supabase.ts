@@ -5,9 +5,11 @@ export {
   combinedStreetAddress,
   describeError,
   formatPartialDate,
+  matchesPaymentStatus,
   matchesSearch,
   slugify,
 } from './content-utils';
+export type { PaymentStatusFilter } from './content-utils';
 
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const anonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;

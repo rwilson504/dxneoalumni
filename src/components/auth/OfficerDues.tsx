@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import {
   duesColumns,
   getSupabase,
+  matchesPaymentStatus,
   matchesSearch,
   type DuesMember,
   type DuesPayment,
   type DuesRate,
+  type PaymentStatusFilter,
 } from '~/lib/supabase';
 import { site } from '~/data/site';
 import SearchField from './SearchField';
@@ -32,6 +34,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
   const [savingRate, setSavingRate] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [paymentFilter, setPaymentFilter] = useState<PaymentStatusFilter>('all');
 
   useEffect(() => {
     let active = true;
@@ -112,7 +115,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
   const virtualDefault = Number(rate?.virtual_amount ?? site.virtualDues);
   const filteredRoster = roster.filter((member) => {
     const payment = byMember.get(member.id);
-    return matchesSearch(
+    return matchesPaymentStatus(paymentFilter, Boolean(payment)) && matchesSearch(
       query,
       member.full_name,
       member.is_virtual ? 'virtual' : 'full',
@@ -182,8 +185,19 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
             </p>
           </div>
 
-          <SearchField value={query} onChange={setQuery} label="Search dues roster"
-            resultCount={filteredRoster.length} totalCount={roster.length} />
+          <div className="record-tools">
+            <SearchField value={query} onChange={setQuery} label="Search dues roster"
+              resultCount={filteredRoster.length} totalCount={roster.length} />
+            <label className="inline-field">
+              Payment status
+              <select value={paymentFilter}
+                onChange={(event) => setPaymentFilter(event.target.value as PaymentStatusFilter)}>
+                <option value="all">All</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+            </label>
+          </div>
 
           <table className="table table--responsive">
             <thead>
