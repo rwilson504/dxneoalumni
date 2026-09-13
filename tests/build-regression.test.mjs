@@ -75,7 +75,9 @@ describe('built site regressions', () => {
     assert.ok(text.split('\r\n').every((line) => Buffer.byteLength(line, 'utf8') <= 75));
 
     const eventsPage = await html('events/index.html');
-    assert.match(eventsPage, /Add to Google Calendar/);
+    assert.match(eventsPage, /Copy subscription link/);
+    assert.match(eventsPage, /Download \.ics/);
+    assert.match(eventsPage, /download="delta-chi-neo-events\.ics"/);
     assert.match(eventsPage, /events\/calendar\.ics/);
   });
 });

@@ -8,6 +8,7 @@ import {
   type ChapterEventRow,
   type Member,
 } from '~/lib/supabase';
+import AdminDialog from './AdminDialog';
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
@@ -128,18 +129,18 @@ export default function EventsAdmin({ member }: { member: Member }) {
     <section className="panel">
       <div className="panel__head">
         <h2>Events</h2>
-        {!draft && (
-          <button className="btn btn--primary btn--small" type="button" onClick={() => setDraft(blank)}>
-            Add event
-          </button>
-        )}
+        <button className="btn btn--primary btn--small" type="button" disabled={Boolean(draft)}
+          onClick={() => setDraft(blank)}>
+          Add event
+        </button>
       </div>
 
       {error && <p className="error">{error}</p>}
 
       {draft && (
-        <div className="subpanel">
-          <h3>{draft.id ? 'Edit event' : 'New event'}</h3>
+        <AdminDialog title={draft.id ? 'Edit event' : 'New event'} busy={saving}
+          onClose={() => { setDraft(null); setImage(null); }}>
+          <div className="admin-dialog__body">
           <div className="fields">
             <label>
               Title
@@ -213,7 +214,8 @@ export default function EventsAdmin({ member }: { member: Member }) {
               Cancel
             </button>
           </div>
-        </div>
+          </div>
+        </AdminDialog>
       )}
 
       <table className="table table--responsive">

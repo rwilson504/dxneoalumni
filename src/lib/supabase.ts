@@ -1,6 +1,12 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-export { classYearOptions, describeError, formatPartialDate, slugify } from './content-utils';
+export {
+  classYearOptions,
+  combinedStreetAddress,
+  describeError,
+  formatPartialDate,
+  slugify,
+} from './content-utils';
 
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const anonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;

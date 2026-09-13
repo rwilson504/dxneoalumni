@@ -73,3 +73,10 @@ export function foldIcsLine(line: string): string {
 export function googleMapsDirectionsUrl(location: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
 }
+
+export function combinedStreetAddress(
+  addressLine1: string | null,
+  addressLine2: string | null
+): string {
+  return [addressLine1, addressLine2].filter(Boolean).join(', ');
+}

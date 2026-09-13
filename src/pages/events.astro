@@ -7,7 +7,6 @@ const { upcoming: upcomingEvents, past: pastEvents } = splitByDate(events);
 const pastByYear = groupByYear(pastEvents);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const calendarUrl = new URL(`${base}/events/calendar.ics`, Astro.site).href;
-const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(calendarUrl)}`;
 ---
 
 <BaseLayout
@@ -23,10 +22,13 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeUR
         2016 we have held {pastEvents.length} gatherings, and counting.
       </p>
       <div class="calendar-actions">
-        <a class="btn btn--primary" href={googleCalendarUrl} target="_blank" rel="noreferrer">
-          Add to Google Calendar
+        <button class="btn btn--primary" type="button" data-copy-calendar data-calendar-url={calendarUrl}>
+          Copy subscription link
+        </button>
+        <a class="btn btn--ghost" href={calendarUrl} download="delta-chi-neo-events.ics">
+          Download .ics
         </a>
-        <a class="btn btn--ghost" href={calendarUrl}>Calendar feed</a>
+        <span class="copy-status" role="status" aria-live="polite"></span>
       </div>
     </div>
   </section>
@@ -80,6 +82,17 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeUR
     margin-top: 1.25rem;
   }
 
+  .calendar-actions button {
+    border: none;
+    cursor: pointer;
+  }
+
+  .copy-status {
+    align-self: center;
+    color: var(--ink-faint);
+    font-size: 0.88rem;
+  }
+
   .years {
     display: flex;
     flex-wrap: wrap;
@@ -128,3 +141,20 @@ const googleCalendarUrl = `https://calendar.google.com/calendar/r?cid=${encodeUR
     color: var(--ink-faint);
   }
 </style>
+
+<script>
+  const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-calendar]');
+  const copyStatus = document.querySelector<HTMLElement>('.copy-status');
+
+  copyButton?.addEventListener('click', async () => {
+    const url = copyButton.dataset.calendarUrl;
+    if (!url) return;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      if (copyStatus) copyStatus.textContent = 'Link copied.';
+    } catch {
+      if (copyStatus) copyStatus.textContent = 'Could not copy the link.';
+    }
+  });
+</script>

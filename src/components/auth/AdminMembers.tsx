@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import { classYearOptions, getSupabase, type Member, type MemberRole } from '~/lib/supabase';
+import {
+  classYearOptions,
+  combinedStreetAddress,
+  getSupabase,
+  type Member,
+  type MemberRole,
+} from '~/lib/supabase';
 import { officerRoles } from '~/data/site';
+import AdminDialog from './AdminDialog';
 
 const ROLES: MemberRole[] = ['member', 'officer', 'admin'];
 const CLASS_YEARS = classYearOptions();
@@ -11,7 +18,6 @@ type MemberDraft = {
   email: string;
   phone: string;
   address_line1: string;
-  address_line2: string;
   city: string;
   state: string;
   postal_code: string;
@@ -26,7 +32,6 @@ const emptyDraft: MemberDraft = {
   email: '',
   phone: '',
   address_line1: '',
-  address_line2: '',
   city: '',
   state: '',
   postal_code: '',
@@ -41,8 +46,7 @@ function toDraft(member: Member): MemberDraft {
     full_name: member.full_name,
     email: member.email,
     phone: member.phone ?? '',
-    address_line1: member.address_line1 ?? '',
-    address_line2: member.address_line2 ?? '',
+    address_line1: combinedStreetAddress(member.address_line1, member.address_line2),
     city: member.city ?? '',
     state: member.state ?? '',
     postal_code: member.postal_code ?? '',
@@ -119,12 +123,10 @@ export default function AdminMembers({
     <section className="panel">
       <div className="panel__head">
         <h2>Roster administration</h2>
-        {!draft && (
-          <button className="btn btn--primary btn--small" type="button"
-            onClick={() => setDraft(emptyDraft)}>
-            Add member
-          </button>
-        )}
+        <button className="btn btn--primary btn--small" type="button" disabled={Boolean(draft)}
+          onClick={() => setDraft(emptyDraft)}>
+          Add member
+        </button>
       </div>
       <p className="muted">
         Adding someone here is what lets them sign in. The email address must match the one they use.
@@ -265,7 +267,7 @@ function MemberForm({
       email: draft.email.trim(),
       phone: draft.phone.trim() || null,
       address_line1: draft.address_line1.trim() || null,
-      address_line2: draft.address_line2.trim() || null,
+      address_line2: null,
       city: draft.city.trim() || null,
       state: draft.state.trim() || null,
       postal_code: draft.postal_code.trim() || null,
@@ -287,9 +289,9 @@ function MemberForm({
   }
 
   return (
-    <div className="subpanel">
-      <h3>{draft.id ? 'Edit member' : 'Add member'}</h3>
-      <div className="fields">
+    <AdminDialog title={draft.id ? 'Edit member' : 'Add member'} busy={saving} onClose={onCancel}>
+      <div className="admin-dialog__body">
+        <div className="fields">
         <label>
           Full name
           <input
@@ -331,19 +333,15 @@ function MemberForm({
             ))}
           </select>
         </label>
-      </div>
+        </div>
 
-      <h4>Mailing address</h4>
-      <div className="fields fields--address">
+        <h4>Mailing address</h4>
+        <div className="fields fields--address">
         <label className="field-span-2">
           Street address
+          <span className="hint">Include apartment or unit number</span>
           <input type="text" autoComplete="address-line1" value={draft.address_line1}
             onChange={(e) => onChange({ ...draft, address_line1: e.target.value })} />
-        </label>
-        <label>
-          Apartment, suite, or unit <span className="hint">optional</span>
-          <input type="text" autoComplete="address-line2" value={draft.address_line2}
-            onChange={(e) => onChange({ ...draft, address_line2: e.target.value })} />
         </label>
         <label>
           City
@@ -360,32 +358,33 @@ function MemberForm({
           <input type="text" inputMode="numeric" autoComplete="postal-code" value={draft.postal_code}
             onChange={(e) => onChange({ ...draft, postal_code: e.target.value })} />
         </label>
+        </div>
+
+        {draft.id && (
+          <p className="hint">
+            For a member who has already signed in, changing this email updates the roster contact
+            address but does not change the email on their sign-in account.
+          </p>
+        )}
+
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            checked={draft.is_virtual}
+            onChange={(e) => onChange({ ...draft, is_virtual: e.target.checked })}
+          />
+          Virtual member
+        </label>
+
+        <div className="row-actions">
+          <button className="btn btn--primary" type="button" onClick={save} disabled={!ready || saving}>
+            {saving ? 'Saving…' : draft.id ? 'Save member' : 'Add member'}
+          </button>
+          <button className="btn btn--ghost" type="button" onClick={onCancel} disabled={saving}>
+            Cancel
+          </button>
+        </div>
       </div>
-
-      {draft.id && (
-        <p className="hint">
-          For a member who has already signed in, changing this email updates the roster contact
-          address but does not change the email on their sign-in account.
-        </p>
-      )}
-
-      <label className="checkbox">
-        <input
-          type="checkbox"
-          checked={draft.is_virtual}
-          onChange={(e) => onChange({ ...draft, is_virtual: e.target.checked })}
-        />
-        Virtual member
-      </label>
-
-      <div className="row-actions">
-        <button className="btn btn--primary" type="button" onClick={save} disabled={!ready || saving}>
-          {saving ? 'Saving…' : draft.id ? 'Save member' : 'Add member'}
-        </button>
-        <button className="btn btn--ghost" type="button" onClick={onCancel} disabled={saving}>
-          Cancel
-        </button>
-      </div>
-    </div>
+    </AdminDialog>
   );
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   classYearOptions,
+  combinedStreetAddress,
   duesColumns,
   getSupabase,
   type DirectoryMember,
@@ -308,8 +309,7 @@ function Account({
 }) {
   const [form, setForm] = useState({
     phone: member.phone ?? '',
-    address_line1: member.address_line1 ?? '',
-    address_line2: member.address_line2 ?? '',
+    address_line1: combinedStreetAddress(member.address_line1, member.address_line2),
     city: member.city ?? '',
     state: member.state ?? '',
     postal_code: member.postal_code ?? '',
@@ -325,8 +325,9 @@ function Account({
   async function save() {
     setSaving(true);
     setSaved(null);
-    const { error } = await getSupabase().from('members').update(form).eq('id', member.id);
-    if (!error) await onSaved(form);
+    const changes = { ...form, address_line2: null };
+    const { error } = await getSupabase().from('members').update(changes).eq('id', member.id);
+    if (!error) await onSaved(changes);
     setSaving(false);
     setSaved(error ? error.message : 'Saved.');
   }
@@ -374,13 +375,9 @@ function Account({
       <div className="fields fields--address">
         <label className="field-span-2">
           Street address
+          <span className="hint">Include apartment or unit number</span>
           <input type="text" autoComplete="address-line1" value={form.address_line1}
             onChange={(e) => setForm({ ...form, address_line1: e.target.value })} />
-        </label>
-        <label>
-          Apartment, suite, or unit <span className="hint">optional</span>
-          <input type="text" autoComplete="address-line2" value={form.address_line2}
-            onChange={(e) => setForm({ ...form, address_line2: e.target.value })} />
         </label>
         <label>
           City

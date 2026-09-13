@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSupabase, type AwardType, type ChapterAward } from '~/lib/supabase';
+import AdminDialog from './AdminDialog';
 
 type TypeDraft = { id: string | null; name: string; description: string };
 type AwardDraft = { id: string | null; award_type_id: string; period_start: string; recipient: string };
@@ -92,17 +93,16 @@ export default function AwardsAdmin() {
       <section className="panel">
         <div className="panel__head">
           <h2>Chapter awards</h2>
-          {!awardDraft && (
-            <button className="btn btn--primary btn--small" type="button"
-              onClick={() => setAwardDraft({ ...blankAward, award_type_id: selectableTypes[0]?.id ?? '' })}>
-              Add award
-            </button>
-          )}
+          <button className="btn btn--primary btn--small" type="button" disabled={Boolean(awardDraft)}
+            onClick={() => setAwardDraft({ ...blankAward, award_type_id: selectableTypes[0]?.id ?? '' })}>
+            Add award
+          </button>
         </div>
         {error && <p className="error" role="alert">{error}</p>}
         {awardDraft && (
-          <div className="subpanel">
-            <h3>{awardDraft.id ? 'Edit award' : 'Add award'}</h3>
+          <AdminDialog title={awardDraft.id ? 'Edit award' : 'Add award'} busy={saving}
+            onClose={() => setAwardDraft(null)}>
+            <div className="admin-dialog__body">
             <div className="fields">
               <label>
                 Award
@@ -129,7 +129,8 @@ export default function AwardsAdmin() {
               </button>
               <button className="btn btn--ghost" type="button" onClick={() => setAwardDraft(null)}>Cancel</button>
             </div>
-          </div>
+            </div>
+          </AdminDialog>
         )}
         <table className="table table--responsive">
           <thead><tr><th>Period</th><th>Award</th><th>Recipient</th><th aria-label="Actions" /></tr></thead>
@@ -158,13 +159,14 @@ export default function AwardsAdmin() {
       <section className="panel">
         <div className="panel__head">
           <h2>Award types</h2>
-          {!typeDraft && <button className="btn btn--primary btn--small" type="button"
-            onClick={() => setTypeDraft(blankType)}>Add award type</button>}
+          <button className="btn btn--primary btn--small" type="button" disabled={Boolean(typeDraft)}
+            onClick={() => setTypeDraft(blankType)}>Add award type</button>
         </div>
         <p className="muted">Inactive types stay attached to historical awards but cannot be selected for new ones.</p>
         {typeDraft && (
-          <div className="subpanel">
-            <h3>{typeDraft.id ? 'Edit award type' : 'Add award type'}</h3>
+          <AdminDialog title={typeDraft.id ? 'Edit award type' : 'Add award type'} busy={saving}
+            onClose={() => setTypeDraft(null)}>
+            <div className="admin-dialog__body">
             <div className="fields">
               <label>Award name<input type="text" value={typeDraft.name}
                 onChange={(event) => setTypeDraft({ ...typeDraft, name: event.target.value })} /></label>
@@ -176,7 +178,8 @@ export default function AwardsAdmin() {
                 disabled={saving || !typeDraft.name.trim()}>{saving ? 'Saving…' : 'Save award type'}</button>
               <button className="btn btn--ghost" type="button" onClick={() => setTypeDraft(null)}>Cancel</button>
             </div>
-          </div>
+            </div>
+          </AdminDialog>
         )}
         <ul className="admin-list">
           {types.map((type) => <li key={type.id} className={type.is_active ? undefined : 'is-inactive'}>

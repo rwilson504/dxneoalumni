@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
   classYearOptions,
+  combinedStreetAddress,
   describeError,
   escapeIcsText,
   foldIcsLine,
@@ -82,5 +83,15 @@ describe('googleMapsDirectionsUrl', () => {
       googleMapsDirectionsUrl('123 Main St, Cleveland, OH 44114'),
       'https://www.google.com/maps/search/?api=1&query=123%20Main%20St%2C%20Cleveland%2C%20OH%2044114'
     );
+  });
+});
+
+describe('combinedStreetAddress', () => {
+  it('keeps a single street line unchanged', () => {
+    assert.equal(combinedStreetAddress('123 Main St', null), '123 Main St');
+  });
+
+  it('merges a legacy apartment line into the street address', () => {
+    assert.equal(combinedStreetAddress('123 Main St', 'Apt 4B'), '123 Main St, Apt 4B');
   });
 });
