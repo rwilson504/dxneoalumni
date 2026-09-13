@@ -3,11 +3,13 @@ import {
   classYearOptions,
   combinedStreetAddress,
   getSupabase,
+  matchesSearch,
   type Member,
   type MemberRole,
 } from '~/lib/supabase';
 import { officerRoles } from '~/data/site';
 import AdminDialog from './AdminDialog';
+import SearchField from './SearchField';
 
 const ROLES: MemberRole[] = ['member', 'officer', 'admin'];
 const CLASS_YEARS = classYearOptions();
@@ -71,8 +73,27 @@ export default function AdminMembers({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [draft, setDraft] = useState<MemberDraft | null>(null);
   const [sortOrder, setSortOrder] = useState<SortOrder>('name-asc');
+  const [query, setQuery] = useState('');
 
-  const sortedRoster = [...roster].sort((left, right) => {
+  const filteredRoster = roster.filter((member) => matchesSearch(
+    query,
+    member.full_name,
+    member.email,
+    member.phone,
+    member.address_line1,
+    member.address_line2,
+    member.city,
+    member.state,
+    member.postal_code,
+    member.undergrad_chapter,
+    member.class_year,
+    member.role,
+    member.officer_letter ? officerRoles[member.officer_letter] : null,
+    member.is_active ? 'active' : 'inactive',
+    member.user_id ? 'signed in' : 'not signed in',
+    member.is_virtual ? 'virtual' : 'full',
+  ));
+  const sortedRoster = [...filteredRoster].sort((left, right) => {
     if (sortOrder === 'name-desc') return right.full_name.localeCompare(left.full_name);
     if (sortOrder === 'email-asc') return left.email.localeCompare(right.email);
     if (sortOrder === 'active-first' || sortOrder === 'inactive-first') {
@@ -150,7 +171,9 @@ export default function AdminMembers({
         />
       )}
 
-      <div className="table-tools">
+      <div className="record-tools">
+        <SearchField value={query} onChange={setQuery} label="Search roster"
+          resultCount={filteredRoster.length} totalCount={roster.length} />
         <label className="inline-field">
           Sort
           <select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as SortOrder)}>
@@ -239,6 +262,7 @@ export default function AdminMembers({
           );
         })}
       </ul>
+      {sortedRoster.length === 0 && <p className="muted empty-results">No members match your search.</p>}
     </section>
   );
 }

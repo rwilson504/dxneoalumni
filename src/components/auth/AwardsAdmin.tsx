@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getSupabase, type AwardType, type ChapterAward } from '~/lib/supabase';
+import { getSupabase, matchesSearch, type AwardType, type ChapterAward } from '~/lib/supabase';
 import AdminDialog from './AdminDialog';
+import SearchField from './SearchField';
 
 type TypeDraft = { id: string | null; name: string; description: string };
 type AwardDraft = { id: string | null; award_type_id: string; period_start: string; recipient: string };
@@ -20,6 +21,8 @@ export default function AwardsAdmin() {
   const [awardDraft, setAwardDraft] = useState<AwardDraft | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [awardQuery, setAwardQuery] = useState('');
+  const [typeQuery, setTypeQuery] = useState('');
 
   async function load() {
     const supabase = getSupabase();
@@ -87,6 +90,19 @@ export default function AwardsAdmin() {
   if (!types || !awards) return <section className="panel"><p className="muted">Loading awards…</p></section>;
   const typeName = (id: string) => types.find((type) => type.id === id)?.name ?? 'Unknown award';
   const selectableTypes = types.filter((type) => type.is_active || type.id === awardDraft?.award_type_id);
+  const filteredAwards = awards.filter((award) => matchesSearch(
+    awardQuery,
+    award.period_start,
+    award.period_start + 1,
+    typeName(award.award_type_id),
+    award.recipient,
+  ));
+  const filteredTypes = types.filter((type) => matchesSearch(
+    typeQuery,
+    type.name,
+    type.description,
+    type.is_active ? 'active' : 'inactive',
+  ));
 
   return (
     <>
@@ -99,6 +115,8 @@ export default function AwardsAdmin() {
           </button>
         </div>
         {error && <p className="error" role="alert">{error}</p>}
+        <SearchField value={awardQuery} onChange={setAwardQuery} label="Search chapter awards"
+          resultCount={filteredAwards.length} totalCount={awards.length} />
         {awardDraft && (
           <AdminDialog title={awardDraft.id ? 'Edit award' : 'Add award'} busy={saving}
             onClose={() => setAwardDraft(null)}>
@@ -135,7 +153,7 @@ export default function AwardsAdmin() {
         <table className="table table--responsive">
           <thead><tr><th>Period</th><th>Award</th><th>Recipient</th><th aria-label="Actions" /></tr></thead>
           <tbody>
-            {awards.map((award) => (
+            {filteredAwards.map((award) => (
               <tr key={award.id}>
                 <td data-label="Period">{award.period_start} - {award.period_start + 1}</td>
                 <td data-label="Award">{typeName(award.award_type_id)}</td>
@@ -154,6 +172,7 @@ export default function AwardsAdmin() {
             ))}
           </tbody>
         </table>
+        {filteredAwards.length === 0 && <p className="muted empty-results">No awards match your search.</p>}
       </section>
 
       <section className="panel">
@@ -163,6 +182,8 @@ export default function AwardsAdmin() {
             onClick={() => setTypeDraft(blankType)}>Add award type</button>
         </div>
         <p className="muted">Inactive types stay attached to historical awards but cannot be selected for new ones.</p>
+        <SearchField value={typeQuery} onChange={setTypeQuery} label="Search award types"
+          resultCount={filteredTypes.length} totalCount={types.length} />
         {typeDraft && (
           <AdminDialog title={typeDraft.id ? 'Edit award type' : 'Add award type'} busy={saving}
             onClose={() => setTypeDraft(null)}>
@@ -182,7 +203,7 @@ export default function AwardsAdmin() {
           </AdminDialog>
         )}
         <ul className="admin-list">
-          {types.map((type) => <li key={type.id} className={type.is_active ? undefined : 'is-inactive'}>
+          {filteredTypes.map((type) => <li key={type.id} className={type.is_active ? undefined : 'is-inactive'}>
             <div><strong>{type.name}</strong>{type.description && <p className="muted">{type.description}</p>}</div>
             <div className="row-actions">
               <button className="btn btn--ghost btn--small" type="button"
@@ -194,6 +215,7 @@ export default function AwardsAdmin() {
             </div>
           </li>)}
         </ul>
+        {filteredTypes.length === 0 && <p className="muted empty-results">No award types match your search.</p>}
       </section>
     </>
   );

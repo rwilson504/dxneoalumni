@@ -80,3 +80,9 @@ export function combinedStreetAddress(
 ): string {
   return [addressLine1, addressLine2].filter(Boolean).join(', ');
 }
+
+export function matchesSearch(query: string, ...values: unknown[]): boolean {
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  if (!normalizedQuery) return true;
+  return values.some((value) => String(value ?? '').toLocaleLowerCase().includes(normalizedQuery));
+}

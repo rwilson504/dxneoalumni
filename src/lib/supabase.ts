@@ -5,6 +5,7 @@ export {
   combinedStreetAddress,
   describeError,
   formatPartialDate,
+  matchesSearch,
   slugify,
 } from './content-utils';
 

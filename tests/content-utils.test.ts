@@ -9,6 +9,7 @@ import {
   formatIcsDate,
   formatPartialDate,
   googleMapsDirectionsUrl,
+  matchesSearch,
   slugify,
 } from '../src/lib/content-utils.ts';
 
@@ -93,5 +94,20 @@ describe('combinedStreetAddress', () => {
 
   it('merges a legacy apartment line into the street address', () => {
     assert.equal(combinedStreetAddress('123 Main St', 'Apt 4B'), '123 Main St, Apt 4B');
+  });
+});
+
+describe('matchesSearch', () => {
+  it('matches case-insensitively across multiple values', () => {
+    assert.equal(matchesSearch('kent', 'Rick Wilson', 'Kent State', 2004), true);
+    assert.equal(matchesSearch('RICK', 'Rick Wilson', 'Kent State'), true);
+  });
+
+  it('matches all records for an empty query', () => {
+    assert.equal(matchesSearch('   ', 'Anything'), true);
+  });
+
+  it('rejects records without the query', () => {
+    assert.equal(matchesSearch('Akron', 'Rick Wilson', 'Kent State'), false);
   });
 });

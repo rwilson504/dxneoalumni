@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import {
   duesColumns,
   getSupabase,
+  matchesSearch,
   type DuesMember,
   type DuesPayment,
   type DuesRate,
 } from '~/lib/supabase';
 import { site } from '~/data/site';
+import SearchField from './SearchField';
 
 const METHODS = ['PayPal', 'Check', 'Cash', 'Other'];
 
@@ -29,6 +31,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
   const [rateDraft, setRateDraft] = useState({ chapter: String(site.chapterDues), virtual: String(site.virtualDues) });
   const [savingRate, setSavingRate] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -107,6 +110,18 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
   const paidCount = roster.filter((m) => byMember.has(m.id)).length;
   const chapterDefault = Number(rate?.chapter_amount ?? site.chapterDues);
   const virtualDefault = Number(rate?.virtual_amount ?? site.virtualDues);
+  const filteredRoster = roster.filter((member) => {
+    const payment = byMember.get(member.id);
+    return matchesSearch(
+      query,
+      member.full_name,
+      member.is_virtual ? 'virtual' : 'full',
+      payment ? 'paid' : 'not recorded',
+      payment?.amount,
+      payment?.method,
+      payment?.paid_on,
+    );
+  });
 
   return (
     <section className="panel">
@@ -167,6 +182,9 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
             </p>
           </div>
 
+          <SearchField value={query} onChange={setQuery} label="Search dues roster"
+            resultCount={filteredRoster.length} totalCount={roster.length} />
+
           <table className="table table--responsive">
             <thead>
               <tr>
@@ -179,7 +197,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
               </tr>
             </thead>
             <tbody>
-              {roster.map((m) => {
+              {filteredRoster.map((m) => {
                 const payment = byMember.get(m.id);
                 return (
                   <tr key={m.id}>
@@ -214,6 +232,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
               })}
             </tbody>
           </table>
+          {filteredRoster.length === 0 && <p className="muted empty-results">No dues records match your search.</p>}
         </section>
       )}
     </section>

@@ -4,6 +4,7 @@ import {
   combinedStreetAddress,
   duesColumns,
   getSupabase,
+  matchesSearch,
   type DirectoryMember,
   type DuesPayment,
   type DuesMember,
@@ -17,6 +18,7 @@ import AdminMembers from './AdminMembers';
 import EventsAdmin from './EventsAdmin';
 import PhotosAdmin from './PhotosAdmin';
 import AwardsAdmin from './AwardsAdmin';
+import SearchField from './SearchField';
 
 type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'events' | 'photos' | 'awards' | 'roster';
 
@@ -197,10 +199,23 @@ function SignOutButton() {
 }
 
 function Directory({ members, error }: { members: DirectoryMember[] | null; error: string | null }) {
+  const [query, setQuery] = useState('');
   if (!members) return <section className="panel"><p className="muted">Loading directory…</p></section>;
   if (error) {
     return <section className="panel"><p className="error">Could not load the member directory: {error}</p></section>;
   }
+  const filteredMembers = members.filter((member) => matchesSearch(
+    query,
+    member.full_name,
+    member.email,
+    member.phone,
+    member.undergrad_chapter,
+    member.class_year,
+    member.city,
+    member.state,
+    member.postal_code,
+    member.officer_letter ? officerRoles[member.officer_letter] : null,
+  ));
 
   return (
     <section className="panel">
@@ -209,8 +224,10 @@ function Directory({ members, error }: { members: DirectoryMember[] | null; erro
         Contact details shared with signed-in members by {members.length} brothers. Members who
         opted out of the directory are not listed.
       </p>
+      <SearchField value={query} onChange={setQuery} label="Search directory"
+        resultCount={filteredMembers.length} totalCount={members.length} />
       <ul className="directory">
-        {members.map((m) => {
+        {filteredMembers.map((m) => {
           const locality = [m.city, m.state].filter(Boolean).join(', ');
           const address = [m.address_line1, m.address_line2,
             [locality, m.postal_code].filter(Boolean).join(' ')].filter(Boolean);
@@ -242,12 +259,14 @@ function Directory({ members, error }: { members: DirectoryMember[] | null; erro
           );
         })}
       </ul>
+      {filteredMembers.length === 0 && <p className="muted empty-results">No members match your search.</p>}
     </section>
   );
 }
 
 function Dues({ member }: { member: Member }) {
   const [payments, setPayments] = useState<DuesPayment[] | null>(null);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     getSupabase()
@@ -260,6 +279,13 @@ function Dues({ member }: { member: Member }) {
 
   const currentYear = new Date().getFullYear();
   const paidThisYear = payments?.some((p) => p.year === currentYear);
+  const filteredPayments = payments?.filter((payment) => matchesSearch(
+    query,
+    payment.year,
+    payment.amount,
+    payment.method,
+    payment.paid_on,
+  ));
 
   return (
     <section className="panel">
@@ -271,6 +297,9 @@ function Dues({ member }: { member: Member }) {
             {paidThisYear ? `Paid up for ${currentYear}` : `No payment recorded for ${currentYear}`}
           </p>
           {payments.length > 0 && (
+            <>
+            <SearchField value={query} onChange={setQuery} label="Search dues history"
+              resultCount={filteredPayments?.length ?? 0} totalCount={payments.length} />
             <table className="table table--responsive">
               <thead>
                 <tr>
@@ -281,7 +310,7 @@ function Dues({ member }: { member: Member }) {
                 </tr>
               </thead>
               <tbody>
-                {payments.map((p) => (
+                {filteredPayments?.map((p) => (
                   <tr key={p.id}>
                     <td data-label="Year">{p.year}</td>
                     <td data-label="Amount">${Number(p.amount).toFixed(2)}</td>
@@ -291,6 +320,8 @@ function Dues({ member }: { member: Member }) {
                 ))}
               </tbody>
             </table>
+            {filteredPayments?.length === 0 && <p className="muted empty-results">No payments match your search.</p>}
+            </>
           )}
         </>
       )}

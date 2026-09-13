@@ -4,11 +4,13 @@ import {
   eventColumns,
   formatPartialDate,
   getSupabase,
+  matchesSearch,
   slugify,
   type ChapterEventRow,
   type Member,
 } from '~/lib/supabase';
 import AdminDialog from './AdminDialog';
+import SearchField from './SearchField';
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
@@ -46,6 +48,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
   const [pendingImages, setPendingImages] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [query, setQuery] = useState('');
 
   async function load() {
     const supabase = getSupabase();
@@ -124,6 +127,15 @@ export default function EventsAdmin({ member }: { member: Member }) {
   }
 
   if (!events) return <section className="panel"><p className="muted">Loading events…</p></section>;
+  const filteredEvents = events.filter((event) => matchesSearch(
+    query,
+    event.title,
+    event.description,
+    event.location,
+    event.year,
+    formatPartialDate(event.year, event.month, event.day),
+    event.slug,
+  ));
 
   return (
     <section className="panel">
@@ -136,6 +148,9 @@ export default function EventsAdmin({ member }: { member: Member }) {
       </div>
 
       {error && <p className="error">{error}</p>}
+
+      <SearchField value={query} onChange={setQuery} label="Search events"
+        resultCount={filteredEvents.length} totalCount={events.length} />
 
       {draft && (
         <AdminDialog title={draft.id ? 'Edit event' : 'New event'} busy={saving}
@@ -227,7 +242,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
           </tr>
         </thead>
         <tbody>
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <tr key={event.id}>
               <td data-label="Event">
                 {event.title}
@@ -250,6 +265,8 @@ export default function EventsAdmin({ member }: { member: Member }) {
           ))}
         </tbody>
       </table>
+
+      {filteredEvents.length === 0 && <p className="muted empty-results">No events match your search.</p>}
 
       {events.length === 0 && (
         <p className="muted">
