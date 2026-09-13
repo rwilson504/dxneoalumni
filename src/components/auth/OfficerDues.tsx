@@ -159,10 +159,13 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
       {!payments && <p className="muted">Loading…</p>}
 
       {payments && (
-        <>
-          <p className={paidCount === roster.length ? 'status status--ok' : 'status status--due'}>
-            {paidCount} of {roster.length} paid for {year}
-          </p>
+        <section className="dues-ledger">
+          <div className="panel__head">
+            <h3>Payments for {year}</h3>
+            <p className={paidCount === roster.length ? 'status status--ok' : 'status status--due'}>
+              {paidCount} of {roster.length} paid
+            </p>
+          </div>
 
           <table className="table table--responsive">
             <thead>
@@ -211,7 +214,7 @@ export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[];
               })}
             </tbody>
           </table>
-        </>
+        </section>
       )}
     </section>
   );
