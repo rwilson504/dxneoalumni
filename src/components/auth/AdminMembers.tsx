@@ -161,55 +161,52 @@ export default function AdminMembers({
         </label>
       </div>
 
-      <table className="table table--responsive">
-        <thead>
-          <tr>
-            <th>Member</th>
-            <th>Contact</th>
-            <th>Role</th>
-            <th>Officer</th>
-            <th>Status</th>
-            <th aria-label="Actions" />
-          </tr>
-        </thead>
-        <tbody>
-          {sortedRoster.map((m) => {
-            const isSelf = m.id === currentMember.id;
-            return (
-              <tr key={m.id} className={m.is_active ? undefined : 'is-inactive'}>
-                <td data-label="Member">{m.full_name}</td>
-                <td data-label="Contact">
-                  <div className="admin-contact">
-                    <a href={`mailto:${m.email}`}>{m.email}</a>
-                    {m.phone && <a href={`tel:${m.phone}`}>{m.phone}</a>}
-                    {(m.address_line1 || m.city || m.state || m.postal_code) && (
-                      <address>
-                        {m.address_line1 && <span>{m.address_line1}</span>}
-                        {m.address_line2 && <span>{m.address_line2}</span>}
-                        <span>{[[m.city, m.state].filter(Boolean).join(', '), m.postal_code]
-                          .filter(Boolean).join(' ')}</span>
-                      </address>
-                    )}
-                  </div>
-                </td>
-                <td data-label="Role">
+      <ul className="admin-roster">
+        {sortedRoster.map((m) => {
+          const isSelf = m.id === currentMember.id;
+          const status = m.is_active
+            ? (m.user_id ? 'Active, signed in' : 'Active, not signed in')
+            : 'Inactive';
+          return (
+            <li key={m.id} className={m.is_active ? undefined : 'is-inactive'}>
+              <div className="admin-roster__summary">
+                <div className="admin-roster__heading">
+                  <h3>{m.full_name}</h3>
+                  {isSelf && <span className="badge badge--you">You</span>}
+                  {m.is_virtual && <span className="badge">Virtual</span>}
+                </div>
+                <p className="directory__meta">
+                  {[m.undergrad_chapter, m.class_year].filter(Boolean).join(' ') || 'Chapter not recorded'}
+                </p>
+                <div className="admin-contact">
+                  <a href={`mailto:${m.email}`}>{m.email}</a>
+                  {m.phone && <a href={`tel:${m.phone}`}>{m.phone}</a>}
+                  {(m.address_line1 || m.city || m.state || m.postal_code) && (
+                    <address>
+                      {m.address_line1 && <span>{m.address_line1}</span>}
+                      {m.address_line2 && <span>{m.address_line2}</span>}
+                      <span>{[[m.city, m.state].filter(Boolean).join(', '), m.postal_code]
+                        .filter(Boolean).join(' ')}</span>
+                    </address>
+                  )}
+                </div>
+              </div>
+
+              <div className="admin-roster__access">
+                <label>
+                  Role
                   <select
-                    className="cell-input"
                     value={m.role}
                     disabled={isSelf || busyId === m.id}
                     onChange={(e) => patch(m, { role: e.target.value as MemberRole })}
                     aria-label={`Role for ${m.full_name}`}
                   >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
+                    {ROLES.map((role) => <option key={role} value={role}>{role}</option>)}
                   </select>
-                </td>
-                <td data-label="Officer">
+                </label>
+                <label>
+                  Officer position
                   <select
-                    className="cell-input"
                     value={m.officer_letter ?? ''}
                     disabled={busyId === m.id}
                     onChange={(e) => patch(m, { officer_letter: e.target.value || null })}
@@ -217,38 +214,29 @@ export default function AdminMembers({
                   >
                     <option value="">None</option>
                     {Object.entries(officerRoles).map(([letter, title]) => (
-                      <option key={letter} value={letter}>
-                        {title}
-                      </option>
+                      <option key={letter} value={letter}>{title}</option>
                     ))}
                   </select>
-                </td>
-                <td data-label="Status">
-                  {m.is_active ? (m.user_id ? 'Active, signed in' : 'Active, not signed in') : 'Inactive'}
-                </td>
-                <td data-label="Actions">
-                  <div className="row-actions">
-                    <button className="btn btn--ghost btn--small" type="button"
-                      disabled={busyId === m.id} onClick={() => setDraft(toDraft(m))}>
-                      Edit
-                    </button>
-                    {!isSelf && (
-                      <button
-                        className="btn btn--ghost btn--small"
-                        type="button"
-                        disabled={busyId === m.id}
-                        onClick={() => setActive(m, !m.is_active)}
-                      >
-                        {m.is_active ? 'Deactivate' : 'Reactivate'}
-                      </button>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                </label>
+                <p className="admin-roster__status">{status}</p>
+              </div>
+
+              <div className="admin-roster__actions">
+                <button className="btn btn--ghost btn--small" type="button"
+                  disabled={busyId === m.id} onClick={() => setDraft(toDraft(m))}>
+                  Edit
+                </button>
+                {!isSelf && (
+                  <button className="btn btn--ghost btn--small" type="button"
+                    disabled={busyId === m.id} onClick={() => setActive(m, !m.is_active)}>
+                    {m.is_active ? 'Deactivate' : 'Reactivate'}
+                  </button>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

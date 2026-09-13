@@ -194,6 +194,111 @@ const thumbnails = await galleryThumbnails();
     background: var(--surface-alt);
   }
 
+  .admin-roster {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .admin-roster > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.72fr) auto;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .admin-roster > li.is-inactive {
+    color: var(--ink-faint);
+    background: var(--surface-alt);
+  }
+
+  .admin-roster__heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .admin-roster__heading h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .admin-roster__summary,
+  .admin-roster__access {
+    min-width: 0;
+  }
+
+  .admin-roster__access {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .admin-roster__access label {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .admin-roster__access select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .admin-roster__status {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+  }
+
+  .admin-roster__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    min-width: 7rem;
+  }
+
+  @media (max-width: 780px) {
+    .admin-roster > li {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.85fr);
+    }
+
+    .admin-roster__actions {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .admin-roster > li {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-roster__actions {
+      grid-column: auto;
+    }
+  }
+
   .badge {
     /* inline-block + nowrap so a badge never breaks mid-text: a wrapped inline element
        with a background renders as two half-pills. */
