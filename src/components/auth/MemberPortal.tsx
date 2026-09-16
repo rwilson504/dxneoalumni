@@ -1,5 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { duesColumns, getSupabase, type DuesPayment, type Member } from '~/lib/supabase';
+import {
+  classYearOptions,
+  combinedStreetAddress,
+  duesColumns,
+  getSupabase,
+  matchesSearch,
+  type DirectoryMember,
+  type DuesPayment,
+  type DuesMember,
+  type Member,
+} from '~/lib/supabase';
 import { officerRoles } from '~/data/site';
 import { useSession } from './useSession';
 import SignInPanel from './SignInPanel';
@@ -7,25 +17,62 @@ import OfficerDues from './OfficerDues';
 import AdminMembers from './AdminMembers';
 import EventsAdmin from './EventsAdmin';
 import PhotosAdmin from './PhotosAdmin';
+import AwardsAdmin from './AwardsAdmin';
+import SearchField from './SearchField';
 
-type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'events' | 'photos' | 'roster';
+type TabId = 'directory' | 'dues' | 'account' | 'officer-dues' | 'events' | 'photos' | 'awards' | 'roster';
 
 export default function MemberPortal({ thumbnails }: { thumbnails: Record<string, string> }) {
-  const { loading, session, member, notOnRoster } = useSession();
+  const { loading, session, member, notOnRoster, error: sessionError } = useSession();
+  const [directory, setDirectory] = useState<DirectoryMember[] | null>(null);
+  const [directoryError, setDirectoryError] = useState<string | null>(null);
+  const [duesRoster, setDuesRoster] = useState<DuesMember[] | null>(null);
   const [roster, setRoster] = useState<Member[] | null>(null);
+  const [accountMember, setAccountMember] = useState<Member | null>(null);
   const [active, setActive] = useState<TabId>('directory');
+
+  const loadDirectory = useCallback(async () => {
+    const { data, error } = await getSupabase().rpc('member_directory');
+    setDirectoryError(error?.message ?? null);
+    setDirectory((data as DirectoryMember[]) ?? []);
+  }, []);
 
   const loadRoster = useCallback(async () => {
     const { data } = await getSupabase().from('members').select('*').order('full_name');
     setRoster((data as Member[]) ?? []);
   }, []);
 
+  const loadDuesRoster = useCallback(async () => {
+    const { data } = await getSupabase().rpc('dues_roster');
+    setDuesRoster((data as DuesMember[]) ?? []);
+  }, []);
+
   useEffect(() => {
-    if (member) loadRoster();
-  }, [member, loadRoster]);
+    if (!member) return;
+    setAccountMember(member);
+    loadDirectory();
+    if (member.role === 'officer' || member.role === 'admin') loadDuesRoster();
+    if (member.role === 'admin') loadRoster();
+  }, [member, loadDirectory, loadDuesRoster, loadRoster]);
+
+  const accountSaved = useCallback(async (changes: Partial<Member>) => {
+    setAccountMember((current) => current ? { ...current, ...changes } : current);
+    await loadDirectory();
+  }, [loadDirectory]);
 
   if (loading) return <p className="muted">Checking your sign-in…</p>;
   if (!session) return <SignInPanel />;
+
+  if (sessionError) {
+    return (
+      <div className="notice">
+        <h2>We couldn’t load the member area</h2>
+        <p>Please refresh the page and try again. Your sign-in is still active.</p>
+        <p className="error">{sessionError}</p>
+        <SignOutButton />
+      </div>
+    );
+  }
 
   if (notOnRoster) {
     return (
@@ -58,7 +105,12 @@ export default function MemberPortal({ thumbnails }: { thumbnails: Record<string
           { id: 'photos' as TabId, label: 'Photos' },
         ]
       : []),
-    ...(isAdmin ? [{ id: 'roster' as TabId, label: 'Roster' }] : []),
+    ...(isAdmin
+      ? [
+          { id: 'awards' as TabId, label: 'Awards' },
+          { id: 'roster' as TabId, label: 'Roster' },
+        ]
+      : []),
   ];
 
   return (
@@ -74,12 +126,17 @@ export default function MemberPortal({ thumbnails }: { thumbnails: Record<string
       <Tabs tabs={tabs} active={active} onSelect={setActive} />
 
       <div role="tabpanel" id={`panel-${active}`} aria-labelledby={`tab-${active}`}>
-        {active === 'directory' && <Directory roster={roster} currentMember={member!} />}
+        {active === 'directory' && <Directory members={directory} error={directoryError} />}
         {active === 'dues' && <Dues member={member!} />}
-        {active === 'account' && <Account member={member!} />}
-        {active === 'officer-dues' && roster && <OfficerDues roster={roster} />}
+        {active === 'account' && (
+          <Account member={accountMember ?? member!} onSaved={accountSaved} />
+        )}
+        {active === 'officer-dues' && duesRoster && (
+          <OfficerDues roster={duesRoster} isAdmin={isAdmin} />
+        )}
         {active === 'events' && <EventsAdmin member={member!} />}
         {active === 'photos' && <PhotosAdmin member={member!} thumbnails={thumbnails} />}
+        {active === 'awards' && <AwardsAdmin />}
         {active === 'roster' && roster && (
           <AdminMembers roster={roster} currentMember={member!} onChanged={loadRoster} />
         )}
@@ -141,22 +198,40 @@ function SignOutButton() {
   );
 }
 
-function Directory({ roster, currentMember }: { roster: Member[] | null; currentMember: Member }) {
-  if (!roster) return <section className="panel"><p className="muted">Loading directory…</p></section>;
-
-  // Officers can read every row, so the opt-out has to be honoured here rather than
-  // relying on the query to return only listed members.
-  const listed = roster.filter((m) => m.directory_opt_in || m.id === currentMember.id);
+function Directory({ members, error }: { members: DirectoryMember[] | null; error: string | null }) {
+  const [query, setQuery] = useState('');
+  if (!members) return <section className="panel"><p className="muted">Loading directory…</p></section>;
+  if (error) {
+    return <section className="panel"><p className="error">Could not load the member directory: {error}</p></section>;
+  }
+  const filteredMembers = members.filter((member) => matchesSearch(
+    query,
+    member.full_name,
+    member.email,
+    member.phone,
+    member.undergrad_chapter,
+    member.class_year,
+    member.city,
+    member.state,
+    member.postal_code,
+    member.officer_letter ? officerRoles[member.officer_letter] : null,
+  ));
 
   return (
     <section className="panel">
       <h2>Member directory</h2>
       <p className="muted">
-        Contact details for {listed.length} brothers. Members who opted out of the directory are
-        not listed.
+        Contact details shared with signed-in members by {members.length} brothers. Members who
+        opted out of the directory are not listed.
       </p>
+      <SearchField value={query} onChange={setQuery} label="Search directory"
+        resultCount={filteredMembers.length} totalCount={members.length} />
       <ul className="directory">
-        {listed.map((m) => (
+        {filteredMembers.map((m) => {
+          const locality = [m.city, m.state].filter(Boolean).join(', ');
+          const address = [m.address_line1, m.address_line2,
+            [locality, m.postal_code].filter(Boolean).join(' ')].filter(Boolean);
+          return (
           <li key={m.id}>
             <div>
               <p className="directory__name">
@@ -164,7 +239,7 @@ function Directory({ roster, currentMember }: { roster: Member[] | null; current
                 {m.officer_letter && (
                   <span className="badge">{officerRoles[m.officer_letter] ?? m.officer_letter}</span>
                 )}
-                {m.id === currentMember.id && <span className="badge badge--you">You</span>}
+                {m.is_current_user && <span className="badge badge--you">You</span>}
               </p>
               <p className="directory__meta">
                 {m.undergrad_chapter} {m.class_year}
@@ -174,16 +249,24 @@ function Directory({ roster, currentMember }: { roster: Member[] | null; current
             <div className="directory__contact">
               <a href={`mailto:${m.email}`}>{m.email}</a>
               {m.phone && <a href={`tel:${m.phone}`}>{m.phone}</a>}
+              {address.length > 0 && (
+                <address>
+                  {address.map((line) => <span key={line}>{line}</span>)}
+                </address>
+              )}
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
+      {filteredMembers.length === 0 && <p className="muted empty-results">No members match your search.</p>}
     </section>
   );
 }
 
 function Dues({ member }: { member: Member }) {
   const [payments, setPayments] = useState<DuesPayment[] | null>(null);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     getSupabase()
@@ -196,6 +279,13 @@ function Dues({ member }: { member: Member }) {
 
   const currentYear = new Date().getFullYear();
   const paidThisYear = payments?.some((p) => p.year === currentYear);
+  const filteredPayments = payments?.filter((payment) => matchesSearch(
+    query,
+    payment.year,
+    payment.amount,
+    payment.method,
+    payment.paid_on,
+  ));
 
   return (
     <section className="panel">
@@ -207,7 +297,10 @@ function Dues({ member }: { member: Member }) {
             {paidThisYear ? `Paid up for ${currentYear}` : `No payment recorded for ${currentYear}`}
           </p>
           {payments.length > 0 && (
-            <table className="table">
+            <>
+            <SearchField value={query} onChange={setQuery} label="Search dues history"
+              resultCount={filteredPayments?.length ?? 0} totalCount={payments.length} />
+            <table className="table table--responsive">
               <thead>
                 <tr>
                   <th>Year</th>
@@ -217,16 +310,18 @@ function Dues({ member }: { member: Member }) {
                 </tr>
               </thead>
               <tbody>
-                {payments.map((p) => (
+                {filteredPayments?.map((p) => (
                   <tr key={p.id}>
-                    <td>{p.year}</td>
-                    <td>${Number(p.amount).toFixed(2)}</td>
-                    <td>{p.method ?? 'Not recorded'}</td>
-                    <td>{p.paid_on}</td>
+                    <td data-label="Year">{p.year}</td>
+                    <td data-label="Amount">${Number(p.amount).toFixed(2)}</td>
+                    <td data-label="Method">{p.method ?? 'Not recorded'}</td>
+                    <td data-label="Paid">{p.paid_on}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {filteredPayments?.length === 0 && <p className="muted empty-results">No payments match your search.</p>}
+            </>
           )}
         </>
       )}
@@ -234,12 +329,26 @@ function Dues({ member }: { member: Member }) {
   );
 }
 
-function Account({ member }: { member: Member }) {
+const CLASS_YEARS = classYearOptions();
+
+function Account({
+  member,
+  onSaved,
+}: {
+  member: Member;
+  onSaved: (changes: Partial<Member>) => Promise<void>;
+}) {
   const [form, setForm] = useState({
     phone: member.phone ?? '',
+    address_line1: combinedStreetAddress(member.address_line1, member.address_line2),
+    city: member.city ?? '',
+    state: member.state ?? '',
+    postal_code: member.postal_code ?? '',
     undergrad_chapter: member.undergrad_chapter ?? '',
     class_year: member.class_year ?? '',
     directory_opt_in: member.directory_opt_in,
+    phone_directory_opt_in: member.phone_directory_opt_in,
+    address_directory_opt_in: member.address_directory_opt_in,
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<string | null>(null);
@@ -247,7 +356,9 @@ function Account({ member }: { member: Member }) {
   async function save() {
     setSaving(true);
     setSaved(null);
-    const { error } = await getSupabase().from('members').update(form).eq('id', member.id);
+    const changes = { ...form, address_line2: null };
+    const { error } = await getSupabase().from('members').update(changes).eq('id', member.id);
+    if (!error) await onSaved(changes);
     setSaving(false);
     setSaved(error ? error.message : 'Saved.');
   }
@@ -279,27 +390,83 @@ function Account({ member }: { member: Member }) {
         </label>
         <label>
           Class year
-          <input
-            type="text"
+          <select
             value={form.class_year}
             onChange={(e) => setForm({ ...form, class_year: e.target.value })}
-          />
+          >
+            <option value="">Not listed</option>
+            {CLASS_YEARS.map((year) => (
+              <option key={year.value} value={year.value}>{year.label}</option>
+            ))}
+          </select>
         </label>
       </div>
+
+      <h3>Mailing address</h3>
+      <div className="fields fields--address">
+        <label className="field-span-2">
+          Street address
+          <span className="hint">Include apartment or unit number</span>
+          <input type="text" autoComplete="address-line1" value={form.address_line1}
+            onChange={(e) => setForm({ ...form, address_line1: e.target.value })} />
+        </label>
+        <label>
+          City
+          <input type="text" autoComplete="address-level2" value={form.city}
+            onChange={(e) => setForm({ ...form, city: e.target.value })} />
+        </label>
+        <label>
+          State
+          <input type="text" autoComplete="address-level1" value={form.state}
+            onChange={(e) => setForm({ ...form, state: e.target.value })} />
+        </label>
+        <label>
+          ZIP code
+          <input type="text" inputMode="numeric" autoComplete="postal-code" value={form.postal_code}
+            onChange={(e) => setForm({ ...form, postal_code: e.target.value })} />
+        </label>
+      </div>
+
+      <p className="muted">Only signed-in members can view the member directory.</p>
 
       <label className="checkbox">
         <input
           type="checkbox"
           checked={form.directory_opt_in}
-          onChange={(e) => setForm({ ...form, directory_opt_in: e.target.checked })}
+          onChange={(e) => setForm({
+            ...form,
+            directory_opt_in: e.target.checked,
+            phone_directory_opt_in: e.target.checked ? form.phone_directory_opt_in : false,
+            address_directory_opt_in: e.target.checked ? form.address_directory_opt_in : false,
+          })}
         />
         List me in the member directory
+      </label>
+
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={form.phone_directory_opt_in}
+          disabled={!form.directory_opt_in}
+          onChange={(e) => setForm({ ...form, phone_directory_opt_in: e.target.checked })}
+        />
+        Share my phone number in the member directory
+      </label>
+
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={form.address_directory_opt_in}
+          disabled={!form.directory_opt_in}
+          onChange={(e) => setForm({ ...form, address_directory_opt_in: e.target.checked })}
+        />
+        Share my mailing address in the member directory
       </label>
 
       <button className="btn btn--primary" type="button" onClick={save} disabled={saving}>
         {saving ? 'Saving…' : 'Save changes'}
       </button>
-      {saved && <p className="hint">{saved}</p>}
+      {saved && <p className="hint" role="status" aria-live="polite">{saved}</p>}
     </section>
   );
 }

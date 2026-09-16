@@ -7,6 +7,7 @@ export const site = {
     'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2YJ9N3B7TCKSG',
   chapterDues: 35,
   virtualDues: 15,
+  rosterYear: 2026,
   charteredOn: 'October 25, 2016',
 };
 
@@ -24,12 +25,10 @@ export const social = [
   { label: 'Instagram', href: 'http://instagram.com/deltachi_neo' },
   { label: 'Facebook', href: 'https://www.facebook.com/groups/1073199839467980/' },
   { label: 'X / Twitter', href: 'http://www.twitter.com/deltachi_neo' },
-  { label: 'Discord', href: 'https://discord.gg/D9h4eunx' },
 ];
 
 export const resources = [
   { label: 'Delta Chi International', href: 'http://deltachi.org/' },
-  { label: 'Delta Chi Educational Foundation', href: 'http://deltachi.org/dcef-home' },
   {
     label: 'MyDchi: update your contact info',
     href: 'https://my.omegafi.com/apps/myomegafi/public/login/index.php?apikey=990eb0adf826a757c234ed8d3b2d23b8',

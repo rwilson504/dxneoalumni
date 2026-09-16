@@ -46,7 +46,7 @@ console.log(`Project: ${url}\n`);
 }
 
 // 2. Tables exist. A 404 here means the migration never ran.
-for (const table of ['members', 'documents', 'dues_payments']) {
+for (const table of ['members', 'documents', 'dues_payments', 'dues_rates', 'award_types', 'chapter_awards']) {
   const { status, body } = await rest(`${table}?select=id&limit=1`);
   const missing = status === 404 || body?.code === '42P01';
   record(`table "${table}" exists`, !missing, `HTTP ${status}`);
@@ -126,6 +126,15 @@ for (const table of ['members', 'documents', 'dues_payments']) {
 
 // The public site is built from these, so an anonymous reader must be able to see them.
 for (const table of ['events', 'albums', 'photos']) {
+  const { status, body } = await rest(`${table}?select=id&limit=1`);
+  record(
+    `anonymous can read "${table}"`,
+    status === 200,
+    status === 200 ? 'readable' : `HTTP ${status}${body?.code ? ` (${body.code})` : ''}`
+  );
+}
+
+for (const table of ['award_types', 'chapter_awards']) {
   const { status, body } = await rest(`${table}?select=id&limit=1`);
   record(
     `anonymous can read "${table}"`,

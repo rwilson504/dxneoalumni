@@ -1,5 +1,16 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
+export {
+  classYearOptions,
+  combinedStreetAddress,
+  describeError,
+  formatPartialDate,
+  matchesPaymentStatus,
+  matchesSearch,
+  slugify,
+} from './content-utils';
+export type { PaymentStatusFilter } from './content-utils';
+
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const anonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
@@ -30,13 +41,29 @@ export type Member = {
   email: string;
   full_name: string;
   phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state: string | null;
+  postal_code: string | null;
   undergrad_chapter: string | null;
   class_year: string | null;
   officer_letter: string | null;
   is_virtual: boolean;
   role: MemberRole;
+  is_active: boolean;
   directory_opt_in: boolean;
+  phone_directory_opt_in: boolean;
+  address_directory_opt_in: boolean;
 };
+
+export type DirectoryMember = Pick<Member,
+  'id' | 'email' | 'full_name' | 'phone' | 'address_line1' | 'address_line2' | 'city' |
+  'state' | 'postal_code' | 'undergrad_chapter' | 'class_year' | 'officer_letter' |
+  'is_virtual' | 'phone_directory_opt_in' | 'address_directory_opt_in'
+> & { is_current_user: boolean };
+
+export type DuesMember = Pick<Member, 'id' | 'full_name' | 'is_virtual'>;
 
 export type DuesPayment = {
   id: string;
@@ -47,6 +74,26 @@ export type DuesPayment = {
   paid_on: string;
 };
 
+export type DuesRate = {
+  year: number;
+  chapter_amount: number;
+  virtual_amount: number;
+};
+
+export type AwardType = {
+  id: string;
+  name: string;
+  description: string | null;
+  is_active: boolean;
+};
+
+export type ChapterAward = {
+  id: string;
+  award_type_id: string;
+  period_start: number;
+  recipient: string | null;
+};
+
 export const duesColumns = 'id, member_id, year, amount, method, paid_on';
 
 export type ChapterEventRow = {
@@ -54,6 +101,7 @@ export type ChapterEventRow = {
   slug: string;
   title: string;
   description: string | null;
+  location: string | null;
   year: number;
   month: number | null;
   day: number | null;
@@ -96,44 +144,9 @@ export type PhotoUpload = {
 };
 
 export const eventColumns =
-  'id, slug, title, description, year, month, day, image_file, image_alt, sort_date';
+  'id, slug, title, description, location, year, month, day, image_file, image_alt, sort_date';
 export const albumColumns =
   'id, slug, title, description, event_id, year, month, day, sort_date';
-
-/** Turns a title into a URL-safe slug, matching what tools/migrate-content.mjs produced. */
-export function slugify(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-
-/**
- * Postgres 42P01 is "relation does not exist". Here it always means the content
- * migration has not been applied yet, which is worth saying plainly rather than
- * showing an officer a raw driver error.
- */
-export function describeError(error: { code?: string; message: string } | null): string | null {
-  if (!error) return null;
-  if (error.code === '42P01') {
-    return 'The content tables do not exist yet. Push the migration to main so Supabase applies it, then run supabase/seed-content.sql once in the SQL editor.';
-  }
-  if (error.code === '42501') {
-    return 'Permission denied. Your member row needs the officer or admin role.';
-  }
-  return error.message;
-}
-
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-  'August', 'September', 'October', 'November', 'December'];
-
-/** Formats a partial date honestly: "2019", "March 2024", "13 October 2025". */
-export function formatPartialDate(
-  year: number | null,
-  month: number | null,
-  day: number | null
-): string {
-  if (!year) return 'No date';
-  if (!month) return String(year);
-  return day ? `${MONTHS[month - 1]} ${day}, ${year}` : `${MONTHS[month - 1]} ${year}`;
-}
 
 /** Absolute URL for magic-link redirects, honouring the GitHub Pages base path. */
 export function siteUrl(path: string): string {

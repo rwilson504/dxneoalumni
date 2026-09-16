@@ -33,6 +33,50 @@ const thumbnails = await galleryThumbnails();
     font-weight: 600;
   }
 
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .search-field {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .search-field label {
+    flex: 1;
+  }
+
+  .search-field input {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .search-field__count {
+    flex: none;
+    color: var(--ink-faint);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .empty-results {
+    margin-top: 1rem;
+  }
+
   .portal__head {
     display: flex;
     align-items: center;
@@ -175,6 +219,182 @@ const thumbnails = await galleryThumbnails();
     text-align: right;
   }
 
+  .directory__contact address {
+    display: grid;
+    margin-top: 0.25rem;
+    color: var(--ink);
+    font-style: normal;
+  }
+
+  .admin-contact,
+  .admin-contact address {
+    display: grid;
+    gap: 0.1rem;
+    font-style: normal;
+  }
+
+  .table tr.is-inactive {
+    color: var(--ink-faint);
+    background: var(--surface-alt);
+  }
+
+  .admin-roster {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .admin-roster > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.72fr) auto;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .admin-roster > li.is-inactive {
+    color: var(--ink-faint);
+    background: var(--surface-alt);
+  }
+
+  .admin-roster__heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .admin-roster__heading h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .admin-roster__summary,
+  .admin-roster__access {
+    min-width: 0;
+  }
+
+  .admin-roster__access {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .admin-roster__access label {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .admin-roster__access select {
+    width: 100%;
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .admin-roster__status {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+  }
+
+  .admin-roster__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    min-width: 7rem;
+  }
+
+  .admin-dialog {
+    width: min(46rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--surface-alt);
+    color: var(--ink);
+    box-shadow: 0 1.25rem 4rem rgb(0 0 0 / 0.28);
+  }
+
+  .admin-dialog::backdrop {
+    background: rgb(22 22 26 / 0.68);
+  }
+
+  .admin-dialog__content {
+    max-height: calc(100dvh - 2rem);
+    padding: 1.4rem 1.5rem 1.5rem;
+    overflow-y: auto;
+  }
+
+  .admin-dialog__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .admin-dialog__head h3 {
+    margin: 0;
+  }
+
+  .admin-dialog__close {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: none;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .admin-dialog__close:hover {
+    background: var(--rule);
+  }
+
+  @media (max-width: 780px) {
+    .admin-roster > li {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.85fr);
+    }
+
+    .admin-roster__actions {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .admin-roster > li {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-roster__actions {
+      grid-column: auto;
+    }
+  }
+
   .badge {
     /* inline-block + nowrap so a badge never breaks mid-text: a wrapped inline element
        with a background renders as two half-pills. */
@@ -234,6 +454,64 @@ const thumbnails = await galleryThumbnails();
     color: var(--ink-faint);
   }
 
+  @media (max-width: 639px) {
+    .table--responsive,
+    .table--responsive tbody,
+    .table--responsive tr,
+    .table--responsive td {
+      display: block;
+      width: 100%;
+    }
+
+    .table--responsive thead {
+      display: none;
+    }
+
+    .table--responsive tr {
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .table--responsive tr:last-child {
+      border-bottom: none;
+    }
+
+    .table--responsive td {
+      display: grid;
+      grid-template-columns: minmax(5.5rem, 0.4fr) minmax(0, 1fr);
+      gap: 0.75rem;
+      align-items: center;
+      border-bottom: none;
+      overflow-wrap: anywhere;
+    }
+
+    .table--responsive td::before {
+      content: attr(data-label);
+      color: var(--ink-faint);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .table--responsive .table__details {
+      padding: 0;
+    }
+
+    .table--responsive .table__details td {
+      display: block;
+    }
+
+    .table--responsive .table__details td::before {
+      content: none;
+    }
+
+    .admin-list li {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
   .fields {
     display: grid;
     gap: 0.9rem;
@@ -243,6 +521,14 @@ const thumbnails = await galleryThumbnails();
   @media (min-width: 640px) {
     .fields {
       grid-template-columns: repeat(3, 1fr);
+    }
+
+    .fields--address {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field-span-2 {
+      grid-column: span 2;
     }
   }
 
@@ -291,6 +577,70 @@ const thumbnails = await galleryThumbnails();
     gap: 0.45rem;
     font-weight: 600;
     font-size: 0.88rem;
+  }
+
+  .table-tools {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  .record-tools {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: end;
+    margin-top: 1rem;
+  }
+
+  .record-tools .search-field {
+    margin-top: 0;
+  }
+
+  @media (max-width: 520px) {
+    .record-tools {
+      grid-template-columns: 1fr;
+    }
+
+    .record-tools .inline-field {
+      justify-self: start;
+    }
+  }
+
+  .subpanel h4 {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+  }
+
+  .dues-defaults {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .dues-defaults h3 {
+    margin: 0;
+  }
+
+  .dues-ledger {
+    margin-top: 1.5rem;
+  }
+
+  .dues-ledger h3,
+  .dues-ledger .status {
+    margin: 0;
+  }
+
+  .dues-ledger .table {
+    margin-top: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .fields--compact {
+      grid-template-columns: repeat(2, minmax(0, 12rem));
+    }
   }
 
   /* Wide officer tables scroll rather than squeezing their inputs. */
@@ -357,6 +707,7 @@ const thumbnails = await galleryThumbnails();
   }
 
   .field-wide textarea,
+  .fields textarea,
   .field-wide select,
   .fields select,
   .fields input[type='file'] {
@@ -382,6 +733,33 @@ const thumbnails = await galleryThumbnails();
     padding: 0;
     display: grid;
     gap: 0.35rem;
+  }
+
+  .admin-list {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .admin-list li {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .admin-list p {
+    margin: 0.2rem 0 0;
+  }
+
+  .admin-list li.is-inactive {
+    opacity: 0.65;
   }
 
   .photo-list li {

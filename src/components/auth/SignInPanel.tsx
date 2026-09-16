@@ -86,7 +86,7 @@ export default function SignInPanel() {
       {status.kind === 'error' && <p className="error">{status.message}</p>}
 
       <p className="hint">
-        Use the address the chapter has on file. There’s no password; we email you a link each
+        Use the address the chapter has on file. There’s no password. We email you a link each
         time.
       </p>
     </form>

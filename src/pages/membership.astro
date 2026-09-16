@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { site, officerRoles } from '~/data/site';
+import { currentDuesRate } from '~/lib/content';
 import members from '~/data/members.json';
 
 type Member = {
@@ -14,7 +15,6 @@ type Member = {
 const roster = members as Member[];
 const officers = roster.filter((m) => m.officer);
 const brothers = roster.filter((m) => !m.officer);
-const year = new Date().getFullYear();
 ---
 
 <BaseLayout
@@ -24,7 +24,7 @@ const year = new Date().getFullYear();
   <section class="section">
     <div class="wrap">
       <p class="eyebrow">Membership</p>
-      <h1>{year} Alumni Chapter members</h1>
+      <h1>{site.rosterYear} Alumni Chapter members</h1>
       <p class="lede">
         Becoming a member is about more than staying connected. It&rsquo;s about reigniting the
         bond of brotherhood that first brought us together, and building relationships with
@@ -83,7 +83,7 @@ const year = new Date().getFullYear();
       <div class="prose narrow">
         <h2>Join the chapter</h2>
         <p>
-          Your ${site.chapterDues} annual membership (or ${site.virtualDues} for virtual members)
+          Your ${currentDuesRate.chapterAmount} annual membership (or ${currentDuesRate.virtualAmount} for virtual members)
           helps strengthen local programming, enhance chapter collaboration, and create welcoming,
           high-quality experiences for brothers at every stage of life. Most importantly, it keeps our
           shared legacy strong.

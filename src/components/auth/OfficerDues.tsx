@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
-import { duesColumns, getSupabase, type DuesPayment, type Member } from '~/lib/supabase';
+import {
+  duesColumns,
+  getSupabase,
+  matchesPaymentStatus,
+  matchesSearch,
+  type DuesMember,
+  type DuesPayment,
+  type DuesRate,
+  type PaymentStatusFilter,
+} from '~/lib/supabase';
 import { site } from '~/data/site';
+import SearchField from './SearchField';
 
 const METHODS = ['PayPal', 'Check', 'Cash', 'Other'];
 
@@ -16,29 +26,61 @@ function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export default function OfficerDues({ roster }: { roster: Member[] }) {
+export default function OfficerDues({ roster, isAdmin }: { roster: DuesMember[]; isAdmin: boolean }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [payments, setPayments] = useState<DuesPayment[] | null>(null);
+  const [rate, setRate] = useState<DuesRate | null>(null);
+  const [rateDraft, setRateDraft] = useState({ chapter: String(site.chapterDues), virtual: String(site.virtualDues) });
+  const [savingRate, setSavingRate] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [paymentFilter, setPaymentFilter] = useState<PaymentStatusFilter>('all');
 
   useEffect(() => {
     let active = true;
     setPayments(null);
-    getSupabase()
-      .from('dues_payments')
-      .select(duesColumns)
-      .eq('year', year)
-      .then(({ data, error: err }) => {
+    const supabase = getSupabase();
+    Promise.all([
+      supabase.from('dues_payments').select(duesColumns).eq('year', year),
+      supabase.from('dues_rates').select('year, chapter_amount, virtual_amount').eq('year', year).maybeSingle(),
+    ]).then(([paymentResult, rateResult]) => {
         if (!active) return;
-        setError(err?.message ?? null);
-        setPayments((data as DuesPayment[]) ?? []);
+        const nextRate = rateResult.data as DuesRate | null;
+        setError(paymentResult.error?.message ?? rateResult.error?.message ?? null);
+        setPayments((paymentResult.data as DuesPayment[]) ?? []);
+        setRate(nextRate);
+        setRateDraft({
+          chapter: String(nextRate?.chapter_amount ?? site.chapterDues),
+          virtual: String(nextRate?.virtual_amount ?? site.virtualDues),
+        });
       });
     return () => {
       active = false;
     };
   }, [year]);
 
-  async function record(member: Member, amount: number, method: string, paidOn: string) {
+  async function saveRate() {
+    setSavingRate(true);
+    const { data, error: saveError } = await getSupabase()
+      .from('dues_rates')
+      .upsert({
+        year,
+        chapter_amount: Number(rateDraft.chapter),
+        virtual_amount: Number(rateDraft.virtual),
+        updated_at: new Date().toISOString(),
+      })
+      .select('year, chapter_amount, virtual_amount')
+      .single();
+    setSavingRate(false);
+    if (saveError) {
+      setError(saveError.message);
+      return;
+    }
+    setError(null);
+    setRate(data as DuesRate);
+  }
+
+  async function record(member: DuesMember, amount: number, method: string, paidOn: string) {
     const { data, error: err } = await getSupabase()
       .from('dues_payments')
       .insert({ member_id: member.id, year, amount, method, paid_on: paidOn })
@@ -46,7 +88,9 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
       .single();
 
     if (err) {
-      setError(err.message);
+      setError(err.code === '23505'
+        ? `${member.full_name} already has a dues payment recorded for ${year}.`
+        : err.message);
       return;
     }
     setError(null);
@@ -67,6 +111,20 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
 
   const byMember = new Map((payments ?? []).map((p) => [p.member_id, p]));
   const paidCount = roster.filter((m) => byMember.has(m.id)).length;
+  const chapterDefault = Number(rate?.chapter_amount ?? site.chapterDues);
+  const virtualDefault = Number(rate?.virtual_amount ?? site.virtualDues);
+  const filteredRoster = roster.filter((member) => {
+    const payment = byMember.get(member.id);
+    return matchesPaymentStatus(paymentFilter, Boolean(payment)) && matchesSearch(
+      query,
+      member.full_name,
+      member.is_virtual ? 'virtual' : 'full',
+      payment ? 'paid' : 'not recorded',
+      payment?.amount,
+      payment?.method,
+      payment?.paid_on,
+    );
+  });
 
   return (
     <section className="panel">
@@ -86,15 +144,62 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
 
       {error && <p className="error">{error}</p>}
 
+      <div className="subpanel dues-defaults">
+        <h3>Default amounts for {year}</h3>
+        <p className="muted">
+          These amounts prefill new payment records. An officer can still adjust an individual payment.
+        </p>
+        <div className="fields fields--compact">
+          <label>
+            Full member
+            <input type="number" min="0" step="0.01" value={rateDraft.chapter}
+              disabled={!isAdmin || savingRate}
+              onChange={(event) => setRateDraft({ ...rateDraft, chapter: event.target.value })} />
+          </label>
+          <label>
+            Virtual member
+            <input type="number" min="0" step="0.01" value={rateDraft.virtual}
+              disabled={!isAdmin || savingRate}
+              onChange={(event) => setRateDraft({ ...rateDraft, virtual: event.target.value })} />
+          </label>
+        </div>
+        {isAdmin ? (
+          <button className="btn btn--primary btn--small" type="button" onClick={saveRate}
+            disabled={savingRate || rateDraft.chapter === '' || rateDraft.virtual === ''}>
+            {savingRate ? 'Saving…' : 'Save defaults'}
+          </button>
+        ) : (
+          <p className="hint">Only an administrator can change annual defaults.</p>
+        )}
+        {!rate && <p className="hint">No saved rate for this year. The current site defaults are shown.</p>}
+      </div>
+
       {!payments && <p className="muted">Loading…</p>}
 
       {payments && (
-        <>
-          <p className={paidCount === roster.length ? 'status status--ok' : 'status status--due'}>
-            {paidCount} of {roster.length} paid for {year}
-          </p>
+        <section className="dues-ledger">
+          <div className="panel__head">
+            <h3>Payments for {year}</h3>
+            <p className={paidCount === roster.length ? 'status status--ok' : 'status status--due'}>
+              {paidCount} of {roster.length} paid
+            </p>
+          </div>
 
-          <table className="table">
+          <div className="record-tools">
+            <SearchField value={query} onChange={setQuery} label="Search dues roster"
+              resultCount={filteredRoster.length} totalCount={roster.length} />
+            <label className="inline-field">
+              Payment status
+              <select value={paymentFilter}
+                onChange={(event) => setPaymentFilter(event.target.value as PaymentStatusFilter)}>
+                <option value="all">All</option>
+                <option value="paid">Paid</option>
+                <option value="unpaid">Unpaid</option>
+              </select>
+            </label>
+          </div>
+
+          <table className="table table--responsive">
             <thead>
               <tr>
                 <th>Member</th>
@@ -106,21 +211,21 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
               </tr>
             </thead>
             <tbody>
-              {roster.map((m) => {
+              {filteredRoster.map((m) => {
                 const payment = byMember.get(m.id);
                 return (
                   <tr key={m.id}>
-                    <td>
+                    <td data-label="Member">
                       {m.full_name}
                       {m.is_virtual && <span className="badge">Virtual</span>}
                     </td>
                     {payment ? (
                       <>
-                        <td className="paid">Paid</td>
-                        <td>${Number(payment.amount).toFixed(2)}</td>
-                        <td>{payment.method ?? 'Not recorded'}</td>
-                        <td>{payment.paid_on}</td>
-                        <td>
+                        <td className="paid" data-label="Status">Paid</td>
+                        <td data-label="Amount">${Number(payment.amount).toFixed(2)}</td>
+                        <td data-label="Method">{payment.method ?? 'Not recorded'}</td>
+                        <td data-label="Paid">{payment.paid_on}</td>
+                        <td data-label="Actions">
                           <button
                             className="btn btn--ghost btn--small"
                             type="button"
@@ -131,14 +236,18 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
                         </td>
                       </>
                     ) : (
-                      <RecordCells member={m} onRecord={record} />
+                      <RecordCells key={`${m.id}-${year}-${chapterDefault}-${virtualDefault}`}
+                        member={m}
+                        defaultAmount={m.is_virtual ? virtualDefault : chapterDefault}
+                        onRecord={record} />
                     )}
                   </tr>
                 );
               })}
             </tbody>
           </table>
-        </>
+          {filteredRoster.length === 0 && <p className="muted empty-results">No dues records match your search.</p>}
+        </section>
       )}
     </section>
   );
@@ -146,17 +255,21 @@ export default function OfficerDues({ roster }: { roster: Member[] }) {
 
 function RecordCells({
   member,
+  defaultAmount,
   onRecord,
 }: {
-  member: Member;
-  onRecord: (member: Member, amount: number, method: string, paidOn: string) => Promise<void>;
+  member: DuesMember;
+  defaultAmount: number;
+  onRecord: (member: DuesMember, amount: number, method: string, paidOn: string) => Promise<void>;
 }) {
-  const [amount, setAmount] = useState(String(member.is_virtual ? site.virtualDues : site.chapterDues));
+  const [amount, setAmount] = useState(String(defaultAmount));
   const [method, setMethod] = useState(METHODS[0]);
   const [paidOn, setPaidOn] = useState(today);
   const [saving, setSaving] = useState(false);
+  const validAmount = amount !== '' && Number.isFinite(Number(amount)) && Number(amount) > 0;
 
   async function submit() {
+    if (!validAmount) return;
     setSaving(true);
     await onRecord(member, Number(amount), method, paidOn);
     setSaving(false);
@@ -164,19 +277,20 @@ function RecordCells({
 
   return (
     <>
-      <td className="unpaid">Not recorded</td>
-      <td>
+      <td className="unpaid" data-label="Status">Not recorded</td>
+      <td data-label="Amount">
         <input
           className="cell-input cell-input--amount"
           type="number"
           min="0"
           step="0.01"
+          required
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           aria-label={`Amount for ${member.full_name}`}
         />
       </td>
-      <td>
+      <td data-label="Method">
         <select
           className="cell-input"
           value={method}
@@ -188,7 +302,7 @@ function RecordCells({
           ))}
         </select>
       </td>
-      <td>
+      <td data-label="Paid">
         <input
           className="cell-input"
           type="date"
@@ -197,8 +311,9 @@ function RecordCells({
           aria-label={`Date paid for ${member.full_name}`}
         />
       </td>
-      <td>
-        <button className="btn btn--primary btn--small" type="button" onClick={submit} disabled={saving}>
+      <td data-label="Actions">
+        <button className="btn btn--primary btn--small" type="button" onClick={submit}
+          disabled={saving || !validAmount}>
           {saving ? 'Saving…' : 'Record'}
         </button>
       </td>

@@ -5,6 +5,7 @@ import {
   eventColumns,
   formatPartialDate,
   getSupabase,
+  matchesSearch,
   photoColumns,
   slugify,
   type Album,
@@ -13,6 +14,7 @@ import {
   type Photo,
   type PhotoUpload,
 } from '~/lib/supabase';
+import SearchField from './SearchField';
 
 const MAX_UPLOAD = 25 * 1024 * 1024;
 
@@ -43,6 +45,8 @@ export default function PhotosAdmin({
   const [openAlbum, setOpenAlbum] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [albumQuery, setAlbumQuery] = useState('');
+  const [pendingQuery, setPendingQuery] = useState('');
 
   async function load() {
     const supabase = getSupabase();
@@ -127,7 +131,25 @@ export default function PhotosAdmin({
   if (!albums) return <section className="panel"><p className="muted">Loading albums…</p></section>;
 
   const eventTitle = (id: string | null) =>
-    id ? events.find((e) => e.id === id)?.title ?? 'None' : 'None';
+    id ? events.find((e) => e.id === id)?.title ?? 'Not found' : 'None';
+  const filteredPending = pending.filter((upload) => matchesSearch(
+    pendingQuery,
+    upload.caption,
+    upload.storage_path,
+    upload.error,
+    upload.album_id ? albums.find((album) => album.id === upload.album_id)?.title : 'event image',
+  ));
+  const filteredAlbums = albums.filter((album) => {
+    const mine = photos.filter((photo) => photo.album_id === album.id);
+    return matchesSearch(
+      albumQuery,
+      album.title,
+      album.year,
+      formatPartialDate(album.year, album.month, album.day),
+      eventTitle(album.event_id),
+      ...mine.map((photo) => photo.caption ?? photo.file),
+    );
+  });
 
   return (
     <>
@@ -140,8 +162,10 @@ export default function PhotosAdmin({
             These are queued. A scheduled job adds them to the site and they disappear from
             this list, usually within a few minutes of the next build.
           </p>
+          <SearchField value={pendingQuery} onChange={setPendingQuery} label="Search queued uploads"
+            resultCount={filteredPending.length} totalCount={pending.length} />
           <ul className="directory">
-            {pending.map((upload) => (
+            {filteredPending.map((upload) => (
               <li key={upload.id}>
                 <div>
                   <p className="directory__name">{upload.caption || upload.storage_path}</p>
@@ -155,6 +179,7 @@ export default function PhotosAdmin({
               </li>
             ))}
           </ul>
+          {filteredPending.length === 0 && <p className="muted empty-results">No queued uploads match your search.</p>}
         </section>
       )}
 
@@ -169,6 +194,9 @@ export default function PhotosAdmin({
         </div>
 
         {error && <p className="error">{error}</p>}
+
+        <SearchField value={albumQuery} onChange={setAlbumQuery} label="Search albums"
+          resultCount={filteredAlbums.length} totalCount={albums.length} />
 
         {draft && (
           <div className="subpanel">
@@ -198,7 +226,7 @@ export default function PhotosAdmin({
             </div>
 
             <label className="field-wide">
-              Linked event <span className="hint">optional, leave blank for albums that aren’t an event</span>
+              Linked event <span className="hint">optional; leave blank for albums that aren’t an event</span>
               <select value={draft.event_id}
                 onChange={(e) => setDraft({ ...draft, event_id: e.target.value })}>
                 <option value="">Not linked to an event</option>
@@ -222,7 +250,7 @@ export default function PhotosAdmin({
           </div>
         )}
 
-        <table className="table">
+        <table className="table table--responsive">
           <thead>
             <tr>
               <th>Album</th>
@@ -233,7 +261,7 @@ export default function PhotosAdmin({
             </tr>
           </thead>
           <tbody>
-            {albums.map((album) => {
+            {filteredAlbums.map((album) => {
               const mine = photos.filter((p) => p.album_id === album.id);
               const live = mine.filter((p) => !p.removed_at).length;
               const hidden = mine.length - live;
@@ -242,14 +270,14 @@ export default function PhotosAdmin({
               return (
                 <Fragment key={album.id}>
                   <tr>
-                    <td>{album.title}</td>
-                    <td>{formatPartialDate(album.year, album.month, album.day)}</td>
-                    <td>
+                    <td data-label="Album">{album.title}</td>
+                    <td data-label="When">{formatPartialDate(album.year, album.month, album.day)}</td>
+                    <td data-label="Photos">
                       {live}
                       {hidden > 0 && <span className="badge">{hidden} hidden</span>}
                     </td>
-                    <td>{eventTitle(album.event_id)}</td>
-                    <td>
+                    <td data-label="Event">{eventTitle(album.event_id)}</td>
+                    <td data-label="Actions">
                       <div className="row-actions">
                         <button
                           className="btn btn--ghost btn--small"
@@ -279,7 +307,7 @@ export default function PhotosAdmin({
                     </td>
                   </tr>
                   {open && (
-                    <tr>
+                    <tr className="table__details">
                       <td colSpan={5}>
                         <PhotoList photos={mine} thumbnails={thumbnails} onToggle={setRemoved} />
                       </td>
@@ -290,6 +318,8 @@ export default function PhotosAdmin({
             })}
           </tbody>
         </table>
+
+        {filteredAlbums.length === 0 && <p className="muted empty-results">No albums match your search.</p>}
 
         {albums.length === 0 && (
           <p className="muted">
@@ -311,6 +341,7 @@ function PhotoList({
   onToggle: (photo: Photo, removed: boolean) => Promise<void>;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
 
   if (photos.length === 0) return <p className="muted">No photos in this album yet.</p>;
 
@@ -319,6 +350,12 @@ function PhotoList({
     await onToggle(photo, !photo.removed_at);
     setBusy(null);
   }
+  const filteredPhotos = photos.filter((photo) => matchesSearch(
+    query,
+    photo.caption,
+    photo.file,
+    photo.removed_at ? 'hidden' : 'live',
+  ));
 
   return (
     <>
@@ -327,8 +364,10 @@ function PhotoList({
         file itself stays in the site&rsquo;s repository history and cannot be erased, so this
         hides a photo rather than deleting it.
       </p>
+      <SearchField value={query} onChange={setQuery} label="Search photos"
+        resultCount={filteredPhotos.length} totalCount={photos.length} />
       <ul className="photo-list">
-        {photos.map((photo) => (
+        {filteredPhotos.map((photo) => (
           <li key={photo.id} className={photo.removed_at ? 'is-removed' : undefined}>
             <div className="photo-list__item">
               {/* A row can outlive its file, so don't render an image with no source. */}
@@ -362,6 +401,7 @@ function PhotoList({
           </li>
         ))}
       </ul>
+      {filteredPhotos.length === 0 && <p className="muted empty-results">No photos match your search.</p>}
     </>
   );
 }
@@ -435,7 +475,7 @@ function Uploader({
       <h2>Add photos</h2>
       <p className="muted">
         Pick an album, choose the photos, and upload. They are resized to under 1&nbsp;MB and
-        added to the site automatically, but they will not appear on the gallery straight away.
+        added to the site automatically. They will not appear on the gallery straight away.
       </p>
 
       <p className="notice notice--inline">
@@ -470,7 +510,7 @@ function Uploader({
       {files.length > 0 && (
         <p className="hint">
           {files.length} file(s) selected
-          {tooBig.length > 0 && `, ${tooBig.length} over 25 MB and will be rejected`}
+          {tooBig.length > 0 && `; ${tooBig.length} over 25 MB and will be rejected`}
         </p>
       )}
 
