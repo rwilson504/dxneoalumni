@@ -74,6 +74,18 @@ export function googleMapsDirectionsUrl(location: string): string {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
 }
 
+/** Keeps event payment available through the calendar day after the event. */
+export function isEventPaymentAvailable(
+  year: number,
+  month: number,
+  day: number,
+  today = new Date()
+): boolean {
+  const cutoff = Date.UTC(year, month - 1, day + 1);
+  const currentDate = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  return currentDate <= cutoff;
+}
+
 export function combinedStreetAddress(
   addressLine1: string | null,
   addressLine2: string | null

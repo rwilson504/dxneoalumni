@@ -9,6 +9,7 @@ import {
   formatIcsDate,
   formatPartialDate,
   googleMapsDirectionsUrl,
+  isEventPaymentAvailable,
   matchesPaymentStatus,
   matchesSearch,
   slugify,
@@ -85,6 +86,17 @@ describe('googleMapsDirectionsUrl', () => {
       googleMapsDirectionsUrl('123 Main St, Cleveland, OH 44114'),
       'https://www.google.com/maps/search/?api=1&query=123%20Main%20St%2C%20Cleveland%2C%20OH%2044114'
     );
+  });
+});
+
+describe('isEventPaymentAvailable', () => {
+  it('stays available through the day after the event', () => {
+    assert.equal(isEventPaymentAvailable(2026, 9, 28, new Date('2026-09-28T12:00:00Z')), true);
+    assert.equal(isEventPaymentAvailable(2026, 9, 28, new Date('2026-09-29T23:59:59Z')), true);
+  });
+
+  it('expires two calendar days after the event', () => {
+    assert.equal(isEventPaymentAvailable(2026, 9, 28, new Date('2026-09-30T00:00:00Z')), false);
   });
 });
 

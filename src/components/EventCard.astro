@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { formatDate, displayTitle, eventImage, type ChapterEvent } from '~/lib/content';
-import { googleMapsDirectionsUrl } from '~/lib/content-utils';
+import { googleMapsDirectionsUrl, isEventPaymentAvailable } from '~/lib/content-utils';
 
 interface Props {
   event: ChapterEvent;
@@ -12,6 +12,8 @@ const { event, loading = 'lazy' } = Astro.props;
 const image = eventImage(event.image_file);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const directionsUrl = event.location ? googleMapsDirectionsUrl(event.location) : null;
+const showPayment = event.payment_url
+  && isEventPaymentAvailable(event.year, event.month ?? 1, event.day ?? 1);
 ---
 
 <article class="card">
@@ -41,6 +43,13 @@ const directionsUrl = event.location ? googleMapsDirectionsUrl(event.location) :
     }
     <p class="card__text">{event.description}</p>
     {
+      showPayment && (
+        <a class="card__payment" href={event.payment_url!} target="_blank" rel="noreferrer">
+          Pay now
+        </a>
+      )
+    }
+    {
       event.albumSlug && (
         <a class="card__link" href={`${base}/gallery/${event.albumSlug}`}>
           See the photos &rarr;
@@ -63,5 +72,22 @@ const directionsUrl = event.location ? googleMapsDirectionsUrl(event.location) :
     margin-top: 0.75rem;
     font-weight: 700;
     font-size: 0.9rem;
+  }
+
+  .card__payment {
+    display: inline-block;
+    margin: 0.75rem 0.85rem 0 0;
+    padding: 0.55rem 0.9rem;
+    border-radius: 4px;
+    background: var(--dx-red-dark);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .card__payment:hover {
+    background: var(--dx-red);
+    color: #fff;
   }
 </style>

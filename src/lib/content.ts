@@ -26,6 +26,7 @@ export type ChapterEvent = {
   day: number | null;
   image_file: string | null;
   image_alt: string | null;
+  payment_url: string | null;
   sort_date: string;
   /** Set only when a linked album actually has visible photos to link to. */
   albumSlug: string | null;

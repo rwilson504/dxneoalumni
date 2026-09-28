@@ -22,11 +22,12 @@ type Draft = {
   location: string;
   date: string;
   image_alt: string;
+  payment_url: string;
 };
 
 const blank: Draft = {
   id: null, slug: '', title: '', description: '',
-  location: '', date: new Date().toISOString().slice(0, 10), image_alt: '',
+  location: '', date: new Date().toISOString().slice(0, 10), image_alt: '', payment_url: '',
 };
 
 function toDraft(event: ChapterEventRow): Draft {
@@ -38,6 +39,7 @@ function toDraft(event: ChapterEventRow): Draft {
     location: event.location ?? '',
     date: `${event.year}-${String(event.month ?? 1).padStart(2, '0')}-${String(event.day ?? 1).padStart(2, '0')}`,
     image_alt: event.image_alt ?? '',
+    payment_url: event.payment_url ?? '',
   };
 }
 
@@ -81,6 +83,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
       month,
       day,
       image_alt: draft.image_alt.trim() || null,
+      payment_url: draft.payment_url.trim() || null,
     };
 
     const supabase = getSupabase();
@@ -127,11 +130,13 @@ export default function EventsAdmin({ member }: { member: Member }) {
   }
 
   if (!events) return <section className="panel"><p className="muted">Loading events…</p></section>;
+  const paymentUrlIsValid = !draft?.payment_url.trim() || /^https:\/\/\S+$/.test(draft.payment_url.trim());
   const filteredEvents = events.filter((event) => matchesSearch(
     query,
     event.title,
     event.description,
     event.location,
+    event.payment_url,
     event.year,
     formatPartialDate(event.year, event.month, event.day),
     event.slug,
@@ -188,6 +193,12 @@ export default function EventsAdmin({ member }: { member: Member }) {
               <input type="text" value={draft.slug}
                 onChange={(e) => setDraft({ ...draft, slug: e.target.value })} />
             </label>
+            <label>
+              Payment link <span className="hint">optional</span>
+              <input type="url" inputMode="url" placeholder="https://" value={draft.payment_url}
+                aria-invalid={!paymentUrlIsValid}
+                onChange={(e) => setDraft({ ...draft, payment_url: e.target.value })} />
+            </label>
           </div>
 
           <label className="field-wide">
@@ -213,6 +224,10 @@ export default function EventsAdmin({ member }: { member: Member }) {
             <p className="error">That image is over 25 MB and will be rejected.</p>
           )}
 
+          {!paymentUrlIsValid && (
+            <p className="error">The payment link must be a complete HTTPS address.</p>
+          )}
+
           <p className="hint">
             A new image replaces the old one on the site within a few minutes, once the next
             build runs.
@@ -221,7 +236,7 @@ export default function EventsAdmin({ member }: { member: Member }) {
           <div className="row-actions">
             <button className="btn btn--primary" type="button" onClick={save}
               disabled={saving || !draft.title.trim() || !draft.date
-                || Boolean(image && image.size > MAX_UPLOAD)}>
+                || !paymentUrlIsValid || Boolean(image && image.size > MAX_UPLOAD)}>
               {saving ? 'Saving…' : 'Save event'}
             </button>
             <button className="btn btn--ghost" type="button"

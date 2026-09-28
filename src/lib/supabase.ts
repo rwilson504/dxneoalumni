@@ -5,6 +5,7 @@ export {
   combinedStreetAddress,
   describeError,
   formatPartialDate,
+  isEventPaymentAvailable,
   matchesPaymentStatus,
   matchesSearch,
   slugify,
@@ -107,6 +108,7 @@ export type ChapterEventRow = {
   day: number | null;
   image_file: string | null;
   image_alt: string | null;
+  payment_url: string | null;
   sort_date: string | null;
 };
 
@@ -144,7 +146,7 @@ export type PhotoUpload = {
 };
 
 export const eventColumns =
-  'id, slug, title, description, location, year, month, day, image_file, image_alt, sort_date';
+  'id, slug, title, description, location, year, month, day, image_file, image_alt, payment_url, sort_date';
 export const albumColumns =
   'id, slug, title, description, event_id, year, month, day, sort_date';
 
