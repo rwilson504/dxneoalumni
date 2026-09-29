@@ -46,8 +46,10 @@ pasted into the dashboard by hand.
    placeholder emails with real addresses** and promoting one person to `admin`.
    Sign-in matches on email, so nobody can get in until theirs is correct.
 5. Under **Authentication → URL Configuration**, add these redirect URLs:
-   - `https://www.richardawilson.com/dxneoalumni/members`
-   - `http://localhost:4321/dxneoalumni/members`
+   - `https://neodeltachi.com/members`
+   - `https://www.neodeltachi.com/members`
+   - `http://localhost:4321/members`
+   - `http://127.0.0.1:4321/members`
 
    Sign-in builds its redirect from `window.location.origin`, so the live domain must be
    listed exactly. `rwilson504.github.io` only 301s to the custom domain and is not
@@ -138,7 +140,7 @@ bypasses RLS entirely.
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/dxneoalumni
+npm run dev      # http://localhost:4321/
 npm run build    # static output in dist/
 npm run check    # type + template diagnostics
 npm run check:content  # fails on any em dash in src/
@@ -158,7 +160,7 @@ Pushing to `main` builds and publishes to GitHub Pages via
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml), and the Supabase GitHub
 integration applies any new migrations at the same time.
 
-The live site is <https://www.richardawilson.com/dxneoalumni/>. **Settings → Pages →
+The live site is <https://neodeltachi.com/>. **Settings → Pages →
 Source** must be **GitHub Actions**; while it is set to "Deploy from a branch", GitHub
 also runs its legacy Jekyll builder on every push, which fails on an Astro project and
 leaves a permanently red check even though the real deploy succeeded.
