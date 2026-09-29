@@ -5,6 +5,7 @@ export const site = {
     'The Northeast Ohio Alumni Chapter of The Delta Chi Fraternity brings together alumni from every Delta Chi chapter living in Northeast Ohio.',
   duesUrl:
     'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2YJ9N3B7TCKSG',
+  analyticsId: 'G-V1B64MDWSB',
   chapterDues: 35,
   virtualDues: 15,
   rosterYear: 2026,

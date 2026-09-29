@@ -49,6 +49,15 @@ describe('built site regressions', () => {
     assert.match(awards, /Outstanding Alumni Chapter Member: Daniel Russell/);
   });
 
+  it('loads Google Analytics across public and member pages', async () => {
+    for (const route of ['index.html', 'members/index.html']) {
+      const content = await html(route);
+      assert.match(content, /googletagmanager\.com\/gtag\/js\?id=G-V1B64MDWSB/);
+      assert.match(content, /gtag\('config',\s*analyticsId\)/);
+      assert.match(content, /analyticsId\s*=\s*"G-V1B64MDWSB"/);
+    }
+  });
+
   it('does not publish forbidden copy tokens', async () => {
     const files = await htmlFiles(new URL('.', dist));
     for (const file of files) {

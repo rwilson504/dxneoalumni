@@ -41,6 +41,14 @@ const ogImage = new URL(`${base}/og-default.jpg`, Astro.site).href;
     <meta property="og:image:alt" content="Delta Chi Northeast Ohio Alumni Chapter" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.analyticsId}`}></script>
+    <script is:inline define:vars={{ analyticsId: site.analyticsId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', analyticsId);
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
