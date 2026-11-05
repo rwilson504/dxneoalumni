@@ -75,7 +75,8 @@ npm run check:supabase
 ```
 
 Confirms the project is awake, the migrations applied, table privileges are granted, and —
-most importantly — that an anonymous caller cannot read member or dues data. Run it after
+most importantly, that an anonymous caller cannot read private member or dues data.
+It also verifies that the public roster RPC returns only its five approved profile fields. Run it after
 any migration.
 
 ### Email delivery
@@ -167,12 +168,32 @@ leaves a permanently red check even though the real deploy succeeded.
 
 ## Content
 
+The public Membership page reads active members from Supabase through
+`public_member_roster()` at build time, not from [src/data/members.json](src/data/members.json).
+Roster administration is the source of truth for names, chapter/class year, officer
+positions and virtual status. Inactive members are excluded. The public RPC exposes only
+those five fields, never contact details, account identifiers, access roles or dues.
+The signed-in contact directory and its opt-out setting are separate from this basic
+public roster.
+
+Admin roster changes reach the public page after the next successful site rebuild.
+The scheduled photo-ingest workflow requests a deployment even when there are no new
+photos, but GitHub schedules can be delayed. To publish sooner, run **Deploy site**
+manually from GitHub Actions. Apply the public roster migration before building;
+a missing RPC, failed query or empty roster stops the build rather than publishing
+stale JSON or an empty membership page.
+
+The roster heading uses the calendar year at build time. Award totals and the
+Chicago Cup summary are derived from the published award records, including
+singular/plural wording. Generated-site tests check these relationships and
+consistent public dues rates rather than freezing editable content to old values.
+
 Site content lives in [src/data](src/data) and is hand-edited:
 
 | File | Contents |
 |---|---|
 | `events.json` | 45 events with dates, descriptions, and image filenames |
-| `members.json` | Roster and officer letters |
+| `members.json` | Legacy roster snapshot, not used by the public Membership page |
 | `awards.json` | Chapter awards by year |
 | `newsletters.json` | Newsletter index (local PDFs and external links) |
 | `gallery.json` | 133 photos with captions, generated \u2014 see [the photo gallery](#the-photo-gallery) |

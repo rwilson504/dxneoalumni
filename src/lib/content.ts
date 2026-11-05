@@ -11,6 +11,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { getImage } from 'astro:assets';
 import legacyAwards from '~/data/awards.json';
 import { site } from '~/data/site';
+import { formatPublicRoster, type PublicRosterMember } from '~/lib/content-utils';
 
 const url = import.meta.env.PUBLIC_SUPABASE_URL;
 const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -147,7 +148,7 @@ async function fetchContent() {
 
   const supabase = createClient(url, key, { auth: { persistSession: false } });
 
-  const [eventRes, albumRes, photoRes] = await Promise.all([
+  const [eventRes, albumRes, photoRes, rosterRes] = await Promise.all([
     supabase
       .from('events')
       .select('*')
@@ -161,8 +162,15 @@ async function fetchContent() {
       .select('album_id, file, caption, sort_order')
       .is('removed_at', null)
       .order('sort_order'),
+    supabase.rpc('public_member_roster').overrideTypes<PublicRosterMember[], { merge: false }>(),
   ]);
 
+  if (rosterRes.error) {
+    throw new Error(`Supabase public roster: ${rosterRes.error.message}. Apply the public_member_roster migration before building.`);
+  }
+  if (!Array.isArray(rosterRes.data)) {
+    throw new Error('Supabase public roster: expected an array of public member profiles.');
+  }
   for (const res of [eventRes, albumRes, photoRes]) {
     if (res.error) throw new Error(`Supabase: ${res.error.message}`);
   }
@@ -176,6 +184,8 @@ async function fetchContent() {
   assertNotEmpty('events', eventRows);
   assertNotEmpty('albums', albumRows);
   assertNotEmpty('photos', photos);
+  const members = formatPublicRoster(rosterRes.data ?? []);
+  assertNotEmpty('public roster members', members);
 
   const byAlbum = new Map<string, { file: string; caption: string | null }[]>();
   for (const photo of photos) {
@@ -205,7 +215,7 @@ async function fetchContent() {
 
   const awards = await fetchAwards(supabase);
   const duesRate = await fetchCurrentDuesRate(supabase);
-  return { events, albums, awards, duesRate };
+  return { events, albums, awards, duesRate, members };
 }
 
 // One round trip per build rather than one per page that imports this.
@@ -215,6 +225,7 @@ export const events = content.events;
 export const albums = content.albums;
 export const awardTimeline = content.awards;
 export const currentDuesRate = content.duesRate;
+export const members = content.members;
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December'];

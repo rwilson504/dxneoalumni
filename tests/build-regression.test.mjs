@@ -30,23 +30,60 @@ describe('built site regressions', () => {
     }));
   });
 
-  it('keeps approved membership and footer content', async () => {
-    const membership = await html('membership/index.html');
-    assert.match(membership, /2026 Alumni Chapter members/);
-    assert.match(membership, /\$35 annual membership/);
+  it('uses the current roster year and consistent public dues rates', async () => {
+    const [membership, home, about] = await Promise.all([
+      html('membership/index.html'), html('index.html'), html('about/index.html'),
+    ]);
+    assert.ok(membership.includes(`${new Date().getFullYear()} Alumni Chapter members`));
+    const rates = membership.match(/Your \$([\d]+(?:\.\d+)?) annual membership \(or \$([\d]+(?:\.\d+)?) for virtual members\)/);
+    assert.ok(rates, 'Membership must show full and virtual annual dues');
+    const [, fullRate, virtualRate] = rates;
+    for (const [route, content] of [['index.html', home], ['about/index.html', about]]) {
+      assert.ok(content.includes(`Join for $${fullRate}/year`), `${route} has a different full rate`);
+    }
+    assert.ok(home.includes(`or $${virtualRate} for virtual members`), 'Home has a different virtual rate');
+    assert.ok(about.includes(`Virtual membership is $${virtualRate}.`), 'About has a different virtual rate');
+  });
 
+  it('keeps approved footer content', async () => {
     const home = await html('index.html');
     assert.doesNotMatch(home, />Discord</);
     assert.doesNotMatch(home, />Delta Chi Educational Foundation</);
     assert.match(home, /MyDchi: update your contact info/);
   });
 
-  it('renders the normalized chapter award history', async () => {
+  it('renders public roster profiles and officer positions', async () => {
+    const membership = await html('membership/index.html');
+    const officerNames = [...membership.matchAll(/class="officer__name"[^>]*>([^<]+)<\/p>/g)];
+    const officerRoles = [...membership.matchAll(/class="officer__role"[^>]*>([^<]+)<\/p>/g)];
+    const memberNames = [...membership.matchAll(/class="roster__name"[^>]*>([^<]+)<\/span>/g)];
+    assert.ok(officerNames.length > 0, 'No officers were published');
+    assert.equal(officerRoles.length, officerNames.length, 'Each officer needs a position label');
+    assert.ok(memberNames.length > 0, 'No non-officer members were published');
+    assert.doesNotMatch(membership, />undefined</);
+    assert.doesNotMatch(membership, />null</);
+  });
+
+  it('keeps award and Chicago Cup summaries consistent with the timeline', async () => {
     const awards = await html('awards/index.html');
-    assert.match(awards, /18 awards/);
-    assert.match(awards, /Outstanding Alumni Chapter Programming/);
-    assert.match(awards, /Outstanding Alumni Chapter Communication/);
-    assert.match(awards, /Outstanding Alumni Chapter Member: Daniel Russell/);
+    const timeline = awards.match(/<ol class="timeline"[^>]*>([\s\S]*?)<\/ol>/)?.[1];
+    assert.ok(timeline, 'Award timeline must be present');
+    const awardCount = [...timeline.matchAll(/<li\b[^>]*>[^<]+<\/li>/g)].length;
+    const cupCount = [...timeline.matchAll(/<li class="is-cup"[^>]*>/g)].length;
+    const summary = awards.match(/<p class="lede"[^>]*>([\s\S]*?)<\/p>/)?.[1].replace(/\s+/g, ' ');
+    assert.ok(awardCount > 0, 'No awards were published');
+    assert.ok(summary, 'Award summary must be present');
+    assert.ok(summary.includes(`${awardCount} ${awardCount === 1 ? 'award' : 'awards'} from`),
+      'Summary total must match the published award records');
+    if (cupCount > 0) {
+      assert.ok(summary.includes(`${cupCount} Chicago ${cupCount === 1 ? 'Cup' : 'Cups'},`),
+        'Chicago Cup summary must match the published Cup records');
+    } else {
+      assert.doesNotMatch(summary, /Chicago Cup/);
+      assert.doesNotMatch(awards, /class="section cups"/);
+    }
+    assert.doesNotMatch(timeline, />undefined</);
+    assert.doesNotMatch(timeline, />null</);
   });
 
   it('loads Google Analytics across public and member pages', async () => {

@@ -153,6 +153,8 @@ export default function AdminMembers({
         Adding someone here is what lets them sign in. The email address must match the one they use.
         Roles and officer letters can only be changed from this panel. Deactivated members keep
         their history but cannot sign in or appear in the directory.
+        Active members appear on the public Membership page after the next successful site rebuild.
+        Only their name, chapter, class year, officer position and virtual status are published.
       </p>
 
       {error && <p className="error">{error}</p>}

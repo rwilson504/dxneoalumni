@@ -1,20 +1,10 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { site, officerRoles } from '~/data/site';
-import { currentDuesRate } from '~/lib/content';
-import members from '~/data/members.json';
+import { currentDuesRate, members } from '~/lib/content';
 
-type Member = {
-  name: string;
-  officer: string | null;
-  chapter: string;
-  classYear: string | null;
-  virtual: boolean;
-};
-
-const roster = members as Member[];
-const officers = roster.filter((m) => m.officer);
-const brothers = roster.filter((m) => !m.officer);
+const officers = members.filter((m) => m.officer);
+const brothers = members.filter((m) => !m.officer);
 ---
 
 <BaseLayout

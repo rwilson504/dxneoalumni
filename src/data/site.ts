@@ -8,7 +8,7 @@ export const site = {
   analyticsId: 'G-V1B64MDWSB',
   chapterDues: 35,
   virtualDues: 15,
-  rosterYear: 2026,
+  rosterYear: new Date().getFullYear(),
   charteredOn: 'October 25, 2016',
 };
 

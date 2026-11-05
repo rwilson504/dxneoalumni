@@ -3,6 +3,26 @@ export function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+export type PublicRosterMember = {
+  full_name: string;
+  officer_letter: string | null;
+  undergrad_chapter: string | null;
+  class_year: string | null;
+  is_virtual: boolean;
+};
+
+export function formatPublicRoster(rows: PublicRosterMember[]) {
+  return rows.map((row) => ({
+    name: row.full_name,
+    officer: row.officer_letter,
+    chapter: row.undergrad_chapter,
+    classYear: row.class_year,
+    virtual: row.is_virtual,
+  })).sort((left, right) =>
+    (left.officer ?? 'Z').localeCompare(right.officer ?? 'Z')
+    || left.name.localeCompare(right.name));
+}
+
 /** Turns known Supabase errors into messages that tell an officer what to do next. */
 export function describeError(error: { code?: string; message: string } | null): string | null {
   if (!error) return null;

@@ -66,7 +66,7 @@ for (const table of ['members', 'documents', 'dues_payments', 'dues_rates', 'awa
   );
 }
 
-// 4. THE IMPORTANT ONE. Anonymous callers must see no member data.
+// 4. Raw member rows remain private. Only the public roster RPC is readable.
 {
   const { status, body } = await rest('members?select=id,full_name,email');
   const leaked = status === 200 && Array.isArray(body) && body.length > 0;
@@ -76,6 +76,18 @@ for (const table of ['members', 'documents', 'dues_payments', 'dues_rates', 'awa
     leaked
       ? `LEAKED ${body.length} rows, check that RLS is enabled!`
       : `HTTP ${status}${body?.code ? ` (${body.code})` : ''}`
+  );
+}
+
+{
+  const { status, body } = await rest('rpc/public_member_roster');
+  const fields = ['class_year', 'full_name', 'is_virtual', 'officer_letter', 'undergrad_chapter'];
+  const safe = status === 200 && Array.isArray(body) && body.length > 0
+    && body.every((row) => JSON.stringify(Object.keys(row).sort()) === JSON.stringify(fields));
+  record(
+    'anonymous public roster contains only approved profile fields',
+    safe,
+    safe ? `${body.length} public profiles` : `HTTP ${status}; expected a nonempty roster with exactly five public fields`
   );
 }
 

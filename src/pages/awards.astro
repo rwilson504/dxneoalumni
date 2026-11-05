@@ -8,6 +8,8 @@ import shieldOutline from '~/assets/dx-shield-outline.png';
 const timeline = awardTimeline;
 const total = timeline.reduce((sum, entry) => sum + entry.awards.length, 0);
 const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chicago Cup')));
+const cupCount = timeline.reduce((sum, entry) =>
+  sum + entry.awards.filter((award) => award.startsWith('Chicago Cup')).length, 0);
 ---
 
 <BaseLayout
@@ -19,13 +21,16 @@ const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chica
       <p class="eyebrow">Recognition</p>
       <h1>Chapter awards</h1>
       <p class="lede">
-        {total} awards from The Delta Chi Fraternity since the chapter was rechartered, including
-        three Chicago Cups, the highest honor an alumni chapter can earn.
+        {total} {total === 1 ? 'award' : 'awards'} from The Delta Chi Fraternity since the chapter was rechartered{
+          cupCount > 0
+            ? `, including ${cupCount} Chicago ${cupCount === 1 ? 'Cup' : 'Cups'}, the highest honor an alumni chapter can earn.`
+            : '.'
+        }
       </p>
     </div>
   </section>
 
-  <section class="section cups">
+  {cupCount > 0 && <section class="section cups">
     <div class="wrap">
       <p class="eyebrow">The highest honor an alumni chapter can earn</p>
       <ul class="cup-grid">
@@ -40,7 +45,7 @@ const cupYears = timeline.filter((e) => e.awards.some((a) => a.startsWith('Chica
         }
       </ul>
     </div>
-  </section>
+  </section>}
 
   <section class="section section--alt timeline-section">
     <Image class="watermark" src={shieldOutline} alt="" aria-hidden="true" width={620} height={775} />

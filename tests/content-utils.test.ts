@@ -8,12 +8,51 @@ import {
   foldIcsLine,
   formatIcsDate,
   formatPartialDate,
+  formatPublicRoster,
   googleMapsDirectionsUrl,
   isEventPaymentAvailable,
   matchesPaymentStatus,
   matchesSearch,
   slugify,
 } from '../src/lib/content-utils.ts';
+
+describe('formatPublicRoster', () => {
+  const member = {
+    full_name: 'Test Brother',
+    officer_letter: null,
+    undergrad_chapter: null,
+    class_year: null,
+    is_virtual: false,
+  };
+
+  it('uses current database values and orders officers before alphabetical members', () => {
+    const rows = [
+      { ...member, full_name: 'Zed New Member' },
+      { ...member, full_name: 'New Secretary', officer_letter: 'C', is_virtual: true },
+      { ...member, full_name: 'Amy New Member', undergrad_chapter: 'Kent State', class_year: "'26" },
+      { ...member, full_name: 'New President', officer_letter: 'A' },
+    ];
+    assert.deepEqual(formatPublicRoster(rows), [
+      { name: 'New President', officer: 'A', chapter: null, classYear: null, virtual: false },
+      { name: 'New Secretary', officer: 'C', chapter: null, classYear: null, virtual: true },
+      { name: 'Amy New Member', officer: null, chapter: 'Kent State', classYear: "'26", virtual: false },
+      { name: 'Zed New Member', officer: null, chapter: null, classYear: null, virtual: false },
+    ]);
+    assert.equal(rows[0].full_name, 'Zed New Member', 'Does not mutate the source rows');
+  });
+
+  it('never copies additional private fields into public page data', () => {
+    const row = { ...member, email: 'private@example.invalid', phone: 'private', role: 'admin' };
+    assert.deepEqual(Object.keys(formatPublicRoster([row])[0]).sort(),
+      ['chapter', 'classYear', 'name', 'officer', 'virtual']);
+  });
+
+  it('reflects officer reassignments without retaining the previous position', () => {
+    assert.equal(formatPublicRoster([{ ...member, officer_letter: 'B' }])[0].officer, 'B');
+    assert.equal(formatPublicRoster([member])[0].officer, null);
+    assert.deepEqual(formatPublicRoster([]), []);
+  });
+});
 
 describe('slugify', () => {
   it('normalizes punctuation, whitespace, and case', () => {
